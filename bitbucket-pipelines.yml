@@ -1,7 +1,7 @@
 image: maven:3.6.3
 pipelines:
   custom:
-    manual-deploy-check:
+    manual-check:
     - parallel:
       - step:
           name: Build and Test
