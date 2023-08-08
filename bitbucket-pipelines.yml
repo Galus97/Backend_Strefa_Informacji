@@ -1,8 +1,8 @@
+image: maven:latest
 pipelines:
   custom:
     manual-check:
       - step:
-          image: maven:latest
           name: Build and Test
           caches:
             - maven
