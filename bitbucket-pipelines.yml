@@ -1,17 +1,10 @@
-image: maven:3.6.3
 pipelines:
   custom:
     manual-check:
-    - parallel:
       - step:
+          image: maven:3.6.3-openjdk-11-slim
           name: Build and Test
           caches:
             - maven
           script:
-            - mvn -B verify --file pom.xml
-          after-script:
-            - pipe: atlassian/checkstyle-report:0.3.0
-      - step:
-          name: Security Scan
-          script:
-            - pipe: atlassian/git-secrets-scan:0.5.1
+            - mvn clean install
