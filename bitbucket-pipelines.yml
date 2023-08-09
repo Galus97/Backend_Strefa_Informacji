@@ -22,7 +22,7 @@ pipelines:
             - mvn clean install
             - echo "Application built successfully!"
             - echo "Preparing deployment package..."
-            - zip -r deploy-package.zip target/*.jar
+            - tar -czvf deploy-package.tar.gz -C target .
             - echo "Deployment package prepared!"
             - echo "Deploying to server..."
             # - scp deploy-package.zip user@your-server-ip:/path/to/deployment
