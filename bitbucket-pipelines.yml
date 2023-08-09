@@ -22,7 +22,10 @@ pipelines:
             - mvn clean install
             - echo "Application built successfully!"
             - echo "Preparing deployment package..."
+            - pwd
+            - ls -l target
             - tar -czvf deploy-package.tar.gz -C target .
+            - ls -l target
             - echo "Deployment package prepared!"
             - echo "Deploying to server..."
             - ls -l target
