@@ -31,7 +31,6 @@ pipelines:
             - echo "Deploying to server..."
             - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
             - chmod 600 ~/.ssh/id_rsa
-            - sudo apt-get install openssh-client
             - ssh-keyscan ec2-16-171-142-151.eu-north-1.compute.amazonaws.com >> ~/.ssh/known_hosts
             # - scp deploy-package.zip user@your-server-ip:/path/to/deployment
             # - ssh user@your-server-ip 'unzip -o /path/to/deployment/deploy-package.zip -d /path/to/deployment'
