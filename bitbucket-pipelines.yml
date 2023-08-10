@@ -30,6 +30,7 @@ pipelines:
             # - echo "Deployment package prepared!"
             # - echo "Deploying to server..."
             # - ls -l target
+            - mkdir root
             - echo "$SSH_PRIVATE_KEY" > root/ssh.pem
             - chmod 600 root/ssh.pem
             - ssh-keyscan ec2-13-53-41-209.eu-north-1.compute.amazonaws.com >> ~/.ssh/known_hosts
