@@ -18,6 +18,7 @@ pipelines:
       - step:
           name: Build and Deploy
           script:
+            - apt-get update && apt-get install -y openssh-client
             - echo "Building the application..."
             - mvn clean install
             - echo "Application built successfully!"
