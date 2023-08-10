@@ -30,6 +30,7 @@ pipelines:
             - echo "Deployment package prepared!"
             - echo "Deploying to server..."
             - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+            - cat ~/.ssh/id_rsa
             - chmod 600 ~/.ssh/id_rsa
             - ssh-keyscan ec2-13-53-41-209.eu-north-1.compute.amazonaws.com >> ~/.ssh/known_hosts
             - scp deploy-package.zip ec2-13-53-41-209.eu-north-1.compute.amazonaws.com:/deployment
