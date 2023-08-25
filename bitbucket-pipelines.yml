@@ -19,25 +19,29 @@ pipelines:
           name: Build and Deploy
           deployment: Dev
           script:
-            - apt-get update && apt-get install -y openssh-client
-            # - echo "Building the application..."
-            # - mvn clean install
-            # - echo "Application built successfully!"
-            # - echo "Preparing deployment package..."
-            # - pwd
-            # - ls -l target
-            # - tar -czvf deploy-package.tar.gz -C target .
-            # - ls -l target
-            # - echo "Deployment package prepared!"
-            # - echo "Deploying to server..."
-            # - ls -l target
-            - mkdir root
-            - echo "$SSH_PRIVATE_EC2" > root/ssh.pem
-            - chmod 600 root/ssh.pem
-            # - ssh-keyscan ec2-13-53-41-209.eu-north-1.compute.amazonaws.com >> root/known_hosts
-            - cd root
-            - ssh -i "ssh.pem" ubuntu@ec2-16-171-161-117.eu-north-1.compute.amazonaws.com
-            - scp deploy-package.zip ec2-16-171-161-117.eu-north-1.compute.amazonaws.com:/deployment2
-            - ssh ec2-16-171-161-117.eu-north-1.compute.amazonaws.com 'unzip -o /deployment2/deploy-package.zip -d /deployment2'
-            # - ssh ec2-13-53-41-209.eu-north-1.compute.amazonaws.com 'systemctl restart your-app-service'
-            # - echo "Application deployed successfully!"
+          - apt-get update
+          - apt-get install -y zip
+          # - zip -r application1.zip .
+          - pipe: atlassian/aws-code-deploy:0.2.5
+            variables:
+              AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+              AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+              AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+              APPLICATION_NAME: $APPLICATION_NAME
+              S3_BUCKET: $S3_BUCKET
+              COMMAND: 'upload'
+              ZIP_FILE: 'test.zip'
+              VERSION_LABEL: 'my-app-1.0.0'
+          - pipe: atlassian/aws-code-deploy:0.2.5
+            variables:
+              AWS_DEFAULT_REGION: $AWS_DEFAULT_REGION
+              AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+              AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+              APPLICATION_NAME: $APPLICATION_NAME
+              DEPLOYMENT_GROUP: $DEPLOYMENT_GROUP
+              S3_BUCKET: $S3_BUCKET
+              COMMAND: 'deploy'
+              WAIT: 'true'
+              VERSION_LABEL: 'my-app-1.0.0'
+              IGNORE_APPLICATION_STOP_FAILURES: 'true'
+              FILE_EXISTS_BEHAVIOR: 'OVERWRITE'
