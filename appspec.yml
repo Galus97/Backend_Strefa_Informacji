@@ -5,5 +5,5 @@ files:
     destination: /home/ubuntu/deployment/target
 hooks:
   ApplicationStart:
-    - location: scripts/restart-after-deploy.sh
+    - location: /home/ubuntu/scripts/restart-after-deploy.sh
       timeout: 300
