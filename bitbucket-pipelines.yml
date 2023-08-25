@@ -21,6 +21,9 @@ pipelines:
           script:
           - apt-get update
           - apt-get install -y zip
+          - echo "Building the application..."
+          - mvn clean install
+          - cd target
           - zip -r test.ZIP .
           - pipe: atlassian/aws-code-deploy:0.2.5
             variables:
@@ -31,7 +34,6 @@ pipelines:
               S3_BUCKET: ${S3_BUCKET}
               COMMAND: 'upload'
               ZIP_FILE: 'test.ZIP'
-              DEBUG: 'true'
           - pipe: atlassian/aws-code-deploy:0.2.5
             variables:
               AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
@@ -44,4 +46,3 @@ pipelines:
               FILE_EXISTS_BEHAVIOR: 'OVERWRITE'
               S3_BUCKET: ${S3_BUCKET}
               WAIT: 'true'
-              DEBUG: 'true'
