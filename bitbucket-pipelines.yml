@@ -24,6 +24,7 @@ pipelines:
           - echo "Building the application..."
           - mvn clean install
           - cd target
+          - cp /ścieżka/do/appspec.yml target/
           - ls -l
           - zip -r test.ZIP .
           - pipe: atlassian/aws-code-deploy:0.2.5
