@@ -24,7 +24,9 @@ pipelines:
           - echo "Building the application..."
           - mvn clean install
           - cp appspec.yml target/
+          - cp restart-after-deploy.sh target/
           - cd target
+          - chmod +x restart-after-deploy.sh
           - zip -r test.ZIP .
           - pipe: atlassian/aws-code-deploy:0.2.5
             variables:
