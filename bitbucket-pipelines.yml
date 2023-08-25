@@ -43,5 +43,6 @@ pipelines:
               DEPLOYMENT_GROUP: ${DEPLOYMENT_GROUP}
               IGNORE_APPLICATION_STOP_FAILURES: 'true'
               FILE_EXISTS_BEHAVIOR: 'OVERWRITE'
+              S3_BUCKET: ${S3_BUCKET}
               WAIT: 'true'
               DEBUG: 'true'
