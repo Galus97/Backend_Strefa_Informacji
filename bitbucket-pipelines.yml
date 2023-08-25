@@ -20,12 +20,12 @@ pipelines:
           deployment: Dev
           script:
           - apt-get update
-          # - apt-get install -y zip
+          - apt-get install -y zip
           - echo "Building the application..."
-          # - mvn clean install
-          # - cd target
+          - mvn clean install
+          - cp appspec.yml target/
+          - cd target
           - pwd
-          # - cp /../appspec.yml target/
           - ls -l
           # - zip -r test.ZIP .
           # - pipe: atlassian/aws-code-deploy:0.2.5
