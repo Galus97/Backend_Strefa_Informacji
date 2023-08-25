@@ -30,7 +30,7 @@ pipelines:
               APPLICATION_NAME: $APPLICATION_NAME
               S3_BUCKET: $S3_BUCKET
               COMMAND: 'upload'
-              ZIP_FILE: 'test.zip'
+              ZIP_FILE: 'test.ZIP'
               VERSION_LABEL: 'my-app-1.0.0'
           - pipe: atlassian/aws-code-deploy:0.2.5
             variables:
