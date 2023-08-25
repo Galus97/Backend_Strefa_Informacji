@@ -3,3 +3,7 @@ os: linux
 files:
   - source: /
     destination: /home/ubuntu/deployment/target2
+hooks:
+  ApplicationStart:
+    - location: scripts/restart-after-deploy.sh
+      timeout: 300
