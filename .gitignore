@@ -5,7 +5,6 @@
 
 # Node artifact files
 *.iml
-*.yaml
 node_modules/
 dist/
 
