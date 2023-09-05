@@ -29,7 +29,9 @@ public class ArticleInformation {
     @NotNull
     private int importance;
 
-    private String img_src;
+    @NotNull
+    private String imgSrc;
 
-    private String alt_img;
+    @NotNull
+    private String altImg;
 }
