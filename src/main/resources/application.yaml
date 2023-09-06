@@ -3,6 +3,10 @@ spring:
     url: jdbc:mysql://2.57.137.47:3306/strefainf_db
     username: strefainf_db
     password: IaTK5M3GMx
+  http:
+    message:
+      converters:
+        preferred-json-mapper: jackson
   jpa:
     hibernate:
       ddl-auto: create
