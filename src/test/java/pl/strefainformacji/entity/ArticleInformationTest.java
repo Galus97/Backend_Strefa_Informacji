@@ -26,7 +26,7 @@ class ArticleInformationTest {
     @Test
     public void testTitle() {
         assertNull(articleInformation.getTitle());
-        String title = "Tytuł artykułu";
+        String title = "Article Title 1";
         articleInformation.setTitle(title);
         assertEquals(title, articleInformation.getTitle());
     }
@@ -34,7 +34,7 @@ class ArticleInformationTest {
     @Test
     public void testShortDescription() {
         assertNull(articleInformation.getShortDescription());
-        String shortDescription = "Krótki opis artykułu";
+        String shortDescription = "Short description of article 1";
         articleInformation.setShortDescription(shortDescription);
         assertEquals(shortDescription, articleInformation.getShortDescription());
     }
@@ -50,7 +50,7 @@ class ArticleInformationTest {
     @Test
     public void testImgSrc() {
         assertNull(articleInformation.getImgSrc());
-        String imgSrc = "sciezka_obrazka.jpg";
+        String imgSrc = "path/to/image1.jpg";
         articleInformation.setImgSrc(imgSrc);
         assertEquals(imgSrc, articleInformation.getImgSrc());
     }
@@ -58,7 +58,7 @@ class ArticleInformationTest {
     @Test
     public void testAltImg() {
         assertNull(articleInformation.getAltImg());
-        String altImg = "Opis alternatywny obrazka";
+        String altImg = "Image description 1";
         articleInformation.setAltImg(altImg);
         assertEquals(altImg, articleInformation.getAltImg());
     }
