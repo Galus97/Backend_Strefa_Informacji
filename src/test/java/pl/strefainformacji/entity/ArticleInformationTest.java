@@ -18,48 +18,42 @@ class ArticleInformationTest {
     @Test
     public void testId() {
         assertNull(articleInformation.getId());
-        Long id = 1L;
-        articleInformation.setId(id);
-        assertEquals(id, articleInformation.getId());
+        articleInformation.setId(1L);
+        assertEquals(1L, articleInformation.getId());
     }
 
     @Test
     public void testTitle() {
         assertNull(articleInformation.getTitle());
-        String title = "Article Title 1";
-        articleInformation.setTitle(title);
-        assertEquals(title, articleInformation.getTitle());
+        articleInformation.setTitle("Article Title 1");
+        assertEquals("Article Title 1", articleInformation.getTitle());
     }
 
     @Test
     public void testShortDescription() {
         assertNull(articleInformation.getShortDescription());
-        String shortDescription = "Short description of article 1";
-        articleInformation.setShortDescription(shortDescription);
-        assertEquals(shortDescription, articleInformation.getShortDescription());
+        articleInformation.setShortDescription("Short description of article 1");
+        assertEquals("Short description of article 1", articleInformation.getShortDescription());
     }
 
     @Test
     public void testImportance() {
         assertEquals(0, articleInformation.getImportance());
-        int importance = 5;
-        articleInformation.setImportance(importance);
-        assertEquals(importance, articleInformation.getImportance());
+        articleInformation.setImportance(5);
+        assertEquals(5, articleInformation.getImportance());
     }
 
     @Test
     public void testImgSrc() {
         assertNull(articleInformation.getImgSrc());
-        String imgSrc = "path/to/image1.jpg";
-        articleInformation.setImgSrc(imgSrc);
-        assertEquals(imgSrc, articleInformation.getImgSrc());
+        articleInformation.setImgSrc("path/to/image1.jpg");
+        assertEquals("path/to/image1.jpg", articleInformation.getImgSrc());
     }
 
     @Test
     public void testAltImg() {
         assertNull(articleInformation.getAltImg());
-        String altImg = "Image description 1";
-        articleInformation.setAltImg(altImg);
-        assertEquals(altImg, articleInformation.getAltImg());
+        articleInformation.setAltImg("Image description 1");
+        assertEquals("Image description 1", articleInformation.getAltImg());
     }
 }
