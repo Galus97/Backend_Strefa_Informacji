@@ -8,8 +8,8 @@ pipelines:
             - maven
           script:
             - mvn -B verify --file pom.xml
-          after-script:
-            - pipe: atlassian/checkstyle-report:0.3.0
+            - mvn clean install
+            - mvn test
       - step:
           name: Security Scan
           script:
