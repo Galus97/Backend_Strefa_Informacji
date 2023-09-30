@@ -35,7 +35,6 @@ public class ArticleInformation {
     @NotNull
     private String altImg;
 
-    @OneToOne
-    @JoinColumn(name = "specificArticle_id")
+    @OneToOne(mappedBy = "articleInformation")
     private SpecificArticle specificArticle;
 }

@@ -29,6 +29,7 @@ public class SpecificArticle {
     private String altImg;
 
     @OneToOne
+    @JoinColumn(name = "articleInformation_id")
     private ArticleInformation articleInformation;
 
 }
