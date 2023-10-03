@@ -30,7 +30,7 @@ public class ArticleController {
     public ResponseEntity<?> getOneArticle(){
         try{
             return ResponseEntity.ok(specificArticleService.getArticle(1L));
-        } catch (NoSuchElementException exception){
+        } catch (Exception exception){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }

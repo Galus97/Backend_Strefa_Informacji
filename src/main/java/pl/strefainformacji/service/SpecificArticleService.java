@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.SpecificArticleRepository;
-
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
@@ -14,11 +12,11 @@ public class SpecificArticleService {
 
     private final SpecificArticleRepository specificArticleRepository;
 
-    public SpecificArticle getArticle(Long number){
+    public SpecificArticle getArticle(Long number) throws Exception {
         SpecificArticle article = specificArticleRepository.findByArticleInformation_Id(number);
 
         if(Objects.isNull(article)){
-            throw new NoSuchElementException("There is no specific article in the database");
+            throw new Exception("There is no specific article in the database");
         }
 
         return article;
