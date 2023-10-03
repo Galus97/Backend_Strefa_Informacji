@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.strefainformacji.service.ArticleInformationService;
+import pl.strefainformacji.service.SpecificArticleService;
 
 import java.util.NoSuchElementException;
 
@@ -14,12 +15,22 @@ import java.util.NoSuchElementException;
 public class ArticleController {
 
     private final ArticleInformationService articleInformationService;
+    private final SpecificArticleService specificArticleService;
 
     @GetMapping("/articles")
     public ResponseEntity<?> getAllArticles(){
         try{
             return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
+
+    @GetMapping("/oneArticle")
+    public ResponseEntity<?> getOneArticle(){
+        try{
+            return ResponseEntity.ok(specificArticleService.getArticle(1L));
+        } catch (NoSuchElementException exception){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
