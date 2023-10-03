@@ -35,4 +35,6 @@ public class ArticleInformation {
     @NotNull
     private String altImg;
 
+    @OneToOne(mappedBy = "articleInformation")
+    private SpecificArticle specificArticle;
 }
