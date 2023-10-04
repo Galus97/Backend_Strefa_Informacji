@@ -1,6 +1,7 @@
 package pl.strefainformacji.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +14,14 @@ import java.util.NoSuchElementException;
 @RestController
 @AllArgsConstructor
 public class ArticleController {
+    HttpHeaders headers = new HttpHeaders();
 
     private final ArticleInformationService articleInformationService;
     private final SpecificArticleService specificArticleService;
 
     @GetMapping("/articles")
     public ResponseEntity<?> getAllArticles(){
+        headers.add("Access-Control-Allow-Origin", "allowedOrigin");
         try{
             return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
@@ -28,6 +31,7 @@ public class ArticleController {
 
     @GetMapping("/oneArticle")
     public ResponseEntity<?> getOneArticle(){
+        headers.add("Access-Control-Allow-Origin", "allowedOrigin");
         try{
             return ResponseEntity.ok(specificArticleService.getArticle(1L));
         } catch (Exception exception){

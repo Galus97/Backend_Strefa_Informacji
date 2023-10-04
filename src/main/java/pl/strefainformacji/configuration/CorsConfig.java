@@ -12,5 +12,6 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/articles")
                 .allowedOrigins("http://localhost:3000/", "http://2.57.137.47/", "http://dev.strefainformacji.pl/")
                 .allowCredentials(true);
+        
     }
 }
