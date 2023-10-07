@@ -23,9 +23,8 @@ public class ArticleController {
     private final SpecificArticleService specificArticleService;
 
     @GetMapping("/articles")
-    public ResponseEntity<?> getAllArticles(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "allowedOrigin");
+    public ResponseEntity<?> getAllArticles(HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin", "allowedOrigin");
         try{
             return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
@@ -34,9 +33,8 @@ public class ArticleController {
     }
 
     @GetMapping("/oneArticle")
-    public ResponseEntity<?> getOneArticle(){
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "allowedOrigin");
+    public ResponseEntity<?> getOneArticle(HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin", "allowedOrigin");
         try{
             return ResponseEntity.ok(specificArticleService.getArticle(1L));
         } catch (Exception exception){
