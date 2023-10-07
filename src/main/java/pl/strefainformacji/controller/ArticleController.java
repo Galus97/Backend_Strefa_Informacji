@@ -1,5 +1,7 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,14 +32,6 @@ public class ArticleController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
-
-//    @GetMapping("/articles2")
-//    public List<ArticleInformation> getAllArticles2(){
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Access-Control-Allow-Origin", "allowedOrigin");
-//
-//        return articleInformationService.getAllArticles();
-//    }
 
     @GetMapping("/oneArticle")
     public ResponseEntity<?> getOneArticle(){
