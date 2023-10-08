@@ -30,11 +30,9 @@ public class ArticleInformation {
     private int importance;
 
     @NotBlank
-    @Size(min = 1)
     private String imgSrc;
 
     @NotBlank
-    @Size(min = 1)
     private String altImg;
 
 }

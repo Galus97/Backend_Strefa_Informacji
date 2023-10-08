@@ -23,11 +23,9 @@ public class SpecificArticle {
     private String description;
 
     @NotBlank
-    @Size(min = 1)
     private String imgSrc;
 
     @NotBlank
-    @Size(min = 1)
     private String altImg;
 
     @OneToOne
