@@ -22,10 +22,12 @@ public class SpecificArticle {
     @Size(min = 30)
     private String description;
 
-    @NotNull
+    @NotBlank
+    @Size(min = 1)
     private String imgSrc;
 
-    @NotNull
+    @NotBlank
+    @Size(min = 1)
     private String altImg;
 
     @OneToOne

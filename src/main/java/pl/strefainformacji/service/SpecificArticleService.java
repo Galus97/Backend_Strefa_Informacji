@@ -12,11 +12,11 @@ public class SpecificArticleService {
 
     private final SpecificArticleRepository specificArticleRepository;
 
-    public SpecificArticle getArticle(Long number) throws Exception {
+    public SpecificArticle getArticle(Long number){
         SpecificArticle article = specificArticleRepository.findByArticleInformation_Id(number);
 
         if(Objects.isNull(article)){
-            throw new Exception("There is no specific article in the database");
+            throw new NullPointerException("There is no specific article in the database");
         }
 
         return article;

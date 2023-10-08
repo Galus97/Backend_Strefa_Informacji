@@ -31,14 +31,4 @@ public class ArticleController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
-
-    @GetMapping("/oneArticle")
-    public ResponseEntity<?> getOneArticle(HttpServletResponse response){
-        response.setHeader("Access-Control-Allow-Origin", "allowedOrigin");
-        try{
-            return ResponseEntity.ok(specificArticleService.getArticle(1L));
-        } catch (Exception exception){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-        }
-    }
 }
