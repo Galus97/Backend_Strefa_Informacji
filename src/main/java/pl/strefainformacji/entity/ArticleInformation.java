@@ -29,10 +29,12 @@ public class ArticleInformation {
     @NotNull
     private int importance;
 
-    @NotNull
+    @NotBlank
+    @Size(min = 1)
     private String imgSrc;
 
-    @NotNull
+    @NotBlank
+    @Size(min = 1)
     private String altImg;
 
 }
