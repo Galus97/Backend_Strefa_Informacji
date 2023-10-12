@@ -8,58 +8,61 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class SpecificArticleTest {
 
     private Validator validator;
+    private SpecificArticle specificArticle;
 
     @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
+        specificArticle = new SpecificArticle();
     }
 
     @Test
     public void testValidSpecificArticle() {
-        SpecificArticle specificArticle = new SpecificArticle();
         specificArticle.setDescription("Valid description with more than 30 characters");
         specificArticle.setImgSrc("valid-img-src");
         specificArticle.setAltImg("valid-alt-img");
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 
-        assert(violations.isEmpty());
+        assertEquals(0, violations.size());
     }
 
     @Test
     public void testInvalidDescriptionSize() {
-        SpecificArticle specificArticle = new SpecificArticle();
+
         specificArticle.setDescription("Short");
+        specificArticle.setImgSrc("valid-img-src");
+        specificArticle.setAltImg("valid-alt-img");
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
-
-        assert(violations.size() == 1);
+        assertEquals(1, violations.size());
     }
 
     @Test
     public void testBlankImgSrc() {
-        SpecificArticle specificArticle = new SpecificArticle();
-        specificArticle.setDescription("Valid description");
+        specificArticle.setDescription("Valid description with more than 30 characters");
+        specificArticle.setAltImg("valid-alt-img");
         specificArticle.setImgSrc("");  // Blank imgSrc
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 
-        assert(violations.size() == 1);
+        assertEquals(1, violations.size());
     }
 
     @Test
     public void testBlankAltImg() {
-        SpecificArticle specificArticle = new SpecificArticle();
-        specificArticle.setDescription("Valid description");
+        specificArticle.setDescription("Valid description with more than 30 characters");
         specificArticle.setImgSrc("valid-img-src");
         specificArticle.setAltImg("");  // Blank altImg
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 
-        assert(violations.size() == 1);
+        assertEquals(1, violations.size());
     }
 }
