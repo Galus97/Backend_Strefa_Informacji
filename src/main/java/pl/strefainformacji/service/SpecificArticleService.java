@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.SpecificArticleRepository;
+
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
@@ -16,6 +18,12 @@ public class SpecificArticleService {
         if (number <= 0) {
             throw new IllegalArgumentException("The article number must be greater than zero.");
         }
+
+        boolean exists =specificArticleRepository.existsByArticleInformation_Id(number);
+        if (!exists) {
+            throw new NoSuchElementException("Artykuł o podanym numerze nie istnieje.");
+        }
+
         SpecificArticle article = specificArticleRepository.findByArticleInformation_Id(number);
 
         if(Objects.isNull(article)){
