@@ -28,7 +28,7 @@ public class SpecificArticleServiceTest {
     @Test
     public void testGetArticleWithValidNumber() {
         Long articleNumber = 1L;
-        SpecificArticle expectedArticle = new SpecificArticle(); // You can create a test-specific article
+        SpecificArticle expectedArticle = new SpecificArticle();
 
         when(specificArticleRepository.existsByArticleInformation_Id(articleNumber)).thenReturn(true);
         when(specificArticleRepository.findByArticleInformation_Id(articleNumber)).thenReturn(expectedArticle);
@@ -42,7 +42,6 @@ public class SpecificArticleServiceTest {
     public void testGetArticleWithInvalidNumber() {
         Long invalidArticleNumber = -1L;
 
-        // Simulate that the article doesn't exist in the repository
         when(specificArticleRepository.existsByArticleInformation_Id(invalidArticleNumber)).thenReturn(false);
 
         // Ensure that the service throws the expected exception
@@ -57,10 +56,8 @@ public class SpecificArticleServiceTest {
     public void testGetArticleWithNonExistentNumber() {
         Long nonExistentArticleNumber = 123L;
 
-        // Simulate that the article doesn't exist in the repository
         when(specificArticleRepository.existsByArticleInformation_Id(nonExistentArticleNumber)).thenReturn(false);
 
-        // Ensure that the service throws the expected exception
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
             specificArticleService.getArticle(nonExistentArticleNumber);
         });
@@ -72,7 +69,6 @@ public class SpecificArticleServiceTest {
     public void testGetArticleWithNullNumber() {
         Long nullArticleNumber = null;
 
-        // Ensure that the service throws the expected exception
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             specificArticleService.getArticle(nullArticleNumber);
         });
