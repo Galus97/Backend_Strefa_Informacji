@@ -5,64 +5,77 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import jakarta.validation.*;
 import java.util.Set;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ArticleInformationTest {
 
     private Validator validator;
+    private ArticleInformation articleInfo;
 
     @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-    }
-
-    @Test
-    public void testValidArticleInformation() {
-        ArticleInformation articleInfo = new ArticleInformation();
+        articleInfo = new ArticleInformation();
         articleInfo.setTitle("Valid Title");
         articleInfo.setShortDescription("Valid short description with more than 10 characters");
         articleInfo.setImportance(1);
         articleInfo.setImgSrc("valid-img-src");
         articleInfo.setAltImg("valid-alt-img");
+    }
+
+    @Test
+    public void testValidArticleInformation() {
 
         Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
 
-        assert(violations.isEmpty());
+        assertEquals(0, violations.size());
+
     }
 
     @Test
     public void testInvalidTitleSize() {
-        ArticleInformation articleInfo = new ArticleInformation();
         articleInfo.setTitle("S");
 
         Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
 
-        assert(violations.size() == 1);
+        assertEquals(1, violations.size());
     }
 
     @Test
     public void testBlankShortDescription() {
-        ArticleInformation articleInfo = new ArticleInformation();
-        articleInfo.setTitle("Valid Title");
         articleInfo.setShortDescription("");  // Blank shortDescription
 
         Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
+        for (ConstraintViolation<ArticleInformation> violation : violations) {
+            System.out.println("Path: " + violation.getPropertyPath());
+            System.out.println("Message: " + violation.getMessage());
+            System.out.println("Invalid Value: " + violation.getInvalidValue());
+            System.out.println("---");
+        }
 
-        // Expecting a violation due to @NotBlank constraint
-        assert(violations.size() == 1);
+        assertEquals(1, violations.size());
     }
 
     @Test
-    public void testNullImportance() {
-        Integer nullNumber = null;
-        ArticleInformation articleInfo = new ArticleInformation();
-        articleInfo.setTitle("Valid Title");
-        articleInfo.setShortDescription("Valid short description");
-        articleInfo.setImportance(nullNumber);  // Null importance
+    public void testNonPositiveImportance() {
+
+        articleInfo.setImportance(-2);
 
         Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
 
-        // Expecting a violation due to @NotNull constraint
-        assert(violations.size() == 1);
+        assertEquals(1, violations.size());
+
+    }
+
+    @Test
+    public void testToBigImportance() {
+
+        articleInfo.setImportance(20);
+
+        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
+
+        assertEquals(1, violations.size());
+
     }
 }

@@ -20,13 +20,13 @@ public class SpecificArticleTest {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
         specificArticle = new SpecificArticle();
+        specificArticle.setDescription("Valid description with more than 30 characters");
+        specificArticle.setImgSrc("valid-img-src");
+        specificArticle.setAltImg("valid-alt-img");
     }
 
     @Test
     public void testValidSpecificArticle() {
-        specificArticle.setDescription("Valid description with more than 30 characters");
-        specificArticle.setImgSrc("valid-img-src");
-        specificArticle.setAltImg("valid-alt-img");
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 
@@ -37,18 +37,15 @@ public class SpecificArticleTest {
     public void testInvalidDescriptionSize() {
 
         specificArticle.setDescription("Short");
-        specificArticle.setImgSrc("valid-img-src");
-        specificArticle.setAltImg("valid-alt-img");
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+
         assertEquals(1, violations.size());
     }
 
     @Test
     public void testBlankImgSrc() {
-        specificArticle.setDescription("Valid description with more than 30 characters");
-        specificArticle.setAltImg("valid-alt-img");
-        specificArticle.setImgSrc("");  // Blank imgSrc
+        specificArticle.setImgSrc("");
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 
@@ -57,9 +54,7 @@ public class SpecificArticleTest {
 
     @Test
     public void testBlankAltImg() {
-        specificArticle.setDescription("Valid description with more than 30 characters");
-        specificArticle.setImgSrc("valid-img-src");
-        specificArticle.setAltImg("");  // Blank altImg
+        specificArticle.setAltImg("");
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 

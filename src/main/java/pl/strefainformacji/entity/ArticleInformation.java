@@ -1,9 +1,7 @@
 package pl.strefainformacji.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,15 +16,14 @@ public class ArticleInformation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     @Size(min = 3)
     private String title;
 
-    @NotBlank
     @Size(min = 10)
     private String shortDescription;
 
-    @NotNull
+    @Min(1)
+    @Max(10)
     private int importance;
 
     @NotBlank

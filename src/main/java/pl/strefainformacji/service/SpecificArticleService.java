@@ -21,13 +21,12 @@ public class SpecificArticleService {
 
         boolean exists =specificArticleRepository.existsByArticleInformation_Id(number);
         if (!exists) {
-            throw new NoSuchElementException("Artykuł o podanym numerze nie istnieje.");
+            throw new NoSuchElementException("There is no specific article in the database.");
         }
 
         SpecificArticle article = specificArticleRepository.findByArticleInformation_Id(number);
-
         if(Objects.isNull(article)){
-            throw new NullPointerException("There is no specific article in the database");
+            throw new NullPointerException("There is not a number");
         }
 
         return article;

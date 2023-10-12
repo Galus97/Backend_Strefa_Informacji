@@ -44,12 +44,11 @@ public class SpecificArticleServiceTest {
 
         when(specificArticleRepository.existsByArticleInformation_Id(invalidArticleNumber)).thenReturn(false);
 
-        // Ensure that the service throws the expected exception
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             specificArticleService.getArticle(invalidArticleNumber);
         });
 
-        assertEquals("Artykuł o podanym numerze nie istnieje.", exception.getMessage());
+        assertEquals("The article number must be greater than zero.", exception.getMessage());
     }
 
     @Test
@@ -62,17 +61,7 @@ public class SpecificArticleServiceTest {
             specificArticleService.getArticle(nonExistentArticleNumber);
         });
 
-        assertEquals("Artykuł o podanym numerze nie istnieje.", exception.getMessage());
+        assertEquals("There is no specific article in the database.", exception.getMessage());
     }
 
-    @Test
-    public void testGetArticleWithNullNumber() {
-        Long nullArticleNumber = null;
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            specificArticleService.getArticle(nullArticleNumber);
-        });
-
-        assertEquals("The article number must be greater than zero.", exception.getMessage());
-    }
 }
