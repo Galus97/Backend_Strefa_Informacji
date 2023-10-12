@@ -1,13 +1,21 @@
 package pl.strefainformacji.entity;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ValidationException;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 class SpecificArticleTest {
 
     private SpecificArticle specificArticle;
+
+    @Autowired
+    private Validator validator;
 
     @BeforeEach
     public void setUp(){
@@ -26,6 +34,30 @@ class SpecificArticleTest {
         assertNull(specificArticle.getDescription());
         specificArticle.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
         assertEquals("Lorem ipsum dolor sit amet, consectetur adipiscing elit.", specificArticle.getDescription());
+    }
+
+    @Test
+    public void testDescriptionMinSize(){
+        System.out.println("Test start");
+        try{
+            specificArticle.setDescription("Short");
+            fail("Expected ValidationException not thrown");
+        } catch (ValidationException exception){
+            assertTrue(exception.getMessage().contains("description"));
+        }
+        System.out.println("Test end");
+    }
+
+    @Test
+    public void testDescriptionMinSize2() {
+        specificArticle.setDescription("Short");
+        ConstraintViolation<SpecificArticle> violation = validator.validate(specificArticle).stream()
+                .filter(v -> "description".equals(v.getPropertyPath().toString()))
+                .findFirst()
+                .orElse(null);
+
+        assertNotNull(violation);
+        assertEquals("size must be between 30 and 2147483647", violation.getMessage());
     }
 
 

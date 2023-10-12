@@ -13,6 +13,9 @@ public class SpecificArticleService {
     private final SpecificArticleRepository specificArticleRepository;
 
     public SpecificArticle getArticle(Long number){
+        if (number <= 0) {
+            throw new IllegalArgumentException("The article number must be greater than zero.");
+        }
         SpecificArticle article = specificArticleRepository.findByArticleInformation_Id(number);
 
         if(Objects.isNull(article)){
