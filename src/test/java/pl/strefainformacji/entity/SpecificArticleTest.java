@@ -1,87 +1,65 @@
 package pl.strefainformacji.entity;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ValidationException;
-import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+public class SpecificArticleTest {
 
-
-class SpecificArticleTest {
-
-    private SpecificArticle specificArticle;
-
-    @Autowired
     private Validator validator;
 
     @BeforeEach
-    public void setUp(){
-        specificArticle = new SpecificArticle();
+    public void setUp() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
     @Test
-    public void testId(){
-        assertNull(specificArticle.getId());
-        specificArticle.setId(1L);
-        assertEquals(1L, specificArticle.getId());
+    public void testValidSpecificArticle() {
+        SpecificArticle specificArticle = new SpecificArticle();
+        specificArticle.setDescription("Valid description with more than 30 characters");
+        specificArticle.setImgSrc("valid-img-src");
+        specificArticle.setAltImg("valid-alt-img");
+
+        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+
+        assert(violations.isEmpty());
     }
 
     @Test
-    public void testDescription(){
-        assertNull(specificArticle.getDescription());
-        specificArticle.setDescription("Lorem ipsum dolor sit amet, consectetur adipiscing elit.");
-        assertEquals("Lorem ipsum dolor sit amet, consectetur adipiscing elit.", specificArticle.getDescription());
-    }
-
-    @Test
-    public void testDescriptionMinSize(){
-        System.out.println("Test start");
-        try{
-            specificArticle.setDescription("Short");
-            fail("Expected ValidationException not thrown");
-        } catch (ValidationException exception){
-            assertTrue(exception.getMessage().contains("description"));
-        }
-        System.out.println("Test end");
-    }
-
-    @Test
-    public void testDescriptionMinSize2() {
+    public void testInvalidDescriptionSize() {
+        SpecificArticle specificArticle = new SpecificArticle();
         specificArticle.setDescription("Short");
-        ConstraintViolation<SpecificArticle> violation = validator.validate(specificArticle).stream()
-                .filter(v -> "description".equals(v.getPropertyPath().toString()))
-                .findFirst()
-                .orElse(null);
 
-        assertNotNull(violation);
-        assertEquals("size must be between 30 and 2147483647", violation.getMessage());
-    }
+        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 
-
-    @Test
-    public void testImgSrc(){
-        assertNull(specificArticle.getImgSrc());
-        specificArticle.setImgSrc("path/to/image1.jpg");
-        assertEquals("path/to/image1.jpg", specificArticle.getImgSrc());
-
+        assert(violations.size() == 1);
     }
 
     @Test
-    public void testAltImg() {
-        assertNull(specificArticle.getAltImg());
-        specificArticle.setAltImg("Image description 1");
-        assertEquals("Image description 1", specificArticle.getAltImg());
+    public void testBlankImgSrc() {
+        SpecificArticle specificArticle = new SpecificArticle();
+        specificArticle.setDescription("Valid description");
+        specificArticle.setImgSrc("");  // Blank imgSrc
+
+        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+
+        assert(violations.size() == 1);
     }
 
     @Test
-    public void testArticleInformationId(){
-        assertNull(specificArticle.getArticleInformation());
-        ArticleInformation articleInformation = new ArticleInformation();
-        articleInformation.setId(1L);
-        specificArticle.setArticleInformation(articleInformation);
-        assertEquals(1L, specificArticle.getArticleInformation().getId());
+    public void testBlankAltImg() {
+        SpecificArticle specificArticle = new SpecificArticle();
+        specificArticle.setDescription("Valid description");
+        specificArticle.setImgSrc("valid-img-src");
+        specificArticle.setAltImg("");  // Blank altImg
+
+        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+
+        assert(violations.size() == 1);
     }
 }
