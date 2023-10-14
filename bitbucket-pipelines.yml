@@ -1,4 +1,4 @@
-image: maven:latest
+image: maven:3.8.4
 pipelines:
   custom:
     manual-check:
@@ -7,7 +7,6 @@ pipelines:
           caches:
             - maven
           script:
-            # - mvn -B verify --file pom.xml
             - mvn clean install
             - mvn test
       - step:
