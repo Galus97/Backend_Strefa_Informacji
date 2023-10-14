@@ -23,6 +23,9 @@ spring:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
+  logging:
+    level:
+      pl.strefainformacji.configuration.CorsConfig: DEBUG
 
 
 
