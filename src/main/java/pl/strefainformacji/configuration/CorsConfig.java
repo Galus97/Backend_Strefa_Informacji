@@ -8,10 +8,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class CorsConfig implements WebMvcConfigurer {
 
     @Override
-    public void addCorsMappings(CorsRegistry registry){
-        private static final Logger logger = LoggerFactory.getLogger(CorsConfig.class);
-
-        @Override
+    public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
             .allowedOrigins("http://localhost:3000", "http://2.57.137.47", "http://dev.strefainformacji.pl")
             .allowedMethods("GET", "POST", "PUT", "DELETE")
