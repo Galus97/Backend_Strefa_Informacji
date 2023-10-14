@@ -29,7 +29,7 @@ public class ArticleController {
     @GetMapping("/articles")
     public ResponseEntity<?> getAllArticles(HttpServletResponse response){
         logger.info("Received request to get all articles.");
-        response.setHeader("Access-Control-Allow-Origin", "allowedOrigin");
+        response.setHeader("Access-Control-Allow-Origin", "allowedOrigin", "Access-Control-Allow-Methods", "Access-Control-Allow-Headers");
         try{
             List<ArticleInformation> articles = articleInformationService.getAllArticles();
             logger.info("Returning {} articles.", articles.size());
