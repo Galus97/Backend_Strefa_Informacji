@@ -36,14 +36,13 @@ public class ArticleController {
         try{
             List<ArticleInformation> articles = articleInformationService.getAllArticles();
             logger.info("Returning {} articles.", articles.size());
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(articles);
+            response.addHeader("Access-Control-Allow-Origin", "allowedOrigin");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            response.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
             logger.error("Error while getting articles: {}", exception.getMessage());
-                return ResponseEntity.notFound()
-                    .headers(headers)
-                    .body(exception.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
 }
