@@ -1,4 +1,4 @@
-image: maven:latest
+image: maven:3.8
 pipelines:
   custom:
     manual-check:
@@ -7,7 +7,6 @@ pipelines:
           caches:
             - maven
           script:
-            # - mvn -B verify --file pom.xml
             - mvn clean install
             - mvn test
       - step:
@@ -54,3 +53,4 @@ pipelines:
           name: Testing deploy error
           script:
             - mvn dependency:tree
+            - mvn --version
