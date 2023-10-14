@@ -49,3 +49,8 @@ pipelines:
               FILE_EXISTS_BEHAVIOR: 'OVERWRITE'
               S3_BUCKET: ${S3_BUCKET}
               WAIT: 'true'
+    deploy_error:
+      - step:
+          name: Testing deploy error
+          script:
+            - mvn dependency:tree
