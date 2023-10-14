@@ -9,6 +9,8 @@ spring:
         preferred-json-mapper: jackson
   jpa:
     hibernate:
+      validator:
+        fail_fast: true
       ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
@@ -21,5 +23,7 @@ spring:
     view:
       prefix: /WEB-INF/views/
       suffix: .jsp
+
+
 
 

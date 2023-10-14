@@ -10,7 +10,8 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry){
         registry.addMapping("/articles")
-                .allowedOrigins("https://localhost:3000/", "https://2.57.137.47/")
+                .allowedOrigins("http://localhost:3000/", "http://2.57.137.47/", "http://dev.strefainformacji.pl/")
                 .allowCredentials(true);
+        
     }
 }

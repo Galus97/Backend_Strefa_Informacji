@@ -1,35 +1,33 @@
 package pl.strefainformacji.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "articleInformation")
+@Table(name = "specificArticle")
 @Getter
 @Setter
 @ToString
-public class ArticleInformation {
+public class SpecificArticle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min = 3)
-    private String title;
-
-    @Size(min = 10)
-    private String shortDescription;
-
-    @Min(1)
-    @Max(10)
-    private int importance;
+    @Size(min = 30)
+    private String description;
 
     @NotBlank
     private String imgSrc;
 
     @NotBlank
     private String altImg;
+
+    @OneToOne
+    @JoinColumn(name = "articleInformation_id")
+    private ArticleInformation articleInformation;
 
 }
