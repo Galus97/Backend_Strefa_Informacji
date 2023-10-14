@@ -29,14 +29,21 @@ public class ArticleController {
     @GetMapping("/articles")
     public ResponseEntity<?> getAllArticles(HttpServletResponse response){
         logger.info("Received request to get all articles.");
-        response.setHeader("Access-Control-Allow-Origin", "allowedOrigin", "Access-Control-Allow-Methods", "Access-Control-Allow-Headers");
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "allowedOrigin");
+        headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
         try{
             List<ArticleInformation> articles = articleInformationService.getAllArticles();
             logger.info("Returning {} articles.", articles.size());
-            return ResponseEntity.ok(articleInformationService.getAllArticles());
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(articles);
         } catch(NoSuchElementException exception){
             logger.error("Error while getting articles: {}", exception.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+                return ResponseEntity.notFound()
+                    .headers(headers)
+                    .body(exception.getMessage());
         }
     }
 }
