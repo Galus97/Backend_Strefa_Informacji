@@ -14,7 +14,7 @@ import lombok.ToString;
 public class ArticleInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long articleId;
 
     @Size(min = 3)
     private String title;
