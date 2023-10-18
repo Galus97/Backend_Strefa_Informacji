@@ -30,13 +30,13 @@ public class ArticleController {
     public ResponseEntity<?> getAllArticles(HttpServletResponse response){
         logger.info("Received request to get all articles.");
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Access-Control-Allow-Origin", "allowedOrigin");
+        headers.add("Access-Control-Allow-Origin", "*");
         headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
         headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization");
         try{
             List<ArticleInformation> articles = articleInformationService.getAllArticles();
             logger.info("Returning {} articles.", articles.size());
-            response.addHeader("Access-Control-Allow-Origin", "allowedOrigin");
+            response.addHeader("Access-Control-Allow-Origin", "*");
             response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
             response.addHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
             return ResponseEntity.ok(articleInformationService.getAllArticles());
