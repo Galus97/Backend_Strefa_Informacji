@@ -15,10 +15,6 @@ import pl.strefainformacji.service.SpecificArticleService;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-
 @RestController
 @AllArgsConstructor
 public class ArticleController {
