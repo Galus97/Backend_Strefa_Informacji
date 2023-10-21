@@ -25,11 +25,9 @@ public class ArticleController {
 
     private final ArticleInformationService articleInformationService;
     private final SpecificArticleService specificArticleService;
-    private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     @GetMapping("/articles")
     public ResponseEntity<?> getAllArticles(HttpServletResponse response){
         try{
-            List<ArticleInformation> articles = articleInformationService.getAllArticles();
             return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
