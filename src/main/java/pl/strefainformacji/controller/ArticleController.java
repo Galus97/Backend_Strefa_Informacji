@@ -21,11 +21,11 @@ public class ArticleController {
 
     private final ArticleInformationService articleInformationService;
     private final SpecificArticleService specificArticleService;
-
     @GetMapping("/articles")
     public ResponseEntity<?> getAllArticles(HttpServletResponse response){
-        response.setHeader("Access-Control-Allow-Origin", "allowedOrigin");
+        HttpHeaders headers = new HttpHeaders();
         try{
+            List<ArticleInformation> articles = articleInformationService.getAllArticles();
             return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());

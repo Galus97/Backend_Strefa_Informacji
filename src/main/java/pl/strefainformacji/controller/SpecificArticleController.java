@@ -11,9 +11,7 @@ import pl.strefainformacji.service.SpecificArticleService;
 @RestController
 @AllArgsConstructor
 public class SpecificArticleController {
-
     private SpecificArticleService specificArticleService;
-
     @GetMapping("/oneArticle")
     public ResponseEntity<?> getOneArticle(HttpServletResponse response){
         response.setHeader("Access-Control-Allow-Origin", "allowedOrigin");
