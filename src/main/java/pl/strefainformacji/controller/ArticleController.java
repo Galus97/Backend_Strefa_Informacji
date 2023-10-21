@@ -28,14 +28,10 @@ public class ArticleController {
     private static final Logger logger = LoggerFactory.getLogger(ArticleController.class);
     @GetMapping("/articles")
     public ResponseEntity<?> getAllArticles(HttpServletResponse response){
-        logger.info("Received request to get all articles.");
-        HttpHeaders headers = new HttpHeaders();
         try{
             List<ArticleInformation> articles = articleInformationService.getAllArticles();
-            logger.info("Returning {} articles.", articles.size());
             return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
-            logger.error("Error while getting articles: {}", exception.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
         }
     }
