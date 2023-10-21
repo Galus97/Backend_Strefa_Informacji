@@ -23,7 +23,9 @@ public class ArticleController {
     private final SpecificArticleService specificArticleService;
     @GetMapping("/articles")
     public ResponseEntity<?> getAllArticles(HttpServletResponse response){
+        HttpHeaders headers = new HttpHeaders();
         try{
+            List<ArticleInformation> articles = articleInformationService.getAllArticles();
             return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
