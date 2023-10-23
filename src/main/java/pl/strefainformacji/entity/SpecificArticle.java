@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.List;
+
 @Entity
 @Table(name = "specificArticle")
 @Getter
@@ -20,14 +22,11 @@ public class SpecificArticle {
     @Size(min = 30)
     private String description;
 
-    @NotBlank
-    private String imgSrc;
-
-    @NotBlank
-    private String altImg;
-
     @OneToOne
     @JoinColumn(name = "articleInformation_id")
     private ArticleInformation articleInformation;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "specificArticle")
+    private List<ArticleImages> articleImages;
 
 }
