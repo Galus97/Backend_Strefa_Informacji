@@ -30,8 +30,8 @@ public class SpecificArticleServiceTest {
         Long articleNumber = 1L;
         SpecificArticle expectedArticle = new SpecificArticle();
 
-        when(specificArticleRepository.existsByArticleInformation_Id(articleNumber)).thenReturn(true);
-        when(specificArticleRepository.findByArticleInformation_Id(articleNumber)).thenReturn(expectedArticle);
+        when(specificArticleRepository.existsByArticleInformation_ArticleId(articleNumber)).thenReturn(true);
+        when(specificArticleRepository.findByArticleInformation_ArticleId(articleNumber)).thenReturn(expectedArticle);
 
         SpecificArticle result = specificArticleService.getArticle(articleNumber);
 
@@ -42,7 +42,7 @@ public class SpecificArticleServiceTest {
     public void testGetArticleWithInvalidNumber() {
         Long invalidArticleNumber = -1L;
 
-        when(specificArticleRepository.existsByArticleInformation_Id(invalidArticleNumber)).thenReturn(false);
+        when(specificArticleRepository.existsByArticleInformation_ArticleId(invalidArticleNumber)).thenReturn(false);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             specificArticleService.getArticle(invalidArticleNumber);
@@ -55,7 +55,7 @@ public class SpecificArticleServiceTest {
     public void testGetArticleWithNonExistentNumber() {
         Long nonExistentArticleNumber = 123L;
 
-        when(specificArticleRepository.existsByArticleInformation_Id(nonExistentArticleNumber)).thenReturn(false);
+        when(specificArticleRepository.existsByArticleInformation_ArticleId(nonExistentArticleNumber)).thenReturn(false);
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
             specificArticleService.getArticle(nonExistentArticleNumber);

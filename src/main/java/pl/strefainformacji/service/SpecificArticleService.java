@@ -19,12 +19,12 @@ public class SpecificArticleService {
             throw new IllegalArgumentException("The article number must be greater than zero.");
         }
 
-        boolean exists =specificArticleRepository.existsByArticleInformation_Id(number);
+        boolean exists =specificArticleRepository.existsByArticleInformation_ArticleId(number);
         if (!exists) {
             throw new NoSuchElementException("There is no specific article in the database.");
         }
 
-        SpecificArticle article = specificArticleRepository.findByArticleInformation_Id(number);
+        SpecificArticle article = specificArticleRepository.findByArticleInformation_ArticleId(number);
         if(Objects.isNull(article)){
             throw new NullPointerException("There is not a number");
         }
