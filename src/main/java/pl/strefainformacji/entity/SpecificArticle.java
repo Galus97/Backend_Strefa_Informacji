@@ -1,5 +1,6 @@
 package pl.strefainformacji.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -19,11 +20,15 @@ public class SpecificArticle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(min = 3)
+    private String title;
+
     @Size(min = 30)
     private String description;
 
     @OneToOne
-    @JoinColumn(name = "articleInformation_id")
+    @JoinColumn(name = "articleId")
+    @JsonIgnore
     private ArticleInformation articleInformation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "specificArticle")
