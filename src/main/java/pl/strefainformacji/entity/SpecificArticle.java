@@ -18,7 +18,7 @@ import java.util.List;
 public class SpecificArticle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long specificArticleId;
 
     @Size(min = 3)
     private String title;

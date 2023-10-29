@@ -16,7 +16,7 @@ public class ArticleImages {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long articleImagesId;
 
     @NotBlank
     private String imgSrc;
@@ -25,7 +25,7 @@ public class ArticleImages {
     private String altImg;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "specificArticle_id")
+    @JoinColumn(name = "specificArticleId")
     @JsonIgnore
     private SpecificArticle specificArticle;
 }
