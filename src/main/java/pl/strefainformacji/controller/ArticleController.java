@@ -16,8 +16,7 @@ public class ArticleController {
 
     private final ArticleInformationService articleInformationService;
     @GetMapping("/articles")
-    public ResponseEntity<?> getAllArticles(HttpServletResponse response){
-        response.addHeader("Access-Control-Allow-Origin", "allowedOrigin");
+    public ResponseEntity<?> getAllArticles(){
         try{
             return ResponseEntity.ok(articleInformationService.getAllArticles());
         } catch(NoSuchElementException exception){
