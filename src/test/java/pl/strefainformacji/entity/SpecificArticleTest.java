@@ -43,7 +43,7 @@ public class SpecificArticleTest {
     }
 
     @Test
-    public void testInvalidTtileSize() {
+    public void testInvalidTitleSize() {
 
         specificArticle.setTitle("A");
 
