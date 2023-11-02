@@ -21,6 +21,7 @@ public class SpecificArticleTest {
         validator = factory.getValidator();
         specificArticle = new SpecificArticle();
         specificArticle.setDescription("Valid description with more than 30 characters");
+        specificArticle.setTitle("Title with more then 3 characters");
     }
 
     @Test
@@ -35,6 +36,16 @@ public class SpecificArticleTest {
     public void testInvalidDescriptionSize() {
 
         specificArticle.setDescription("Short");
+
+        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+
+        assertEquals(1, violations.size());
+    }
+
+    @Test
+    public void testInvalidTtileSize() {
+
+        specificArticle.setTitle("A");
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 
