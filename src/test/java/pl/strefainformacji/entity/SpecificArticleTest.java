@@ -21,8 +21,6 @@ public class SpecificArticleTest {
         validator = factory.getValidator();
         specificArticle = new SpecificArticle();
         specificArticle.setDescription("Valid description with more than 30 characters");
-        specificArticle.setImgSrc("valid-img-src");
-        specificArticle.setAltImg("valid-alt-img");
     }
 
     @Test
@@ -37,24 +35,6 @@ public class SpecificArticleTest {
     public void testInvalidDescriptionSize() {
 
         specificArticle.setDescription("Short");
-
-        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
-
-        assertEquals(1, violations.size());
-    }
-
-    @Test
-    public void testBlankImgSrc() {
-        specificArticle.setImgSrc("");
-
-        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
-
-        assertEquals(1, violations.size());
-    }
-
-    @Test
-    public void testBlankAltImg() {
-        specificArticle.setAltImg("");
 
         Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
 
