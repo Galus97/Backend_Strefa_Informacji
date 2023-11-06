@@ -26,10 +26,10 @@ public class ArticleInformation {
     @Max(10)
     private int importance;
 
-    @NotBlank
+    @Size(min = 1)
     private String imgSrc;
 
-    @NotBlank
+    @Size(min = 1)
     private String altImg;
 
 }

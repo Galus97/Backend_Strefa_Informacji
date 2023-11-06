@@ -30,7 +30,6 @@ public class ArticleInformationTest {
         Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
 
         assertEquals(0, violations.size());
-
     }
 
     @Test
@@ -47,12 +46,6 @@ public class ArticleInformationTest {
         articleInfo.setShortDescription("");  // Blank shortDescription
 
         Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
-        for (ConstraintViolation<ArticleInformation> violation : violations) {
-            System.out.println("Path: " + violation.getPropertyPath());
-            System.out.println("Message: " + violation.getMessage());
-            System.out.println("Invalid Value: " + violation.getInvalidValue());
-            System.out.println("---");
-        }
 
         assertEquals(1, violations.size());
     }
@@ -77,5 +70,23 @@ public class ArticleInformationTest {
 
         assertEquals(1, violations.size());
 
+    }
+
+    @Test
+    public void testBlankImgSrc(){
+        articleInfo.setImgSrc("");
+
+        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
+
+        assertEquals(1, violations.size());
+    }
+
+    @Test
+    public void testBlankAltImg(){
+        articleInfo.setAltImg("");
+
+        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
+
+        assertEquals(1, violations.size());
     }
 }
