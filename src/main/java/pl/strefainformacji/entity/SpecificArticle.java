@@ -27,7 +27,7 @@ public class SpecificArticle {
     private String description;
 
     @OneToOne
-    @JoinColumn(name = "articleInformation_id")
+    @JoinColumn(name = "articleId")
     private ArticleInformation articleInformation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "specificArticle")
