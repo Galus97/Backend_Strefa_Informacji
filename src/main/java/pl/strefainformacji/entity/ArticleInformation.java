@@ -26,6 +26,10 @@ public class ArticleInformation {
     @Max(10)
     private int importance;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] imageData;
+
     @Size(min = 1)
     private String imgSrc;
 
