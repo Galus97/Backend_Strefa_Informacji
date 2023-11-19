@@ -33,6 +33,7 @@ public class ArticleInformation {
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
+    @Column(columnDefinition="blob")
     private byte[] imageData;
 
     @Size(min = 1)
