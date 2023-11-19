@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
 
+import java.util.Base64;
+
 @Entity
 @Table(name = "articleInformation")
 @Getter
