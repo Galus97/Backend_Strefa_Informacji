@@ -8,6 +8,8 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Base64;
+
 @Entity
 @Table(name = "articleInformation")
 @Getter
@@ -41,5 +43,9 @@ public class ArticleInformation {
 
     @Size(min = 1)
     private String altImg;
+
+    public void setImageDataBase64(String base64){
+        this.imageData = Base64.getDecoder().decode(base64);
+    }
 
 }
