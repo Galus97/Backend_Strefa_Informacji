@@ -24,7 +24,6 @@ import java.util.NoSuchElementException;
 public class SpecificArticleController {
 
     private SpecificArticleService specificArticleService;
-    private ArticleImagesService articleImagesService;
 
     @GetMapping("/article/{articleId}")
     public ResponseEntity<?> getOneArticle(@PathVariable Long articleId) {
