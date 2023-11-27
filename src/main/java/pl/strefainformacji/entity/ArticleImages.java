@@ -18,11 +18,6 @@ public class ArticleImages {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long articleImagesId;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(columnDefinition="blob")
-    private byte[] imageData;
-
     @Size(min = 1)
     private String imgSrc;
 
