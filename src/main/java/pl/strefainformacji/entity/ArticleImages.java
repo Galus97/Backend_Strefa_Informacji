@@ -2,7 +2,6 @@ package pl.strefainformacji.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,11 +17,6 @@ public class ArticleImages {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long articleImagesId;
-
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(columnDefinition="blob")
-    private byte[] imageData;
 
     @Size(min = 1)
     private String imgSrc;

@@ -5,8 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name = "articleInformation")
@@ -14,6 +14,9 @@ import java.util.Base64;
 @Setter
 @ToString
 public class ArticleInformation {
+
+    private final static Logger logger = LoggerFactory.getLogger(ArticleInformation.class);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long articleId;
@@ -28,19 +31,10 @@ public class ArticleInformation {
     @Max(10)
     private int importance;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(columnDefinition="blob")
-    private byte[] imageData;
-
     @Size(min = 1)
     private String imgSrc;
 
     @Size(min = 1)
     private String altImg;
-
-    public void setImageDataBase64(String base64){
-        this.imageData = Base64.getDecoder().decode(base64);
-    }
 
 }
