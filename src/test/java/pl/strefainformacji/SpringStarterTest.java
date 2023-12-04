@@ -1,7 +1,5 @@
 package pl.strefainformacji;
 
-import lombok.AllArgsConstructor;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +8,6 @@ import pl.strefainformacji.controller.ImageViewController;
 import pl.strefainformacji.controller.SpecificArticleController;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class SpringStarterTest {

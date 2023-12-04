@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import pl.strefainformacji.service.ArticleInformationService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,11 +26,6 @@ class ArticleControllerTest {
     private ArticleInformationService articleInformationService;
     @InjectMocks
     private ArticleController articleController;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void shouldReturnListOfArticles(){
@@ -56,5 +53,18 @@ class ArticleControllerTest {
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         assertEquals(mockArticles, responseEntity.getBody());
+    }
+
+    @Test
+    public void testGetAllArticlesNotFound() {
+        // Arrange
+        when(articleInformationService.getAllArticles()).thenThrow(new NoSuchElementException("No articles found"));
+
+        // Act
+        ResponseEntity<?> response = articleController.getAllArticles();
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("No articles found", response.getBody());
     }
 }
