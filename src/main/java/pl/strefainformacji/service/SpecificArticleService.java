@@ -31,4 +31,12 @@ public class SpecificArticleService {
 
         return article;
     }
+
+    public void saveSpecificArticle(SpecificArticle specificArticle){
+        specificArticleRepository.save(specificArticle);
+    }
+
+    public SpecificArticle findSpecificArticle(Long id){
+        return specificArticleRepository.findSpecificArticleBySpecificArticleId(id);
+    }
 }

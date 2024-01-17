@@ -2,6 +2,7 @@ package pl.strefainformacji.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 
@@ -21,5 +22,13 @@ public class ArticleInformationService {
             throw new NoSuchElementException("There are no articles in the database");
         }
         return allArticels;
+    }
+
+    public ArticleInformation findArticleInformation(Long id){
+        return articleInformationRepository.findArticleInformationByArticleId(id);
+    }
+
+    public void saveArticle(ArticleInformation articleInformation){
+         articleInformationRepository.save(articleInformation);
     }
 }
