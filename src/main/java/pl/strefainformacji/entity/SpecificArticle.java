@@ -28,6 +28,7 @@ public class SpecificArticle {
 
     @OneToOne
     @JoinColumn(name = "articleId")
+    @JsonIgnore
     private ArticleInformation articleInformation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "specificArticle")
