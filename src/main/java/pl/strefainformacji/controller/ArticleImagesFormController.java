@@ -38,6 +38,7 @@ public class ArticleImagesFormController {
         if(numberOfImages != 0){
             session.setAttribute("numberOfImages", numberOfImages - 1);
             articleImages.setSpecificArticle(specificArticleService.findSpecificArticle(specificArticleId));
+            session.setAttribute("articleImagesId", articleImages.getArticleImagesId());
             articleImagesService.saveArticleImages(articleImages);
             if (numberOfImages != 1) {
                 return "redirect:articleImages";

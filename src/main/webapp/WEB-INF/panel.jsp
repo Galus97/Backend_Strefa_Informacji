@@ -14,7 +14,9 @@
 <label>
     <a href="/add/articleInformation">Dodaj nowy artykuł</a>
 </label>
-
+<label>
     <a href="/logout">Logout</a>
+</label>
+
 </body>
 </html>

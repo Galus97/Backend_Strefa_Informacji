@@ -2,7 +2,6 @@ package pl.strefainformacji.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 
