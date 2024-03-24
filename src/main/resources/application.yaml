@@ -1,4 +1,15 @@
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: projektkoncowymichal@gmail.com
+    password: frkegwmzzyjbdqud
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
     url: jdbc:mysql://2.57.137.47:3306/strefainf_db
     username: strefainf_db
