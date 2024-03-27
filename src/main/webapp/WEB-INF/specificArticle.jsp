@@ -20,15 +20,6 @@
         <form:textarea path="description"/>
     </label>
     <br>
-
-    <label>
-        Wybierz liczbę zdjęć, które chcesz aby znalazły się w artykule:
-        <input type="number" name="numberOfImages" min="1" max="5">
-    </label>
-    <br>
-    <br>
-
-
     <label>
         <input type="submit" value="Przejdź dalej"/>
     </label>

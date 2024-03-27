@@ -13,6 +13,8 @@ import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.service.ArticleImagesService;
 import pl.strefainformacji.service.SpecificArticleService;
 
+import java.util.Objects;
+
 @Controller
 @AllArgsConstructor
 public class ArticleImagesFormController {
@@ -21,31 +23,30 @@ public class ArticleImagesFormController {
     private final SpecificArticleService specificArticleService;
 
     @GetMapping("/add/articleImages")
-    public String articleImagesForm(Model model){
-        model.addAttribute("articleImages", new ArticleImages());
+    public String articleImagesForm(){
         return "articleImages";
     }
 
     @PostMapping("/add/articleImages")
-    public String saveArticleImagesFromForm(@Valid ArticleImages articleImages, BindingResult bindingResult, HttpServletRequest request){
+    public String saveArticleImagesFromForm(HttpServletRequest request){
         HttpSession session = request.getSession();
         Long specificArticleId = (Long)session.getAttribute("specificArticleId");
-        int numberOfImages = Integer.parseInt(String.valueOf(session.getAttribute("numberOfImages")));
-
-        if(bindingResult.hasErrors()){
-            return "badBindingImages";
-        }
-        if(numberOfImages != 0){
-            session.setAttribute("numberOfImages", numberOfImages - 1);
-            articleImages.setSpecificArticle(specificArticleService.findSpecificArticle(specificArticleId));
-            session.setAttribute("articleImagesId", articleImages.getArticleImagesId());
-            articleImagesService.saveArticleImages(articleImages);
-            if (numberOfImages != 1) {
-                return "redirect:articleImages";
-            }
-        }
 
 
+       for(int i = 1; i <= 6; i++){
+           String parameterSrc = request.getParameter("ingSrc" + i);
+           String parameterAlt = request.getParameter("altImg" + i);
+           if(Objects.nonNull(parameterSrc) && Objects.nonNull(parameterAlt)){
+               ArticleImages articleImages = new ArticleImages();
+               articleImages.setSpecificArticle(specificArticleService.findSpecificArticle(specificArticleId));
+               articleImages.setImgSrc(parameterSrc);
+               articleImages.setAltImg(parameterAlt);
+
+               articleImagesService.saveArticleImages(articleImages);
+               session.setAttribute("articleImagesId", articleImages.getArticleImagesId());
+               System.out.println(articleImages.getArticleImagesId());
+           }
+       }
         return "redirect:viewAddedArticle";
     }
 }

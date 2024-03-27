@@ -42,7 +42,6 @@ public class SpecificArticleFormController {
 
         HttpSession session = request.getSession();
         session.setAttribute("specificArticleId", specificArticle.getSpecificArticleId());
-        session.setAttribute("numberOfImages", request.getParameter("numberOfImages"));
 
         return "redirect:articleImages";
     }
