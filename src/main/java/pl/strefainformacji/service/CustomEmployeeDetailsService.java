@@ -22,12 +22,6 @@ public class CustomEmployeeDetailsService implements UserDetailsService {
         Employee employee = employeeRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Employee not found with username: " + username));
 
-//        return org.springframework.security.core.userdetails.User.builder()
-//                .username(employee.getUsername())
-//                .password(employee.getPassword())
-//                .authorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")))
-//                .build();
-
         return new CurrentEmployee(
                 employee.getUsername(),
                 employee.getPassword(),

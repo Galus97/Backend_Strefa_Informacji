@@ -25,8 +25,16 @@ public class AddedArticleController {
     @GetMapping("/add/viewAddedArticle")
     public String addedArticlePage(Model model, HttpServletRequest request){
         HttpSession session = request.getSession();
-        ArticleInformation articleInformation = articleInformationService.findArticleInformation((Long) session.getAttribute("articleId"));
-        SpecificArticle specificArticle = specificArticleService.findSpecificArticle((Long) session.getAttribute("specificArticleId"));
+
+        Long articleId = (Long) session.getAttribute("articleId");
+        Long specificArticleId = (Long) session.getAttribute("specificArticleId");
+
+        if(articleId == null || specificArticleId == null){
+            return "errorAddedArticle";
+        }
+
+        ArticleInformation articleInformation = articleInformationService.findArticleInformation(articleId);
+        SpecificArticle specificArticle = specificArticleService.findSpecificArticle(specificArticleId);
         List<ArticleImages> articleImages = articleImagesService.findArticleImages(specificArticle);
 
         model.addAttribute("articleInformation", articleInformation);
@@ -35,8 +43,6 @@ public class AddedArticleController {
 
         session.removeAttribute("articleId");
         session.removeAttribute("specificArticleId");
-        session.removeAttribute("numberOfImages");
-        session.removeAttribute("articleImagesId");
         return "viewAddedArticle";
     }
 }
