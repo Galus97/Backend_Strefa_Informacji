@@ -1,5 +1,6 @@
 package pl.strefainformacji.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -26,6 +27,7 @@ public class SpecificArticle {
 
     @OneToOne
     @JoinColumn(name = "articleId")
+    @JsonIgnore
     private ArticleInformation articleInformation;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "specificArticle")

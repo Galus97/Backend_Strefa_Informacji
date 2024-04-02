@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
@@ -21,28 +22,26 @@ public class SpecificArticleFormController {
     private final SpecificArticleService specificArticleService;
 
     @GetMapping("/add/specificArticle")
-    public String specificArticleForm(Model model, HttpServletRequest request){
+    public String specificArticleForm(Model model, @RequestParam(required = false) Long articleId) {
         SpecificArticle specificArticle = new SpecificArticle();
-        HttpSession session = request.getSession();
 
-        Long articleId = (Long)session.getAttribute("articleId");
-        specificArticle.setArticleInformation(articleInformationService.findArticleInformation(articleId));
+        if(articleId != null){
+            specificArticle.setArticleInformation(articleInformationService.findArticleInformation(articleId));
+            model.addAttribute("specificArticle", specificArticle);
+            return "specificArticle";
+        } else {
+            return "articleImages";
+        }
 
-        model.addAttribute("specificArticle", specificArticle);
-        return "specificArticle";
     }
 
     @PostMapping("/add/specificArticle")
-    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult,
-                                              HttpServletRequest request){
-        if(bindingResult.hasErrors()){
+    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
             return "specificArticle";
         }
         specificArticleService.saveSpecificArticle(specificArticle);
 
-        HttpSession session = request.getSession();
-        session.setAttribute("specificArticleId", specificArticle.getSpecificArticleId());
-
-        return "redirect:articleImages";
+        return "redirect:articleImages?specificArticleId=" + specificArticle.getSpecificArticleId();
     }
 }
