@@ -20,6 +20,7 @@
         <form:textarea path="description"/>
     </label>
     <br>
+
     <label>
         <input type="submit" value="Przejdź dalej"/>
     </label>

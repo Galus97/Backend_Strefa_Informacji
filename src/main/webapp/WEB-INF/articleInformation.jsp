@@ -10,7 +10,6 @@
 
 <form:form action="/add/articleInformation" method="post" modelAttribute="articleInformation">
     <label>
-        <form:hidden path="employee"/>
         Tytuł artykułu: <br>
         <form:input type="text" path="title"/>
     </label>

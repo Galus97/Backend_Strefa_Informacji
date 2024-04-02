@@ -1,6 +1,5 @@
 package pl.strefainformacji.entity;
 
-import pl.strefainformacji.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
@@ -32,8 +31,5 @@ public class ArticleInformation {
 
     @Size(min = 1)
     private String altImg;
-
-    @OneToOne
-    private Employee employee;
 
 }

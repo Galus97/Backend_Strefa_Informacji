@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.SpecificArticleRepository;
-
 import java.util.NoSuchElementException;
 import java.util.Objects;
 

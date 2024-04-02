@@ -8,6 +8,6 @@
 <body>
 
 <h2>Zdjęcie nie zostało dodane z powodu błędnych danych</h2>
-    <a href="http://localhost:8080/add/articleImages">Dodaj zdjęcie jeszcze raz</a>
+<a href="http://localhost:8080/add/articleImages">Dodaj zdjęcie jeszcze raz</a>
 </body>
 </html>
