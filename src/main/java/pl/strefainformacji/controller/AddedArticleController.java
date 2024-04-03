@@ -25,6 +25,10 @@ public class AddedArticleController {
     @GetMapping("/add/viewAddedArticle")
     public String addedArticlePage(@RequestParam(required = false)Long specificArticleId, Model model){
 
+        if(specificArticleId == null){
+            return "errorAddedArticle";
+        }
+
         try{
             SpecificArticle specificArticle = specificArticleService.getArticle(specificArticleId);
             ArticleInformation articleInformation = specificArticle.getArticleInformation();

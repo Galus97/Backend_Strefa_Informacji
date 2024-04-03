@@ -8,6 +8,4 @@ public interface SpecificArticleRepository extends JpaRepository<SpecificArticle
     SpecificArticle findByArticleInformation_ArticleId(Long number);
 
     boolean existsByArticleInformation_ArticleId(Long number);
-
-    SpecificArticle findSpecificArticleBySpecificArticleId(Long id);
 }
