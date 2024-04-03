@@ -26,15 +26,14 @@ public class ArticleImagesFormController {
     }
     @PostMapping("/add/articleImages")
     public String saveArticleImagesFromForm(HttpServletRequest request){
-
-        for(int i = 1; i <= 2; i++){
-            Long specificArticleId = Long.parseLong(request.getParameter("specificArticleId"));
+        Long specificArticleId = Long.parseLong(request.getParameter("specificArticleId"));
+        for(int i = 1; i <= 6; i++){
             ArticleImages articleImages = new ArticleImages();
             articleImages.setImgSrc(request.getParameter("imgSrc" + i));
             articleImages.setAltImg(request.getParameter("altImg" + i));
-            articleImages.setSpecificArticle(specificArticleService.findSpecificArticle(specificArticleId));
+            articleImages.setSpecificArticle(specificArticleService.getArticle(specificArticleId));
             articleImagesService.saveArticleImages(articleImages);
         }
-        return "redirect:viewAddedArticle";
+        return "redirect:viewAddedArticle?specificArticleId=" + specificArticleId;
     }
 }
