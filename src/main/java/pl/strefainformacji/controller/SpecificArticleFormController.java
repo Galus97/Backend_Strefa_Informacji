@@ -22,7 +22,7 @@ public class SpecificArticleFormController {
     private final SpecificArticleService specificArticleService;
 
     @GetMapping("/add/specificArticle")
-    public String specificArticleForm(Model model, @RequestParam(required = false) Long articleId) {
+    public String specificArticleForm(Model model, @RequestParam(required = false) Long articleId, HttpServletRequest request) {
         SpecificArticle specificArticle = new SpecificArticle();
 
         if(articleId != null){
@@ -36,7 +36,7 @@ public class SpecificArticleFormController {
     }
 
     @PostMapping("/add/specificArticle")
-    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult) {
+    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "specificArticle";
         }
