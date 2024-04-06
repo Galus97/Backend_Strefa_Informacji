@@ -8,5 +8,8 @@
 <body>
 
 <h2>Wystąpił błąd podczas dodawania artykułu</h2>
+<label>
+    <a href="/panel">Powróć do panelu głownego</a>
+</label>
 </body>
 </html>

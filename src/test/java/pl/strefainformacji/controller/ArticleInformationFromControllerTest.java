@@ -1,6 +1,7 @@
 package pl.strefainformacji.controller;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,7 +16,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(ArticleInformationFromControllerTest.class)
+@WebMvcTest(ArticleInformationFromController.class)
 class ArticleInformationFromControllerTest {
 
     @Autowired
@@ -32,16 +33,12 @@ class ArticleInformationFromControllerTest {
                 .andExpect(model().attributeExists("articleInformation"));
     }
 
-//    @Test
-//    public void testSaveArticleInformationFromForm() throws Exception {
-//        ArticleInformation articleInformation = new ArticleInformation();
-//        articleInformation.setArticleId(1L);
-//
-//        when(articleInformationService.saveArticle(articleInformation)).thenReturn(articleInformation);
-//
-//        mockMvc.perform(post("/add/articleInformation")
-//                        .param("articleId", "1"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/specificArticle?articleId=1"));
-//    }
+    @Test
+    public void testSaveArticleInformationFromForm() throws Exception {
+        mockMvc.perform(post("/add/articleInformation")
+                        .param("articleId", "1")
+                        .param("importance", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:specificArticle?articleId=1"));
+    }
 }

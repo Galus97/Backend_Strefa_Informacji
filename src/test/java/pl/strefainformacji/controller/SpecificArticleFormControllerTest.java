@@ -1,13 +1,11 @@
 package pl.strefainformacji.controller;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
@@ -26,9 +24,12 @@ class SpecificArticleFormControllerTest {
     @MockBean
     private ArticleInformationService articleInformationService;
 
+    @MockBean
+    private SpecificArticleService specificArticleService;
+
     @Test
     public void testSpecificArticleFormWithArticleId() throws Exception {
-        when(articleInformationService.findArticleInformation(1L)).thenReturn(new SpecificArticle().getArticleInformation());
+        when(articleInformationService.getArticleInformationByArticleId(1L)).thenReturn(new SpecificArticle().getArticleInformation());
 
         mockMvc.perform(MockMvcRequestBuilders.get("/add/specificArticle?articleId=1"))
                 .andExpect(status().isOk())

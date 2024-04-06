@@ -28,7 +28,7 @@ class SpecificArticleControllerTest {
         specificArticle.setTitle("Title");
         specificArticle.setDescription("Description");
 
-        when(specificArticleService.getArticle(1L)).thenReturn(specificArticle);
+        when(specificArticleService.getSpecificArticleByArticleInformationId(1L)).thenReturn(specificArticle);
 
         //when
         ResponseEntity<?> response = specificArticleController.getOneArticle(1L);
