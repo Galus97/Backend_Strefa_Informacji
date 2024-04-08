@@ -1,7 +1,6 @@
 package pl.strefainformacji.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,7 +25,7 @@ public class SpecificArticleFormController {
         SpecificArticle specificArticle = new SpecificArticle();
 
         if(articleId != null){
-            specificArticle.setArticleInformation(articleInformationService.findArticleInformation(articleId));
+            specificArticle.setArticleInformation(articleInformationService.getArticleInformationByArticleId(articleId));
             model.addAttribute("specificArticle", specificArticle);
             return "specificArticle";
         } else {

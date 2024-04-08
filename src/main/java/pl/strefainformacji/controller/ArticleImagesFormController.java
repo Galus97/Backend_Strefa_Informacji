@@ -9,8 +9,6 @@ import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.service.ArticleImagesService;
 import pl.strefainformacji.service.SpecificArticleService;
 
-import java.util.Objects;
-
 @Controller
 @AllArgsConstructor
 public class ArticleImagesFormController {
@@ -31,7 +29,7 @@ public class ArticleImagesFormController {
                 ArticleImages articleImages = new ArticleImages();
                 articleImages.setImgSrc(imgSrc);
                 articleImages.setAltImg(altImg);
-                articleImages.setSpecificArticle(specificArticleService.getArticle(specificArticleId));
+                articleImages.setSpecificArticle(specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId));
                 articleImagesService.saveArticleImages(articleImages);
             }
         }
