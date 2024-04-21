@@ -22,7 +22,7 @@ public class ArticleImagesFormController {
     @PostMapping("/add/articleImages")
     public String saveArticleImagesFromForm(HttpServletRequest request){
         Long specificArticleId = Long.parseLong(request.getParameter("specificArticleId"));
-        for(int i = 1; i <= 6; i++){
+        for(int i = 1; i <= 10; i++){
             String imgSrc = request.getParameter("imgSrc" + i);
             String altImg = request.getParameter("altImg" + i);
             if(!imgSrc.isEmpty() && !altImg.isEmpty()){

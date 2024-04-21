@@ -2,7 +2,6 @@ package pl.strefainformacji.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,10 +18,10 @@ public class ArticleImages {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long articleImagesId;
 
-    @NotBlank
+    @Size(min = 1)
     private String imgSrc;
 
-    @NotBlank
+    @Size(min = 1)
     private String altImg;
 
     @ManyToOne(fetch = FetchType.LAZY)
