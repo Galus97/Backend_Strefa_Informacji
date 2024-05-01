@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pl.strefainformacji.controller.ArticleController;
-import pl.strefainformacji.controller.ImageViewController;
 import pl.strefainformacji.controller.SpecificArticleController;
 
 import static org.assertj.core.api.Assertions.*;
