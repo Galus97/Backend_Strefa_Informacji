@@ -21,18 +21,18 @@ public class RegistrationService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private List<String> validate(Employee employee) {
+    private List<String> validate(Employee employee){
         Optional<Employee> employeeExist = employeeRepository.findByUsername(employee.getUsername());
         List<String> errors = new ArrayList<>();
-        if (employeeExist.isPresent()) {
+        if(employeeExist.isPresent()){
             errors.add("Użytkownik z taką nazwą użytkownika już istnieje. Musisz wpisać inny adres e-mail");
         }
         return errors;
     }
 
-    public Employee newEmployeeRegistration(Employee employee) throws pl.strefainformacji.exception.ValidationException {
+    public Employee newEmployeeRegistration(Employee employee) throws pl.strefainformacji.exception.ValidationException{
         List<String> validationFailures = validate(employee);
-        if (validationFailures.isEmpty()) {
+        if(validationFailures.isEmpty()){
             employee.setEmployeeId(null);
             employee.setPassword(passwordEncoder.encode(employee.getPassword()));
             return employeeRepository.save(employee);
