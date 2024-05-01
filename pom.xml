@@ -129,11 +129,6 @@
       <scope>runtime</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -155,7 +150,7 @@
               </descriptorRefs>
               <archive>
                 <manifest>
-                  <mainClass>pl.strefainformacji.Backend_Strefa_Informacji.MainClass</mainClass>
+                  <mainClass>pl.strefainformacji.backend.MainClass</mainClass>
                 </manifest>
               </archive>
             </configuration>
