@@ -1,6 +1,5 @@
 package pl.strefainformacji.controller;
 
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -15,7 +14,6 @@ import pl.strefainformacji.exception.ValidationException;
 import pl.strefainformacji.service.EmailService;
 import pl.strefainformacji.service.RegistrationService;
 
-import java.util.Enumeration;
 import java.util.List;
 
 @Controller
