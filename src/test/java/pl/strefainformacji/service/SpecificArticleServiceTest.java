@@ -7,7 +7,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.SpecificArticleRepository;
+
 import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
@@ -33,7 +35,7 @@ public class SpecificArticleServiceTest {
         when(specificArticleRepository.existsByArticleInformation_ArticleId(articleNumber)).thenReturn(true);
         when(specificArticleRepository.findByArticleInformation_ArticleId(articleNumber)).thenReturn(expectedArticle);
 
-        SpecificArticle result = specificArticleService.getArticle(articleNumber);
+        SpecificArticle result = specificArticleService.getSpecificArticleByArticleInformationId(articleNumber);
 
         assertEquals(expectedArticle, result);
     }
@@ -45,7 +47,7 @@ public class SpecificArticleServiceTest {
         when(specificArticleRepository.existsByArticleInformation_ArticleId(invalidArticleNumber)).thenReturn(false);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            specificArticleService.getArticle(invalidArticleNumber);
+            specificArticleService.getSpecificArticleByArticleInformationId(invalidArticleNumber);
         });
 
         assertEquals("The article number must be greater than zero.", exception.getMessage());
@@ -58,7 +60,7 @@ public class SpecificArticleServiceTest {
         when(specificArticleRepository.existsByArticleInformation_ArticleId(nonExistentArticleNumber)).thenReturn(false);
 
         NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            specificArticleService.getArticle(nonExistentArticleNumber);
+            specificArticleService.getSpecificArticleByArticleInformationId(nonExistentArticleNumber);
         });
 
         assertEquals("There is no specific article in the database.", exception.getMessage());
