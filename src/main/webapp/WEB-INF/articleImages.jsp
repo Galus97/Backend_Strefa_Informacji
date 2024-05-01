@@ -40,6 +40,26 @@
         Podaj ścieżkę do zdjęcia 6 <input type="text" name="imgSrc6"/> <br>
         Podaj opis zdjęcia 6 <input type="text" name="altImg6"/>
     </label> <br>
+
+    <label>
+        Podaj ścieżkę do zdjęcia 7 <input type="text" name="imgSrc7"/> <br>
+        Podaj opis zdjęcia 7 <input type="text" name="altImg7"/>
+    </label> <br>
+
+    <label>
+        Podaj ścieżkę do zdjęcia 8 <input type="text" name="imgSrc8"/> <br>
+        Podaj opis zdjęcia 8 <input type="text" name="altImg8"/>
+    </label> <br>
+
+    <label>
+        Podaj ścieżkę do zdjęcia 9 <input type="text" name="imgSrc9"/> <br>
+        Podaj opis zdjęcia 9 <input type="text" name="altImg9"/>
+    </label> <br>
+
+    <label>
+        Podaj ścieżkę do zdjęcia 10 <input type="text" name="imgSrc10"/> <br>
+        Podaj opis zdjęcia 10 <input type="text" name="altImg10"/>
+    </label> <br>
     <label>
         <input type="submit" value="Przejdź dalej"/>
         <input type="reset" value="Usuń wartości">

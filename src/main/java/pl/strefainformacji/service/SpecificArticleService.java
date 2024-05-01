@@ -25,7 +25,7 @@ public class SpecificArticleService {
 
         SpecificArticle article = specificArticleRepository.findByArticleInformation_ArticleId(ArticleInformationId);
         if(Objects.isNull(article)){
-            throw new NullPointerException("There is not a number");
+            throw new NullPointerException("This is not a number");
         }
 
         return article;

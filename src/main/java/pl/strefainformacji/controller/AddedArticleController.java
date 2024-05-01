@@ -32,7 +32,7 @@ public class AddedArticleController {
     public String addedArticlePage(@ModelAttribute("specificArticleId")Long specificArticleId, Model model){
 
         if(specificArticleId == null){
-            return "errorAddedArticle";
+            handlerArticleNotFoundException(new ArticleNotFoundException("Article not found"));
         }
 
             SpecificArticle specificArticle = specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId);
@@ -47,6 +47,7 @@ public class AddedArticleController {
 
     @ExceptionHandler(ArticleNotFoundException.class)
     public String handlerArticleNotFoundException(ArticleNotFoundException exception){
+        exception.getMessage();
         return "errorAddedArticle";
     }
 }
