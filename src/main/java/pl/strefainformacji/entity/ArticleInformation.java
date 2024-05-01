@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name = "articleInformation")
@@ -12,6 +14,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ArticleInformation {
+
+    private final static Logger logger = LoggerFactory.getLogger(ArticleInformation.class);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long articleId;
