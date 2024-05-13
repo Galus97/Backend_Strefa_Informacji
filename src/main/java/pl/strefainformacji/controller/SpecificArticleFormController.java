@@ -3,6 +3,8 @@ package pl.strefainformacji.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +21,7 @@ public class SpecificArticleFormController {
 
     private final ArticleInformationService articleInformationService;
     private final SpecificArticleService specificArticleService;
+    private static final Logger logger = LoggerFactory.getLogger(SpecificArticleFormController.class);
 
     @GetMapping("/add/specificArticle")
     public String specificArticleForm(Model model, @RequestParam(required = false) Long articleId, HttpServletRequest request) {
@@ -37,6 +40,7 @@ public class SpecificArticleFormController {
     @PostMapping("/add/specificArticle")
     public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
+            logger.error("Error saving specific article information: " + bindingResult.getAllErrors());
             return "specificArticle";
         }
         specificArticleService.saveSpecificArticle(specificArticle);
