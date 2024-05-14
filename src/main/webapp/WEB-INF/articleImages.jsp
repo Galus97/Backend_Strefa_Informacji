@@ -11,7 +11,9 @@
 <h3>Dodaj zdjęcia do artykułu</h3>
 <form action="/add/articleImages" method="post">
     <input type="hidden" name="specificArticleId" value="${specificArticleId}"/>
-        <label>
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
+    <label>
             Podaj ścieżkę do zdjęcia 1 <input type="text" name="imgSrc1"/> <br>
             Podaj opis zdjęcia 1 <input type="text" name="altImg1"/>
         </label> <br>
