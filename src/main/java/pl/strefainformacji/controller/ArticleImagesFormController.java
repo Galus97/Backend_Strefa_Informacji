@@ -25,14 +25,12 @@ public class ArticleImagesFormController {
     @GetMapping("/add/articleImages")
     public String articleImagesForm(@RequestParam(required = false)Long specificArticleId, HttpServletRequest request){
         request.setAttribute("specificArticleId", specificArticleId);
-        logger.info("1 -------------- articleImagesForm");
         return "articleImages";
     }
     @PostMapping("/add/articleImages")
     public String saveArticleImagesFromForm(HttpServletRequest request, @RequestParam Map<String, String> allParams){
         Long specificArticleId = Long.parseLong(request.getParameter("specificArticleId"));
         SpecificArticle specificArticleByArticleInformationId = specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId);
-        System.out.println("------------------" + specificArticleId);
         logger.info("Saving article images from form");
 
         if(Objects.isNull(specificArticleId)){
