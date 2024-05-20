@@ -1,46 +1,84 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
 
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(SpecificArticleFormController.class)
 class SpecificArticleFormControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private ArticleInformationService articleInformationService;
 
-    @MockBean
+    @Mock
     private SpecificArticleService specificArticleService;
 
-    @Test
-    public void testSpecificArticleFormWithArticleId() throws Exception {
-        when(articleInformationService.getArticleInformationByArticleId(1L)).thenReturn(new SpecificArticle().getArticleInformation());
+    @Mock
+    private Model model;
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/add/specificArticle?articleId=1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("specificArticle"))
-                .andExpect(model().attributeExists("specificArticle"));
+    @Mock
+    private BindingResult bindingResult;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @InjectMocks
+    private SpecificArticleFormController specificArticleFormController;
+
+    private Validator validator;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
     @Test
-    public void testSpecificArticleFormWithoutArticleId() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/add/specificArticle"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("articleImages"));
+    public void testSpecificArticleForm() {
+        Long articleId = 1L;
+        when(articleInformationService.getArticleInformationByArticleId(articleId)).thenReturn(new ArticleInformation());
+
+        String viewName = specificArticleFormController.specificArticleForm(model, eq(articleId), request);
+        assertEquals("specificArticle", viewName);
+        verify(model).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
+    }
+
+    @Test
+    public void testSaveSpecificArticleFromForm_Success() {
+        SpecificArticle specificArticle = new SpecificArticle();
+        specificArticle.setSpecificArticleId(1L);
+
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        String viewName = specificArticleFormController.saveSpecificArticleFromForm(specificArticle, bindingResult, request);
+        assertEquals("redirect:articleImages?specificArticleId=" + specificArticle.getSpecificArticleId(), viewName);
+        verify(specificArticleService).saveSpecificArticle(any(SpecificArticle.class));
+    }
+
+    @Test
+    public void testSaveSpecificArticleFromForm_Error() {
+        SpecificArticle specificArticle = new SpecificArticle();
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        String viewName = specificArticleFormController.saveSpecificArticleFromForm(specificArticle, bindingResult, request);
+        assertEquals("specificArticle", viewName);
+        verify(specificArticleService, never()).saveSpecificArticle(any(SpecificArticle.class));
     }
 }
