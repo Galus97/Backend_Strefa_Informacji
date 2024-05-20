@@ -15,14 +15,11 @@ class SpringStarterTest {
     private ArticleController articleController;
     @Autowired
     private SpecificArticleController specificArticleController;
-    @Autowired
-    private ImageViewController imageViewController;
 
     @Test
     public void contextLoads() throws Exception{
         assertThat(articleController).isNotNull();
         assertThat(specificArticleController).isNotNull();
-        assertThat(imageViewController).isNotNull();
     }
 
 }

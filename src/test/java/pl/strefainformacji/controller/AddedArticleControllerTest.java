@@ -1,61 +1,87 @@
 package pl.strefainformacji.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.ui.Model;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.SpecificArticle;
+import pl.strefainformacji.exception.ArticleNotFoundException;
 import pl.strefainformacji.service.ArticleImagesService;
 import pl.strefainformacji.service.SpecificArticleService;
-
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.mockito.Mockito.*;
 
-@WebMvcTest(AddedArticleController.class)
 class AddedArticleControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
+    @Mock
     private SpecificArticleService specificArticleService;
 
-    @MockBean
+    @Mock
     private ArticleImagesService articleImagesService;
 
-    @Test
-    void testAddedArticlePageWithValidId() throws Exception {
-        SpecificArticle specificArticle = new SpecificArticle();
-        ArticleInformation articleInformation = new ArticleInformation();
-        List<ArticleImages> articleImages = new ArrayList<>();
+    @Mock
+    private Model model;
 
-        when(specificArticleService.getSpecificArticleByArticleInformationId(anyLong()))
-                .thenReturn(specificArticle);
-        when(articleImagesService.getAllArticleImagesBySpecificArticle(specificArticle))
-                .thenReturn(articleImages);
+    @InjectMocks
+    private AddedArticleController addedArticleController;
 
-        mockMvc.perform(get("/add/viewAddedArticle")
-                        .param("specificArticleId", "1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("viewAddedArticle"))
-                .andExpect(model().attributeExists("articleInformation"))
-                .andExpect(model().attributeExists("specificArticle"))
-                .andExpect(model().attributeExists("articleImages"));
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testAddedArticlePageWithoutId() throws Exception {
-        mockMvc.perform(get("/add/viewAddedArticle"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("errorAddedArticle"));
+    public void testAddedArticlePage_ArticleFound() {
+        Long specificArticleId = 1L;
+
+        SpecificArticle specificArticle = mock(SpecificArticle.class);
+        ArticleInformation articleInformation = mock(ArticleInformation.class);
+        List<ArticleImages> articleImages = Collections.singletonList(mock(ArticleImages.class));
+
+        when(specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId)).thenReturn(specificArticle);
+        when(specificArticle.getArticleInformation()).thenReturn(articleInformation);
+        when(articleImagesService.getAllArticleImagesBySpecificArticle(specificArticle)).thenReturn(articleImages);
+
+        String viewName = addedArticleController.addedArticlePage(specificArticleId, model);
+
+        assertEquals("viewAddedArticle", viewName);
+        verify(model).addAttribute("articleInformation", articleInformation);
+        verify(model).addAttribute("specificArticle", specificArticle);
+        verify(model).addAttribute("articleImages", articleImages);
+    }
+
+    @Test
+    public void testAddedArticlePage_ArticleNotFound() {
+        Long specificArticleId = null;
+
+        String viewName = addedArticleController.addedArticlePage(specificArticleId, model);
+
+        assertEquals("errorAddedArticle", viewName);
+    }
+
+    @Test
+    public void testAddedArticlePage_SpecificArticleNull() {
+        Long specificArticleId = 1L;
+
+        when(specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId)).thenReturn(null);
+
+        String viewName = addedArticleController.addedArticlePage(specificArticleId, model);
+
+        assertEquals("errorAddedArticle", viewName);
+    }
+
+    @Test
+    public void testHandlerArticleNotFoundException() {
+        ArticleNotFoundException exception = new ArticleNotFoundException("Article not found");
+
+        String viewName = addedArticleController.handlerArticleNotFoundException(exception);
+
+        assertEquals("errorAddedArticle", viewName);
     }
 }
