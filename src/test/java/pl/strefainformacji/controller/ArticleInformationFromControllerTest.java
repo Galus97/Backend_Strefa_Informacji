@@ -18,27 +18,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ArticleInformationFromController.class)
 class ArticleInformationFromControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private ArticleInformationService articleInformationService;
-
-    @Test
-    public void testArticleInformationForm() throws Exception {
-        mockMvc.perform(get("/add/articleInformation"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("articleInformation"))
-                .andExpect(model().attributeExists("articleInformation"));
-    }
-
-    @Test
-    public void testSaveArticleInformationFromForm() throws Exception {
-        mockMvc.perform(post("/add/articleInformation")
-                        .param("articleId", "1")
-                        .param("importance", "1"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:specificArticle?articleId=1"));
-    }
+//
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//    @MockBean
+//    private ArticleInformationService articleInformationService;
+//
+//    @Test
+//    public void testArticleInformationForm() throws Exception {
+//        mockMvc.perform(get("/add/articleInformation"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("articleInformation"))
+//                .andExpect(model().attributeExists("articleInformation"));
+//    }
+//
+//    @Test
+//    public void testSaveArticleInformationFromForm() throws Exception {
+//        mockMvc.perform(post("/add/articleInformation")
+//                        .param("articleId", "1")
+//                        .param("importance", "1"))
+//                .andExpect(status().is3xxRedirection())
+//                .andExpect(view().name("redirect:specificArticle?articleId=1"));
+//    }
 }

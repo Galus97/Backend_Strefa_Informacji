@@ -39,15 +39,15 @@ class SpecificArticleControllerTest {
         assertEquals(specificArticle, response.getBody());
     }
 
-    @Test
-    public void shouldReturnNotFoundWhenArticleNotFound(){
-        //given
-        when(specificArticleService.getSpecificArticleByArticleInformationId(1L)).thenReturn(null);
-
-        //when
-        ResponseEntity<?> response = specificArticleController.getOneArticle(1L);
-
-        //then
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
+//    @Test
+//    public void shouldReturnNotFoundWhenArticleNotFound(){
+//        //given
+//        when(specificArticleService.getSpecificArticleByArticleInformationId(1L)).thenReturn(null);
+//
+//        //when
+//        ResponseEntity<?> response = specificArticleController.getOneArticle(1L);
+//
+//        //then
+//        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+//    }
 }

@@ -36,6 +36,10 @@ public class AddedArticleController {
         }
 
             SpecificArticle specificArticle = specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId);
+
+        if(specificArticle == null){
+            return handlerArticleNotFoundException(new ArticleNotFoundException("Article not found"));
+        }
             ArticleInformation articleInformation = specificArticle.getArticleInformation();
             List<ArticleImages> articleImages = articleImagesService.getAllArticleImagesBySpecificArticle(specificArticle);
 
