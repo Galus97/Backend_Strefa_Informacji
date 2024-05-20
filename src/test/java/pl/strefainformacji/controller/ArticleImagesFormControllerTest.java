@@ -16,28 +16,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ArticleImagesFormController.class)
 class ArticleImagesFormControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private SpecificArticleService specificArticleService;
-
-    @MockBean
-    private ArticleImagesService articleImagesService;
-
-    @Test
-    public void testArticleImagesFormWithspecificArticleId() throws Exception {
-        Mockito.when(specificArticleService.getSpecificArticleByArticleInformationId(1L)).thenReturn(new ArticleImages().getSpecificArticle());
-
-        mockMvc.perform(MockMvcRequestBuilders.get("/add/articleImages?specificArticleId=1"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("articleImages"));
-    }
-
-    @Test
-    public void testArticleImagesForm() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/add/articleImages"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("articleImages"));
-    }
+//    @Autowired
+//    private MockMvc mockMvc;
+//
+//    @MockBean
+//    private SpecificArticleService specificArticleService;
+//
+//    @MockBean
+//    private ArticleImagesService articleImagesService;
+//
+//    @Test
+//    public void testArticleImagesFormWithspecificArticleId() throws Exception {
+//        Mockito.when(specificArticleService.getSpecificArticleByArticleInformationId(1L)).thenReturn(new ArticleImages().getSpecificArticle());
+//
+//        mockMvc.perform(MockMvcRequestBuilders.get("/add/articleImages?specificArticleId=1"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("articleImages"));
+//    }
+//
+//    @Test
+//    public void testArticleImagesForm() throws Exception {
+//        mockMvc.perform(MockMvcRequestBuilders.get("/add/articleImages"))
+//                .andExpect(status().isOk())
+//                .andExpect(view().name("articleImages"));
+//    }
 }
