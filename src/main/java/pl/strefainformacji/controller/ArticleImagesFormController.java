@@ -29,11 +29,25 @@ public class ArticleImagesFormController {
     }
     @PostMapping("/add/articleImages")
     public String saveArticleImagesFromForm(HttpServletRequest request, @RequestParam Map<String, String> allParams){
-        Long specificArticleId = Long.parseLong(request.getParameter("specificArticleId"));
+        String specificArticleIdStr = request.getParameter("specificArticleId");
+        if (specificArticleIdStr == null) {
+            logger.error("Specific article ID is null");
+            return "badBindingImages";
+        }
+        Long specificArticleId;
+
+        try{
+            specificArticleId = Long.parseLong(specificArticleIdStr);
+        } catch (NumberFormatException e){
+            logger.error("Specific article ID is invalid: " + specificArticleIdStr);
+            return "badBindingImages";
+        }
+
+
         SpecificArticle specificArticleByArticleInformationId = specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId);
         logger.info("Saving article images from form");
 
-        if(Objects.isNull(specificArticleId)){
+        if(specificArticleByArticleInformationId == null){
             logger.error("Specific article ID is null");
             return "badBindingImages";
         }
