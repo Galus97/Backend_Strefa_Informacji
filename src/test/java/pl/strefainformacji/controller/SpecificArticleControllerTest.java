@@ -1,53 +1,71 @@
 package pl.strefainformacji.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
+import org.mockito.stubbing.OngoingStubbing;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.SpecificArticleService;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.util.NoSuchElementException;
 
-@ExtendWith(MockitoExtension.class)
-class SpecificArticleControllerTest {
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+public class SpecificArticleControllerTest {
+
+    @InjectMocks
+    private SpecificArticleController controller;
 
     @Mock
-    private SpecificArticleService specificArticleService;
-    @InjectMocks
-    private SpecificArticleController specificArticleController;
+    private SpecificArticleService service;
 
-    @Test
-    public void shouldReturnPass(){
-        //given
-        SpecificArticle specificArticle = new SpecificArticle();
-        specificArticle.setTitle("Title");
-        specificArticle.setDescription("Description");
+    private MockMvc mockMvc;
 
-        when(specificArticleService.getSpecificArticleByArticleInformationId(1L)).thenReturn(specificArticle);
-
-        //when
-        ResponseEntity<?> response = specificArticleController.getOneArticle(1L);
-
-        //then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        assertEquals(specificArticle, response.getBody());
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
     }
 
-//    @Test
-//    public void shouldReturnNotFoundWhenArticleNotFound(){
-//        //given
-//        when(specificArticleService.getSpecificArticleByArticleInformationId(1L)).thenReturn(null);
-//
-//        //when
-//        ResponseEntity<?> response = specificArticleController.getOneArticle(1L);
-//
-//        //then
-//        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-//    }
+    @Test
+    public void whenValidArticle_thenStatus200() throws Exception {
+        SpecificArticle expectedArticle = new SpecificArticle();
+        expectedArticle.setArticleInformation(new ArticleInformation());
+        expectedArticle.setSpecificArticleId(1L);
+        expectedArticle.setTitle("Title");
+        expectedArticle.setDescription("Description");
+        when(service.getSpecificArticleByArticleInformationId(anyLong())).thenReturn(expectedArticle);
+
+        mockMvc.perform(get("/article/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.specificArticleId").value(expectedArticle.getSpecificArticleId()))
+                .andExpect(jsonPath("$.title").value(expectedArticle.getTitle()))
+                .andExpect(jsonPath("$.description").value(expectedArticle.getDescription()));
+    }
+
+    @Test
+    public void whenInvalidArticle_thenStatus404() throws Exception {
+        when(service.getSpecificArticleByArticleInformationId(anyLong())).thenThrow(new NoSuchElementException());
+
+        mockMvc.perform(get("/article/9999")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
 }
