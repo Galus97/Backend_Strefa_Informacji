@@ -13,7 +13,6 @@ import pl.strefainformacji.service.ArticleImagesService;
 import pl.strefainformacji.service.SpecificArticleService;
 
 import java.util.Map;
-import java.util.Objects;
 
 @Controller
 @AllArgsConstructor
