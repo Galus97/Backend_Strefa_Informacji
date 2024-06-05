@@ -37,4 +37,7 @@ public class ArticleInformation {
     @Size(min = 1)
     private String altImg;
 
+    @OneToOne
+    private Employee employee;
+
 }
