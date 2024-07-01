@@ -12,20 +12,29 @@
 <form:form method="post" action="/login">
 
 
-    <div>
-        Podaj nazwę użytkownika: <br>
+    <label>
+        Podaj nazwę użytkownika:
         <input name="username" />
-    </div>
-    <div>
-        Podaj hasło:<br>
+    </label>
+    <br>
+    <label>
+        Podaj hasło:
         <input type="password" name="password"/>
-    </div>
-    <div>
+    </label>
+    <br>
+    <label>
         <input type="submit" value="Zaloguj się">
-    </div><br>
-    <div>
+    </label>
+    <br>
+    <label>
         <input type="reset" value="Usuń wartości">
-    </div>
+    </label>
+    <br>
+    <br>
+    <label>
+        <h3>Nie masz jeszcze konta</h3>
+        <a href="/register">Załóż nowe konto</a>
+    </label>
 
 </form:form>
 

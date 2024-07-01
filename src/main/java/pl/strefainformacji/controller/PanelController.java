@@ -18,7 +18,6 @@ public class PanelController {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             return "panel";
         } else {
-            System.out.println("redirect:verifyEmail");
             return "redirect:verifyEmail";
         }
     }
