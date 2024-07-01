@@ -23,8 +23,10 @@ public class EmailService {
         String email = (String) registerEmail.getAttribute("registerEmail");
 
         if(email != null){
+            String emailActiveCode = generateActiveCode();
+            registerEmail.setAttribute("generateActiveCode", emailActiveCode);
             SimpleMailMessage message = new SimpleMailMessage();
-            String text = "Twój kod aktywacyjny to: " + generateActiveCode();
+            String text = "Twój kod aktywacyjny to: " + emailActiveCode;
 
             message.setTo(email);
             message.setFrom("projektkoncowymichal@gmail.com");
