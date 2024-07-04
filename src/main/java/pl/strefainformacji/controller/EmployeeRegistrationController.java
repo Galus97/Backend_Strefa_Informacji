@@ -35,8 +35,9 @@ public class EmployeeRegistrationController {
             return "register";
         }
         try{
+            String emailCode = sendActivationEmail(request, employee.getEmail());
+            employee.setEmailCode(emailCode);
             registrationService.newEmployeeRegistration(employee);
-            sendActivationEmail(request, employee.getEmail());
             return "redirect:login";
         } catch (ValidationException exception){
             List<String> errors = exception.getValidationErrors();
@@ -45,9 +46,9 @@ public class EmployeeRegistrationController {
         }
     }
 
-    private void sendActivationEmail(HttpServletRequest request, String email){
+    private String sendActivationEmail(HttpServletRequest request, String email){
         HttpSession registerEmail = request.getSession();
         registerEmail.setAttribute("registerEmail", email);
-        emailService.sendEmail();
+        return emailService.sendEmail();
     }
 }

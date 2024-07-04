@@ -31,4 +31,6 @@ public class Employee {
     private String password;
 
     private boolean enabled;
+
+    private String emailCode;
 }
