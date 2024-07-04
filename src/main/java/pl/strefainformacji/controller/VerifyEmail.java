@@ -25,10 +25,7 @@ public class VerifyEmail {
     @PostMapping("/verifyEmail")
     public String verifyEmailPost(HttpServletRequest request, @AuthenticationPrincipal CurrentEmployee curentEmployee){
         String verifyEmailCode = request.getParameter("verifyEmailCode");
-        HttpSession registerEmail = request.getSession();
-        String generateActiveCode =  registerEmail.getAttribute("generateActiveCode").toString();
-
-        if(generateActiveCode.equals(verifyEmailCode)){
+        if(verifyEmailCode.equals(curentEmployee.getEmployee().getEmailCode())){
             employeeService.updateEnable(curentEmployee.getEmployee().getEmployeeId(), true);
             System.out.println();
             return "redirect:panel";
