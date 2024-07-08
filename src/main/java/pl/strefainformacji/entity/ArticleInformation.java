@@ -1,6 +1,5 @@
 package pl.strefainformacji.entity;
 
-import pl.strefainformacji.entity.Employee;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
