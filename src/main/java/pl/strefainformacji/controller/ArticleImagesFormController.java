@@ -43,7 +43,7 @@ public class ArticleImagesFormController {
         }
 
 
-        SpecificArticle specificArticleByArticleInformationId = specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId);
+        SpecificArticle specificArticleByArticleInformationId = specificArticleService.getSpecificArticle(specificArticleId);
         logger.info("Saving article images from form");
 
         if(specificArticleByArticleInformationId == null){

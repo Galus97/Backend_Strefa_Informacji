@@ -18,13 +18,14 @@ public class EmailService {
     private final HttpServletRequest request;
 
     @Async
-    public void sendEmail(){
+    public String sendEmail(){
         HttpSession registerEmail = request.getSession();
         String email = (String) registerEmail.getAttribute("registerEmail");
 
         if(email != null){
+            String emailActiveCode = generateActiveCode();
             SimpleMailMessage message = new SimpleMailMessage();
-            String text = "Twój kod aktywacyjny to: " + generateActiveCode();
+            String text = "Twój kod aktywacyjny to: " + emailActiveCode;
 
             message.setTo(email);
             message.setFrom("projektkoncowymichal@gmail.com");
@@ -33,8 +34,10 @@ public class EmailService {
 
             javaMailSender.send(message);
             registerEmail.removeAttribute("registerEmail");
+            return emailActiveCode;
         } else {
             System.out.println("Błąd: Adres e-mail rejestracji nie został ustawiony w sesji.");
+            return null;
         }
 
     }

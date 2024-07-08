@@ -2,9 +2,7 @@ package pl.strefainformacji.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table (name = "employees")
@@ -31,4 +29,8 @@ public class Employee {
 
     @Size(min = 5)
     private String password;
+
+    private boolean enabled;
+
+    private String emailCode;
 }
