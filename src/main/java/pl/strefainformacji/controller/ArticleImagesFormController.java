@@ -23,7 +23,6 @@ public class ArticleImagesFormController {
 
     @GetMapping("/add/articleImages")
     public String articleImagesForm(@RequestParam(required = false)Long specificArticleId, HttpServletRequest request){
-        System.out.println("specificArticleId ---------------------->    " + specificArticleId);
         request.setAttribute("specificArticleId", specificArticleId);
         return "articleImages";
     }
