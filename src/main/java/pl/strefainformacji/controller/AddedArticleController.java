@@ -35,7 +35,7 @@ public class AddedArticleController {
             handlerArticleNotFoundException(new ArticleNotFoundException("Article not found"));
         }
 
-            SpecificArticle specificArticle = specificArticleService.getSpecificArticleByArticleInformationId(specificArticleId);
+            SpecificArticle specificArticle = specificArticleService.getSpecificArticle(specificArticleId);
 
         if(specificArticle == null){
             return handlerArticleNotFoundException(new ArticleNotFoundException("Article not found"));
