@@ -14,6 +14,11 @@
 <label>
     <a href="/add/articleInformation">Dodaj nowy artykuł</a>
 </label>
+<br>
+<label>
+    <a href="/yourarticles">Artykuły dodane przez Ciebie</a>
+</label>
+<br>
 <label>
     <a href="/logout">Logout</a>
 </label>
