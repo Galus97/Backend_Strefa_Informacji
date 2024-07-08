@@ -2,7 +2,10 @@ package pl.strefainformacji.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.repository.EmployeeRepository;
+
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -16,5 +19,9 @@ public class EmployeeService {
 
     public boolean isEnabledById(Long employeeId){
         return employeeRepository.isEnabledById(employeeId);
+    }
+
+    public Optional<Employee> findByEmployeeId(Long id){
+        return employeeRepository.findByEmployeeId(id);
     }
 }

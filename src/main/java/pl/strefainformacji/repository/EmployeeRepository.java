@@ -12,9 +12,11 @@ import java.util.Optional;
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> findByUsername(String username);
 
+    Optional<Employee> findByEmployeeId(Long id);
+
     @Transactional
     @Modifying
-    @Query("UPDATE Employee e SET e.enabled = :enabled WHERE e.id = :employeeId")
+    @Query("UPDATE Employee e SET e.enabled = :enabled WHERE e.employeeId = :employeeId")
     void updateEnabledByEmployeeId(@Param("employeeId") Long employeeId, @Param("enabled") boolean enabled);
 
     default boolean isEnabledById(Long employeeId) {

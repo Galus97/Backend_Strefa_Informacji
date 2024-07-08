@@ -5,10 +5,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.ArticleInformation;
+import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.service.ArticleInformationService;
+import pl.strefainformacji.service.EmployeeService;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -24,6 +30,12 @@ class ArticleInformationFromControllerTest {
     @Mock
     private BindingResult bindingResult;
 
+    @Mock
+    CurrentEmployee currentEmployee;
+
+    @Mock
+    EmployeeService employeeService;
+
     @InjectMocks
     private ArticleInformationFromController articleInformationFromController;
 
@@ -34,7 +46,13 @@ class ArticleInformationFromControllerTest {
 
     @Test
     public void testArticleInformationForm() {
-        String viewName = articleInformationFromController.articleInformationForm(model);
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
+
+        when(currentEmployee.getEmployee()).thenReturn(employee);
+        when(employeeService.findByEmployeeId(anyLong())).thenReturn(Optional.of(employee));
+
+        String viewName = articleInformationFromController.articleInformationForm(model, currentEmployee);
         assertEquals("articleInformation", viewName);
         verify(model).addAttribute(eq("articleInformation"), any(ArticleInformation.class));
     }
