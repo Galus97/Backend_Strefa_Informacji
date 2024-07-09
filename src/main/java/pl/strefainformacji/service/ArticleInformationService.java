@@ -3,6 +3,7 @@ package pl.strefainformacji.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.ArticleInformation;
+import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 
 import java.util.List;
@@ -32,5 +33,9 @@ public class ArticleInformationService {
 
     public void saveArticle(ArticleInformation articleInformation){
         articleInformationRepository.save(articleInformation);
+    }
+
+    public List<ArticleInformation> findAllArticlesByEmployee(Employee employee){
+        return articleInformationRepository.findAllByEmployee(employee);
     }
 }
