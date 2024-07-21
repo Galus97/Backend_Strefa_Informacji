@@ -22,6 +22,15 @@
 <label>
     <a href="/logout">Logout</a>
 </label>
+<br>
+
+<label id="weather">
+    Aktualna pogoda w Warszawie <br>
+    <b>Temperatura:</b> <c:out value="${weather.temperatue}"/> <sup>o</sup>C
+    <b>Ciśnienie;</b> <c:out value="${weather.pressure}"/> hPa
+    <b>Wilgotność:</b> <c:out value="${weather.humidity}"/> %
+    <b>Prędkość wiatru:</b> <c:out value="${weather.speed}"/> <sup>m</sup>/<sub>s</sub>
+</label>
 
 </body>
 </html>
