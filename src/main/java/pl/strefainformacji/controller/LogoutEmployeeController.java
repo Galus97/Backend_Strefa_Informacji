@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class LogoutEmployeecontroller {
+public class LogoutEmployeeController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response){
