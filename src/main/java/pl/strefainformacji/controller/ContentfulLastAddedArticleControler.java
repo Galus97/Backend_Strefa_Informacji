@@ -14,6 +14,11 @@ public class ContentfulLastAddedArticleControler {
 
     @GetMapping("/contentful")
     public String contentfullLastArticles() {
-        return contentfulService.getIdAndTitleOfArticle();
+        StringBuilder sb = new StringBuilder();
+        for (String element : contentfulService.articleToAddToDatabase()) {
+            sb.append(element).append(" - ");
+        }
+
+        return sb.toString();
     }
 }

@@ -1,4 +1,4 @@
-package pl.strefainformacji.webclient.contentful.json;
+package pl.strefainformacji.webclient.contentful.jsonLastAddedArticles;
 
 import lombok.Getter;
 import lombok.Setter;
