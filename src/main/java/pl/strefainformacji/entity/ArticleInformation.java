@@ -21,6 +21,9 @@ public class ArticleInformation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long articleId;
 
+    @Size(min = 5)
+    private String contentfulId;
+
     @Size(min = 3)
     private String title;
 
@@ -39,5 +42,4 @@ public class ArticleInformation {
 
     @OneToOne
     private Employee employee;
-
 }
