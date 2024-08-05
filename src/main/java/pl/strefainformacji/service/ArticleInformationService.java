@@ -38,4 +38,8 @@ public class ArticleInformationService {
     public List<ArticleInformation> findAllArticlesByEmployee(Employee employee){
         return articleInformationRepository.findAllByEmployee(employee);
     }
+
+    public List<String> findAllContentfulIds(){
+        return articleInformationRepository.findAllContentfulIds();
+    }
 }

@@ -3,8 +3,10 @@ package pl.strefainformacji.webclient.contentful;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import pl.strefainformacji.webclient.contentful.json.JsonFetcher;
-import pl.strefainformacji.webclient.contentful.json.JsonIdExtractor;
+import pl.strefainformacji.webclient.contentful.jsonLastAddedArticles.JsonFetcher;
+import pl.strefainformacji.webclient.contentful.jsonLastAddedArticles.JsonIdExtractor;
+
+import java.util.List;
 
 @Component
 public class ContentfulClient {
@@ -18,8 +20,9 @@ public class ContentfulClient {
         return template;
     }
 
-    public String getIdAndTitleFromJson() throws Exception {
+    public List<String> getLastAddedArticles() throws Exception {
 
-        return JsonIdExtractor.extractIdsAndTitles(JsonFetcher.fetchJsonFromUrl(contenfulKey));
+        List<String> list = JsonIdExtractor.extractIdsAndTitles(JsonFetcher.fetchJsonFromUrl(contenfulKey));
+        return list;
     }
 }
