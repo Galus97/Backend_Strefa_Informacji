@@ -1,4 +1,4 @@
-package pl.strefainformacji.webclient.contentful.jsonLastAddedArticles;
+package pl.strefainformacji.webclient.contentful.jsonArticles;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
