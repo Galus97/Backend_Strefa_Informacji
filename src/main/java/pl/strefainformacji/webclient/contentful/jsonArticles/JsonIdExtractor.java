@@ -1,4 +1,4 @@
-package pl.strefainformacji.webclient.contentful.jsonLastAddedArticles;
+package pl.strefainformacji.webclient.contentful.jsonArticles;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
