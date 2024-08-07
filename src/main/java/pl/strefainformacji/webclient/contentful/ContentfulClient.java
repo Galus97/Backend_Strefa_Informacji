@@ -1,11 +1,12 @@
 package pl.strefainformacji.webclient.contentful;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import pl.strefainformacji.model.ContentfulDto;
 import pl.strefainformacji.webclient.contentful.jsonArticles.JsonFetcher;
-import pl.strefainformacji.webclient.contentful.jsonArticles.JsonIdExtractor;
+import pl.strefainformacji.webclient.contentful.jsonArticles.JsonExtractor;
 import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArticleDto;
 
 import java.util.List;
@@ -18,37 +19,31 @@ public class ContentfulClient {
     @Value("${contentful.access.token}")
     private String accesToken;
 
-    @Value("${contentful.entrie}")
-    private String entrie;
+    @Value("${contentful.entry}")
+    private String entry;
 
     private RestTemplate restTemplate = new RestTemplate();
 
-    public ContentfulDto getArticleFromContentful(String entreId) {
-        ContentfulArticleDto contentfulArticleDto = restTemplate.getForObject(entrie + entreId + accesToken,
-                ContentfulArticleDto.class);
-
-        System.out.println("--------------------------------------------------------------------------");
-        System.out.println(contentfulArticleDto.getSysId());
-        System.out.println(contentfulArticleDto.getFieldsHeadTitle());
-        System.out.println(contentfulArticleDto.getFieldsShortDescription());
-        System.out.println(contentfulArticleDto.getFieldsImportance());
-        System.out.println(contentfulArticleDto.getFieldsHeadAltImg());
-        System.out.println(contentfulArticleDto.getFieldsSpecificTitle());
-        System.out.println(contentfulArticleDto.getFieldsDescription());
-        System.out.println("--------------------------------------------------------------------------");
-
-        return ContentfulDto.builder()
-                .sysId(contentfulArticleDto.getSysId())
-                .fieldsHeadTitle(contentfulArticleDto.getFieldsHeadTitle())
-                .fieldsShortDescription(contentfulArticleDto.getFieldsShortDescription())
-                .fieldsImportance(contentfulArticleDto.getFieldsImportance())
-                .fieldsHeadAltImg(contentfulArticleDto.getFieldsHeadAltImg())
-                .fieldsSpecificTitle(contentfulArticleDto.getFieldsSpecificTitle())
-                .fieldsDescription(contentfulArticleDto.getFieldsDescription())
-                .build();
-    }
+//    public ContentfulDto getArticleFromContentful(String entreId) {
+//        ContentfulArticleDto contentfulArticleDto = restTemplate.getForObject(entry + entreId + accesToken,
+//                ContentfulArticleDto.class);
+//
+//        return ContentfulDto.builder()
+//                .build();
+//    }
 
     public List<String> getLastAddedArticles() throws Exception {
-        return JsonIdExtractor.extractIdsAndTitles(JsonFetcher.fetchJsonFromUrl(contenfulKey));
+        return JsonExtractor.extractIdsAndTitles(JsonFetcher.fetchJsonFromUrl(contenfulKey));
+    }
+
+    public ContentfulArticleDto getJsonFieldsValue (String entreId) throws Exception {
+        try{
+            System.out.println(JsonFetcher.fetchJsonFromUrl(entry + entreId + accesToken));
+
+             return JsonExtractor.getFildsFromJson(JsonFetcher.fetchJsonFromUrl(entry + entreId + accesToken));
+        } catch (JsonProcessingException e){
+            e.printStackTrace();
+        }
+        return null;
     }
 }
