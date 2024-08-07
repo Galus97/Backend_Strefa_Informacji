@@ -9,16 +9,15 @@ import lombok.ToString;
 @ToString
 public class ContentfulDto {
 
-    private String sysId;
-    private String fieldsHeadTitle;
+    private String headTitle;
 
-    private String fieldsShortDescription;
+    private String shortDescription;
 
-    private int fieldsImportance;
+    private int importance;
 
-    private String fieldsHeadAltImg;
+    private String headAltImg;
 
-    private String fieldsSpecificTitle;
+    private String specificTitle;
 
-    private String fieldsDescription;
+    private String description;
 }

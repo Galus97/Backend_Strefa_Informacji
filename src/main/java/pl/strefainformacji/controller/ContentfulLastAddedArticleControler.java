@@ -21,10 +21,11 @@ public class ContentfulLastAddedArticleControler {
     private final EmployeeService employeeService;
 
     @GetMapping("/add/contentful")
-    public String contentfullLastArticles(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
-        Optional<Employee> employee = employeeService.findByEmployeeId(curentEmployee.getEmployee().getEmployeeId());
+    public String contentfullLastArticles() {
+        //Optional<Employee> employee = employeeService.findByEmployeeId(curentEmployee.getEmployee().getEmployeeId());
 
-        contentfulService.saveArticlesFromContentful(employee.get());
-        return "Success";
+        //contentfulService.saveArticlesFromContentful(employee.get());
+
+        return contentfulService.test();
     }
 }
