@@ -22,7 +22,7 @@ public class ContentfulService {
     private final ArticleImagesService articleImagesService;
 
     public List<String> addedArticleInContentful() {
-        List<String> lastAddedArticles = null;
+        List<String> lastAddedArticles = new ArrayList<>();
         try {
             lastAddedArticles = contentfulClient.getLastAddedArticles();
             return lastAddedArticles;
@@ -34,13 +34,19 @@ public class ContentfulService {
 
     public List<String> articleToAddToDatabase() {
         List<String> notAddedArticle = new ArrayList<>();
-        for (String articleFromContentful : addedArticleInContentful()) {
-            for (String contentfulIdFromDatabase : articleInformationService.findAllContentfulIds()) {
-                if (!contentfulIdFromDatabase.equals(articleFromContentful)) {
-                    notAddedArticle.add(articleFromContentful);
+        if(articleInformationService.findAllContentfulIds().isEmpty()){
+            notAddedArticle = addedArticleInContentful();
+        } else{
+            for (String articleFromContentful : addedArticleInContentful()) {
+                for (String contentfulIdFromDatabase : articleInformationService.findAllContentfulIds()) {
+                    if (!contentfulIdFromDatabase.equals(articleFromContentful)) {
+                        notAddedArticle.add(articleFromContentful);
+
+                    }
                 }
             }
         }
+
         return notAddedArticle;
     }
 
@@ -81,8 +87,10 @@ public class ContentfulService {
 
             for(ContentfulArticleDto.Fields.Sys img : element.getFields().getImgSrcList()){
                 articleImages.setSpecificArticle(specificArticle);
+                System.out.println("img.getId() --> " + img.getId());
                 articleImages.setImgSrc(img.getId());
                 articleImagesService.saveArticleImages(articleImages);
+
             }
 
         }
