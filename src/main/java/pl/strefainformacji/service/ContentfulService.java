@@ -2,10 +2,10 @@ package pl.strefainformacji.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
-import pl.strefainformacji.model.ContentfulDto;
-import pl.strefainformacji.repository.ArticleInformationRepository;
+import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.webclient.contentful.ContentfulClient;
 import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArticleDto;
 
@@ -18,7 +18,8 @@ public class ContentfulService {
 
     private final ContentfulClient contentfulClient;
     private final ArticleInformationService articleInformationService;
-    private final ArticleInformationRepository articleInformationRepository;
+    private final SpecificArticleService specificArticleService;
+    private final ArticleImagesService articleImagesService;
 
     public List<String> addedArticleInContentful() {
         List<String> lastAddedArticles = null;
@@ -43,41 +44,47 @@ public class ContentfulService {
         return notAddedArticle;
     }
 
-    public String test (){
-        StringBuilder sb = new StringBuilder();
+    public List<ContentfulArticleDto> createContentfulArticleDtoFromJsonContentful (){
+        List<ContentfulArticleDto> listOfContentfulArticleDto = new ArrayList<>();
         List<String> listOfArticlesIdToAdd = articleToAddToDatabase();
-        for (String entry : listOfArticlesIdToAdd) {
-            try {
-                sb.append(contentfulClient.getJsonFieldsValue(entry));
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
 
-        return sb.toString();
+        for (String entry : listOfArticlesIdToAdd) {
+            ContentfulArticleDto jsonFieldsValue = contentfulClient.getJsonFieldsValue(entry);
+            listOfContentfulArticleDto.add(jsonFieldsValue);
+        }
+        return listOfContentfulArticleDto;
     }
 
-//    public List<ContentfulDto> addArticleToDatabase(){
-//        List<ContentfulDto> contentfulDtos = new ArrayList<>();
-//        List<String> listOfArticlesIdToAdd = articleToAddToDatabase();
-//        for (String entry : listOfArticlesIdToAdd) {
-//            contentfulDtos.add(contentfulClient.getJsonFieldsValue(entry));
-//        }
-//        return contentfulDtos;
-//    }
-//
-//    public void saveArticlesFromContentful(Employee employee){
-//        ArticleInformation articleInformation = new ArticleInformation();
-//        List<ContentfulDto> contentfulDtos = addArticleToDatabase();
-//        for (ContentfulDto contentfulDto : contentfulDtos) {
-//            articleInformation.setContentfulId(contentfulDto.getSysId());
-//            articleInformation.setTitle(contentfulDto.getFieldsHeadTitle());
-//            articleInformation.setShortDescription(contentfulDto.getFieldsShortDescription());
-//            articleInformation.setImportance(contentfulDto.getFieldsImportance());
-//            articleInformation.setAltImg(contentfulDto.getFieldsHeadAltImg());
-//            articleInformation.setEmployee(employee);
-//
-//            articleInformationRepository.save(articleInformation);
-//        }
-//}
+    public void createArticlesFromContentfulArticleDto(Employee employee){
+        List<ContentfulArticleDto> contentfulArticleDtos = createContentfulArticleDtoFromJsonContentful();
+
+        for(ContentfulArticleDto element : contentfulArticleDtos){
+            ArticleInformation articleInformation = new ArticleInformation();
+            SpecificArticle specificArticle = new SpecificArticle();
+            ArticleImages articleImages = new ArticleImages();
+
+            articleInformation.setEmployee(employee);
+            articleInformation.setContentfulId(element.getSys().getId());
+            articleInformation.setImportance(element.getFields().getImportance());
+            articleInformation.setTitle(element.getFields().getHeadTitle());
+            articleInformation.setShortDescription(element.getFields().getShortDescription());
+            articleInformation.setImgSrc(element.getSys().getId());
+            articleInformation.setAltImg(element.getFields().getHeadAltImg());
+
+            articleInformationService.saveArticle(articleInformation);
+
+            specificArticle.setTitle(element.getFields().getSpecificTitle());
+            specificArticle.setDescription(element.getFields().getDescription());
+            specificArticle.setArticleInformation(articleInformation);
+
+            specificArticleService.saveSpecificArticle(specificArticle);
+
+            for(ContentfulArticleDto.Fields.Sys img : element.getFields().getImgSrcList()){
+                articleImages.setSpecificArticle(specificArticle);
+                articleImages.setImgSrc(img.getId());
+                articleImagesService.saveArticleImages(articleImages);
+            }
+
+        }
+    }
 }

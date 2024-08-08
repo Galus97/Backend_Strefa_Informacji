@@ -14,6 +14,15 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContentfulArticleDto {
     private Fields fields;
+    private Sys sys;
+
+    @Getter
+    @Setter
+    @ToString
+    public static class Sys {
+        @JsonProperty("id")
+        private String id;
+    }
 
     @Getter
     @Setter

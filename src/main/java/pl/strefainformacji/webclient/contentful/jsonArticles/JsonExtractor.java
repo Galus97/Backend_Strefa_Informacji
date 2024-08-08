@@ -36,6 +36,11 @@ public class JsonExtractor {
         Map<String, Object> rootMap = mapper.readValue(jsonContent, Map.class);
 
         ContentfulArticleDto contentfulArticleDto = new ContentfulArticleDto();
+
+        ContentfulArticleDto.Sys sys = new ContentfulArticleDto.Sys();
+        Map<String, Object> sysMap = (Map<String, Object>)rootMap.get("sys");
+        sys.setId((String) sysMap.get("id"));
+
         ContentfulArticleDto.Fields fields = new ContentfulArticleDto.Fields();
         Map<String, Object> fieldsMap = (Map<String, Object>)rootMap.get("fields");
 
@@ -64,7 +69,9 @@ public class JsonExtractor {
         }
         fields.setImgSrcList(imgSrcList);
 
+        System.out.println("sys.getId() --> " + sys.getId());
         contentfulArticleDto.setFields(fields);
+        contentfulArticleDto.setSys(sys);
 
         return contentfulArticleDto;
 
