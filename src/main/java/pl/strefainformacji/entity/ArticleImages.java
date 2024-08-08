@@ -21,7 +21,7 @@ public class ArticleImages {
     @Size(min = 1)
     private String imgSrc;
 
-    @Size(min = 1)
+    //@Size(min = 1)
     private String altImg;
 
     @ManyToOne(fetch = FetchType.LAZY)

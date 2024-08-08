@@ -40,6 +40,6 @@ public class ArticleInformation {
     @Size(min = 1)
     private String altImg;
 
-    @OneToOne
+    @ManyToOne
     private Employee employee;
 }

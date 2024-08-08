@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
-import pl.strefainformacji.model.ContentfulDto;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
