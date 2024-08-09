@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArticleDto;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,14 +42,12 @@ public class JsonExtractor {
         ContentfulArticleDto.Fields fields = new ContentfulArticleDto.Fields();
         Map<String, Object> fieldsMap = (Map<String, Object>)rootMap.get("fields");
 
-
         fields.setHeadTitle((String)fieldsMap.get("headTitle"));
         fields.setShortDescription((String) fieldsMap.get("shortDescription"));
         fields.setImportance((Integer) fieldsMap.get("importance"));
         fields.setHeadAltImg((String) fieldsMap.get("headAltImg"));
         fields.setSpecificTitle((String) fieldsMap.get("specificTitle"));
         fields.setDescription((String) fieldsMap.get("description"));
-
 
         Map<String, Map<String, String>> headImgSrcMap = (Map<String, Map<String, String>>)fieldsMap.get("headImgSrc");
         ContentfulArticleDto.Fields.Sys headImgSrc = new ContentfulArticleDto.Fields.Sys();
@@ -77,6 +73,5 @@ public class JsonExtractor {
         contentfulArticleDto.setSys(sys);
 
         return contentfulArticleDto;
-
     }
 }

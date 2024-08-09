@@ -37,17 +37,23 @@ public class ContentfulService {
         if(articleInformationService.findAllContentfulIds().isEmpty()){
             notAddedArticle = addedArticleInContentful();
         } else{
-            for (String articleFromContentful : addedArticleInContentful()) {
-                for (String contentfulIdFromDatabase : articleInformationService.findAllContentfulIds()) {
-                    if (!contentfulIdFromDatabase.equals(articleFromContentful)) {
-                        notAddedArticle.add(articleFromContentful);
-
-                    }
+            for(String contentfulArticleId : addedArticleInContentful()){
+                if(isArticleExistInDatabase(contentfulArticleId, articleInformationService.findAllContentfulIds())){
+                    notAddedArticle.add(contentfulArticleId);
                 }
             }
         }
 
         return notAddedArticle;
+    }
+
+    private boolean isArticleExistInDatabase (String contentfulArticleId, List<String> database){
+            for(String databaseElement : database){
+                if(contentfulArticleId.equals(databaseElement)){
+                    return false;
+                }
+            }
+        return true;
     }
 
     public List<ContentfulArticleDto> createContentfulArticleDtoFromJsonContentful (){
@@ -89,9 +95,7 @@ public class ContentfulService {
                 articleImages.setSpecificArticle(specificArticle);
                 articleImages.setImgSrc(img.getId());
                 articleImagesService.saveArticleImages(articleImages);
-
             }
-
         }
     }
 }
