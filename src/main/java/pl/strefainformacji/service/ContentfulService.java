@@ -74,7 +74,7 @@ public class ContentfulService {
             articleInformation.setImportance(element.getFields().getImportance());
             articleInformation.setTitle(element.getFields().getHeadTitle());
             articleInformation.setShortDescription(element.getFields().getShortDescription());
-            articleInformation.setImgSrc(element.getSys().getId());
+            articleInformation.setImgSrc(element.getFields().getHeadImgSrc().getId());
             articleInformation.setAltImg(element.getFields().getHeadAltImg());
 
             articleInformationService.saveArticle(articleInformation);
@@ -87,7 +87,6 @@ public class ContentfulService {
 
             for(ContentfulArticleDto.Fields.Sys img : element.getFields().getImgSrcList()){
                 articleImages.setSpecificArticle(specificArticle);
-                System.out.println("img.getId() --> " + img.getId());
                 articleImages.setImgSrc(img.getId());
                 articleImagesService.saveArticleImages(articleImages);
 
