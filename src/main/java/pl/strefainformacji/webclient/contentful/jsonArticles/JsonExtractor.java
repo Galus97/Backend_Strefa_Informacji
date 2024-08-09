@@ -52,26 +52,22 @@ public class JsonExtractor {
         fields.setSpecificTitle((String) fieldsMap.get("specificTitle"));
         fields.setDescription((String) fieldsMap.get("description"));
 
-        Map<String, String> headImgSrcMap = (Map<String, String>)fieldsMap.get("headImgSrc");
+
+        Map<String, Map<String, String>> headImgSrcMap = (Map<String, Map<String, String>>)fieldsMap.get("headImgSrc");
         ContentfulArticleDto.Fields.Sys headImgSrc = new ContentfulArticleDto.Fields.Sys();
-        headImgSrc.setType(headImgSrcMap.get("type"));
-        headImgSrc.setLinkType(headImgSrcMap.get("linkType"));
-        headImgSrc.setId(headImgSrcMap.get("id"));
+        headImgSrc.setType(headImgSrcMap.get("sys").get("type"));
+        headImgSrc.setLinkType(headImgSrcMap.get("sys").get("linkType"));
+        headImgSrc.setId(headImgSrcMap.get("sys").get("id"));
         fields.setHeadImgSrc(headImgSrc);
 
         List<Map<String, Map<String, String>>> imgSrcListMap = (List<Map<String, Map<String, String>>>) fieldsMap.get("imgSrc");
-        System.out.println("imgSrcListMap.size() --> " + imgSrcListMap.size());
         List<ContentfulArticleDto.Fields.Sys> imgSrcList = new ArrayList<>();
-        System.out.println("List<ContentfulArticleDto.Fields.Sys> imgSrcList.size --> " + imgSrcList.size());
         for(Map<String, Map<String, String>> imgSrcMap : imgSrcListMap){
             ContentfulArticleDto.Fields.Sys imgSrc = new ContentfulArticleDto.Fields.Sys();
             Map<String, String> mapSys = imgSrcMap.get("sys");
             imgSrc.setType(mapSys.get("type"));
-            System.out.println("imgSrcMap.get(\"type\") --> " + imgSrcMap.get("type"));
             imgSrc.setLinkType(mapSys.get("linkType"));
-            System.out.println("imgSrcMap.get(\"linkType\" --> )" + imgSrcMap.get("linkType"));
             imgSrc.setId(mapSys.get("id"));
-            System.out.println("imgSrcMap.get(\"id\") --> " + imgSrcMap.get("id"));
             imgSrcList.add(imgSrc);
         }
 
