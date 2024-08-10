@@ -43,7 +43,6 @@ public class ContentfulService {
                 }
             }
         }
-
         return notAddedArticle;
     }
 
