@@ -77,11 +77,10 @@ public class ContentfulService {
             ArticleImages articleImages = new ArticleImages();
 
             Optional<Employee> employee = employeeService.findByEmployeeId((long)element.getFields().getEmployeeId());
+            Optional<Employee> generalEmployee = employeeService.findByEmployeeId(1L);
             if(employee.isPresent()){
                 articleInformation.setEmployee(employee.get());
-            } else{
-                articleInformation.setEmployee(employeeService.findByEmployeeId(1L).get());
-            }
+            } else generalEmployee.ifPresent(articleInformation::setEmployee);
 
             articleInformation.setContentfulId(element.getSys().getId());
             articleInformation.setImportance(element.getFields().getImportance());
