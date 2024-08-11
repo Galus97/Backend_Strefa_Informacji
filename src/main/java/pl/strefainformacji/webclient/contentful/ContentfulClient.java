@@ -23,12 +23,7 @@ public class ContentfulClient {
         return JsonExtractor.extractIdsAndTitles(JsonFetcher.fetchJsonFromUrl(contenfulKey));
     }
 
-    public ContentfulArticleDto getJsonFieldsValue (String entryId){
-        try{
-             return JsonExtractor.getFildsFromJson(JsonFetcher.fetchJsonFromUrl(entry + entryId + accesToken));
-        } catch (Exception e){
-            e.printStackTrace();
-            return null;
-        }
+    public ContentfulArticleDto getJsonFieldsValue (String entryId) throws Exception{
+            return JsonExtractor.getFildsFromJson(JsonFetcher.fetchJsonFromUrl(entry + entryId + accesToken));
     }
 }

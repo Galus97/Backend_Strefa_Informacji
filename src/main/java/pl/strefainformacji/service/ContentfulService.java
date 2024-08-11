@@ -57,19 +57,26 @@ public class ContentfulService {
         return true;
     }
 
-    public List<ContentfulArticleDto> createContentfulArticleDtoFromJsonContentful (){
+    public List<ContentfulArticleDto> contentfulArticleDtoList(){
         List<ContentfulArticleDto> listOfContentfulArticleDto = new ArrayList<>();
         List<String> listOfArticlesIdToAdd = articleToAddToDatabase();
 
         for (String entry : listOfArticlesIdToAdd) {
-            ContentfulArticleDto jsonFieldsValue = contentfulClient.getJsonFieldsValue(entry);
+            ContentfulArticleDto jsonFieldsValue = null;
+            try {
+                if(contentfulClient.getJsonFieldsValue(entry) != null){
+                    jsonFieldsValue = contentfulClient.getJsonFieldsValue(entry);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             listOfContentfulArticleDto.add(jsonFieldsValue);
         }
         return listOfContentfulArticleDto;
     }
 
     public void createArticlesFromContentfulArticleDto(){
-        List<ContentfulArticleDto> contentfulArticleDtos = createContentfulArticleDtoFromJsonContentful();
+        List<ContentfulArticleDto> contentfulArticleDtos = contentfulArticleDtoList();
 
         for(ContentfulArticleDto element : contentfulArticleDtos){
             ArticleInformation articleInformation = new ArticleInformation();
