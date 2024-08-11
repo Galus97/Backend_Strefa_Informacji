@@ -14,8 +14,8 @@ public class ContentfulLastAddedArticleController {
     private final ContentfulService contentfulService;
 
     @GetMapping("/add/contentful")
-    public String contentfullLastArticles(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
-         contentfulService.createArticlesFromContentfulArticleDto(curentEmployee.getEmployee());
+    public String contentfullLastArticles() {
+         contentfulService.createArticlesFromContentfulArticleDto();
 
         return "Success";
     }

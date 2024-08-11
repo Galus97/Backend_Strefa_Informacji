@@ -11,6 +11,7 @@ import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArtic
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +21,7 @@ public class ContentfulService {
     private final ArticleInformationService articleInformationService;
     private final SpecificArticleService specificArticleService;
     private final ArticleImagesService articleImagesService;
+    private final EmployeeService employeeService;
 
     public List<String> addedArticleInContentful() {
         List<String> lastAddedArticles = new ArrayList<>();
@@ -66,7 +68,7 @@ public class ContentfulService {
         return listOfContentfulArticleDto;
     }
 
-    public void createArticlesFromContentfulArticleDto(Employee employee){
+    public void createArticlesFromContentfulArticleDto(){
         List<ContentfulArticleDto> contentfulArticleDtos = createContentfulArticleDtoFromJsonContentful();
 
         for(ContentfulArticleDto element : contentfulArticleDtos){
@@ -74,7 +76,13 @@ public class ContentfulService {
             SpecificArticle specificArticle = new SpecificArticle();
             ArticleImages articleImages = new ArticleImages();
 
-            articleInformation.setEmployee(employee);
+            Optional<Employee> employee = employeeService.findByEmployeeId((long)element.getFields().getEmployeeId());
+            if(employee.isPresent()){
+                articleInformation.setEmployee(employee.get());
+            } else{
+                articleInformation.setEmployee(employeeService.findByEmployeeId(1L).get());
+            }
+
             articleInformation.setContentfulId(element.getSys().getId());
             articleInformation.setImportance(element.getFields().getImportance());
             articleInformation.setTitle(element.getFields().getHeadTitle());

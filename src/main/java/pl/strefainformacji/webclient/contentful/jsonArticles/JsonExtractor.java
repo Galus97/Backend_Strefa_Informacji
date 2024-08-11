@@ -48,6 +48,7 @@ public class JsonExtractor {
         fields.setHeadAltImg((String) fieldsMap.get("headAltImg"));
         fields.setSpecificTitle((String) fieldsMap.get("specificTitle"));
         fields.setDescription((String) fieldsMap.get("description"));
+        fields.setEmployeeId((Integer) fieldsMap.get("employeeId"));
 
         Map<String, Map<String, String>> headImgSrcMap = (Map<String, Map<String, String>>)fieldsMap.get("headImgSrc");
         ContentfulArticleDto.Fields.Sys headImgSrc = new ContentfulArticleDto.Fields.Sys();
