@@ -11,6 +11,7 @@ import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArtic
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +21,7 @@ public class ContentfulService {
     private final ArticleInformationService articleInformationService;
     private final SpecificArticleService specificArticleService;
     private final ArticleImagesService articleImagesService;
+    private final EmployeeService employeeService;
 
     public List<String> addedArticleInContentful() {
         List<String> lastAddedArticles = new ArrayList<>();
@@ -37,17 +39,22 @@ public class ContentfulService {
         if(articleInformationService.findAllContentfulIds().isEmpty()){
             notAddedArticle = addedArticleInContentful();
         } else{
-            for (String articleFromContentful : addedArticleInContentful()) {
-                for (String contentfulIdFromDatabase : articleInformationService.findAllContentfulIds()) {
-                    if (!contentfulIdFromDatabase.equals(articleFromContentful)) {
-                        notAddedArticle.add(articleFromContentful);
-
-                    }
+            for(String contentfulArticleId : addedArticleInContentful()){
+                if(isArticleExistInDatabase(contentfulArticleId, articleInformationService.findAllContentfulIds())){
+                    notAddedArticle.add(contentfulArticleId);
                 }
             }
         }
-
         return notAddedArticle;
+    }
+
+    private boolean isArticleExistInDatabase (String contentfulArticleId, List<String> database){
+            for(String databaseElement : database){
+                if(contentfulArticleId.equals(databaseElement)){
+                    return false;
+                }
+            }
+        return true;
     }
 
     public List<ContentfulArticleDto> createContentfulArticleDtoFromJsonContentful (){
@@ -61,7 +68,7 @@ public class ContentfulService {
         return listOfContentfulArticleDto;
     }
 
-    public void createArticlesFromContentfulArticleDto(Employee employee){
+    public void createArticlesFromContentfulArticleDto(){
         List<ContentfulArticleDto> contentfulArticleDtos = createContentfulArticleDtoFromJsonContentful();
 
         for(ContentfulArticleDto element : contentfulArticleDtos){
@@ -69,7 +76,13 @@ public class ContentfulService {
             SpecificArticle specificArticle = new SpecificArticle();
             ArticleImages articleImages = new ArticleImages();
 
-            articleInformation.setEmployee(employee);
+            Optional<Employee> employee = employeeService.findByEmployeeId((long)element.getFields().getEmployeeId());
+            if(employee.isPresent()){
+                articleInformation.setEmployee(employee.get());
+            } else{
+                articleInformation.setEmployee(employeeService.findByEmployeeId(1L).get());
+            }
+
             articleInformation.setContentfulId(element.getSys().getId());
             articleInformation.setImportance(element.getFields().getImportance());
             articleInformation.setTitle(element.getFields().getHeadTitle());
@@ -89,9 +102,7 @@ public class ContentfulService {
                 articleImages.setSpecificArticle(specificArticle);
                 articleImages.setImgSrc(img.getId());
                 articleImagesService.saveArticleImages(articleImages);
-
             }
-
         }
     }
 }

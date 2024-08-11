@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.repository.ArticleInformationRepository;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -38,7 +37,9 @@ public class ArticleInformationService {
     }
 
     public List<String> findAllContentfulIds(){
-        return articleInformationRepository.findAllContentfulIds();
+        List<String> contentfulIds = articleInformationRepository.findAllContentfulIds();
+        Collections.reverse(contentfulIds);
+        return contentfulIds;
     }
 
 

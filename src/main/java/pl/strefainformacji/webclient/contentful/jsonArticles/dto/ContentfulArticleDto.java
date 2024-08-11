@@ -44,6 +44,8 @@ public class ContentfulArticleDto {
         private String description;
         @JsonProperty("imgSrc")
         private List<Sys> imgSrcList;
+        @JsonProperty("employeeId")
+        private int employeeId;
 
         @Getter
         @Setter
