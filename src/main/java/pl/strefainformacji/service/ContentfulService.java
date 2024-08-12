@@ -12,6 +12,7 @@ import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArtic
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +23,7 @@ public class ContentfulService {
     private final SpecificArticleService specificArticleService;
     private final ArticleImagesService articleImagesService;
     private final EmployeeService employeeService;
+    private static final Logger LOGGER = Logger.getLogger(ContentfulService.class.getName());
 
     public List<String> addedArticleInContentful() {
         List<String> lastAddedArticles = new ArrayList<>();
@@ -81,7 +83,6 @@ public class ContentfulService {
         for(ContentfulArticleDto element : contentfulArticleDtos){
             ArticleInformation articleInformation = new ArticleInformation();
             SpecificArticle specificArticle = new SpecificArticle();
-            ArticleImages articleImages = new ArticleImages();
 
             Optional<Employee> employee = employeeService.findByEmployeeId((long)element.getFields().getEmployeeId());
             Optional<Employee> generalEmployee = employeeService.findByEmployeeId(1L);
@@ -104,7 +105,10 @@ public class ContentfulService {
 
             specificArticleService.saveSpecificArticle(specificArticle);
 
+            LOGGER.info("element.getFields().getImgSrcList().size() --> " + element.getFields().getImgSrcList().size());
+
             for(ContentfulArticleDto.Fields.Sys img : element.getFields().getImgSrcList()){
+                ArticleImages articleImages = new ArticleImages();
                 articleImages.setSpecificArticle(specificArticle);
                 articleImages.setImgSrc(img.getId());
                 articleImagesService.saveArticleImages(articleImages);
