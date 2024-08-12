@@ -66,8 +66,6 @@ public class JsonExtractor {
             isEverythingExist = false;
         }
 
-        headImgSrc.setType(headImgSrcMap.get("sys").get("type"));
-        headImgSrc.setLinkType(headImgSrcMap.get("sys").get("linkType"));
         headImgSrc.setId(headImgSrcMap.get("sys").get("id"));
         fields.setHeadImgSrc(headImgSrc);
 
@@ -82,8 +80,6 @@ public class JsonExtractor {
             for(Map<String, Map<String, String>> imgSrcMap : imgSrcListMap){
                 ContentfulArticleDto.Fields.Sys imgSrc = new ContentfulArticleDto.Fields.Sys();
                 Map<String, String> mapSys = imgSrcMap.get("sys");
-                imgSrc.setType(mapSys.get("type"));
-                imgSrc.setLinkType(mapSys.get("linkType"));
                 imgSrc.setId(mapSys.get("id"));
                 imgSrcList.add(imgSrc);
             }

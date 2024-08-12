@@ -51,10 +51,6 @@ public class ContentfulArticleDto {
         @Setter
         @ToString
         public static class Sys {
-            @JsonProperty("type")
-            private String type;
-            @JsonProperty("linkType")
-            private String linkType;
             @JsonProperty("id")
             private String id;
         }
