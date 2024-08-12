@@ -14,9 +14,14 @@
 <form:form method="post" action="/verifyEmail">
 <label>
     Kod aktywacyjny: <input type="text" name="verifyEmailCode">
-    <input type="submit" value="Wyslij">
+    <input type="submit" name="action" value="Wyslij">
 </label>
 </form:form>
+
+<label>
+    Mail z kodem nie dotarł? <br>
+    <button type="submit" name="action" value="ResendCode">Wyslij kod jeszcze raz</button>
+</label>
 
 </body>
 </html>
