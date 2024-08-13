@@ -3,13 +3,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.ArticleImagesService;
+import pl.strefainformacji.service.EmployeeService;
 import pl.strefainformacji.service.SpecificArticleService;
 
 import java.util.Map;
@@ -19,12 +22,18 @@ import java.util.Map;
 public class ArticleImagesFormController {
     private final ArticleImagesService articleImagesService;
     private final SpecificArticleService specificArticleService;
+    private final EmployeeService employeeService;
     private static final Logger logger = LoggerFactory.getLogger(ArticleImagesFormController.class);
 
     @GetMapping("/add/articleImages")
-    public String articleImagesForm(@RequestParam(required = false)Long specificArticleId, HttpServletRequest request){
+    public String articleImagesForm(@RequestParam(required = false)Long specificArticleId, HttpServletRequest request, @AuthenticationPrincipal CurrentEmployee curentEmployee){
         request.setAttribute("specificArticleId", specificArticleId);
-        return "articleImages";
+        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+            return "articleImages";
+        } else {
+            return "redirect:verifyEmail";
+        }
+
     }
     @PostMapping("/add/articleImages")
     public String saveArticleImagesFromForm(HttpServletRequest request, @RequestParam Map<String, String> allParams){
