@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 
-class ArticleInformationFromControllerTest {
+class ArticleInformationFormControllerTest {
     @Mock
     private ArticleInformationService articleInformationService;
 
@@ -36,7 +36,7 @@ class ArticleInformationFromControllerTest {
     EmployeeService employeeService;
 
     @InjectMocks
-    private ArticleInformationFromController articleInformationFromController;
+    private ArticleInformationFormController articleInformationFromController;
 
     @BeforeEach
     public void setUp() {
@@ -49,6 +49,7 @@ class ArticleInformationFromControllerTest {
         employee.setEmployeeId(1L);
 
         when(currentEmployee.getEmployee()).thenReturn(employee);
+        when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
         when(employeeService.findByEmployeeId(anyLong())).thenReturn(Optional.of(employee));
 
         String viewName = articleInformationFromController.articleInformationForm(model, currentEmployee);
