@@ -1,17 +1,20 @@
 package pl.strefainformacji.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
+import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.exception.ArticleNotFoundException;
 import pl.strefainformacji.service.ArticleImagesService;
+import pl.strefainformacji.service.EmployeeService;
 import pl.strefainformacji.service.SpecificArticleService;
 
 import java.util.List;
@@ -22,6 +25,7 @@ public class AddedArticleController {
 
     private final SpecificArticleService specificArticleService;
     private final ArticleImagesService articleImagesService;
+    private final EmployeeService employeeService;
 
     @ModelAttribute("specificArticleId")
     public Long specificArticleId(@RequestParam(required = false)Long specificArticleId){
@@ -29,24 +33,27 @@ public class AddedArticleController {
     }
 
     @GetMapping("/add/viewAddedArticle")
-    public String addedArticlePage(@ModelAttribute("specificArticleId")Long specificArticleId, Model model){
-
-        if(specificArticleId == null){
-            handlerArticleNotFoundException(new ArticleNotFoundException("Article not found"));
-        }
+    public String addedArticlePage(@ModelAttribute("specificArticleId")Long specificArticleId, Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee){
+        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+            if(specificArticleId == null){
+                handlerArticleNotFoundException(new ArticleNotFoundException("Article not found"));
+            }
 
             SpecificArticle specificArticle = specificArticleService.getSpecificArticle(specificArticleId);
 
-        if(specificArticle == null){
-            return handlerArticleNotFoundException(new ArticleNotFoundException("Article not found"));
-        }
+            if(specificArticle == null){
+                return handlerArticleNotFoundException(new ArticleNotFoundException("Article not found"));
+            }
             ArticleInformation articleInformation = specificArticle.getArticleInformation();
             List<ArticleImages> articleImages = articleImagesService.getAllArticleImagesBySpecificArticle(specificArticle);
 
             model.addAttribute("articleInformation", articleInformation);
             model.addAttribute("specificArticle", specificArticle);
             model.addAttribute("articleImages", articleImages);
-        return "viewAddedArticle";
+            return "viewAddedArticle";
+        } else {
+            return "redirect:verifyEmail";
+        }
     }
 
     @ExceptionHandler(ArticleNotFoundException.class)
