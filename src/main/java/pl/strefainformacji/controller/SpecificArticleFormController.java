@@ -40,7 +40,7 @@ public class SpecificArticleFormController {
                 return "articleImages";
             }
         } else {
-            return "redirect:verifyEmail";
+            return "redirect:/verifyEmail";
         }
     }
 

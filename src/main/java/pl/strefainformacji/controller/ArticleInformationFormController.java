@@ -32,7 +32,7 @@ public class ArticleInformationFormController {
             model.addAttribute("articleInformation", articleInformation);
             return "articleInformation";
         } else{
-            return "redirect:verifyEmail";
+            return "redirect:/verifyEmail";
         }
     }
     @PostMapping("/add/articleInformation")

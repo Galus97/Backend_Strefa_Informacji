@@ -31,7 +31,7 @@ public class ArticleImagesFormController {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             return "articleImages";
         } else {
-            return "redirect:verifyEmail";
+            return "redirect:/verifyEmail";
         }
 
     }

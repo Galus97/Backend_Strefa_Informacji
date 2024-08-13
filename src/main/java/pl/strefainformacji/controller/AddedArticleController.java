@@ -32,7 +32,7 @@ public class AddedArticleController {
         return specificArticleId;
     }
 
-    @GetMapping("/add/viewAddedArticle")
+    @GetMapping("/viewAddedArticle")
     public String addedArticlePage(@ModelAttribute("specificArticleId")Long specificArticleId, Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee){
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             if(specificArticleId == null){
