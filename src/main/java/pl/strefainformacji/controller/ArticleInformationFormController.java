@@ -19,17 +19,21 @@ import java.util.Optional;
 
 @Controller
 @AllArgsConstructor
-public class ArticleInformationFromController {
-    private static final Logger logger = LoggerFactory.getLogger(ArticleInformationFromController.class);
+public class ArticleInformationFormController {
+    private static final Logger logger = LoggerFactory.getLogger(ArticleInformationFormController.class);
     private final ArticleInformationService articleInformationService;
     private final EmployeeService employeeService;
     @GetMapping("/add/articleInformation")
     public String articleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee){
-        Optional<Employee> employee = employeeService.findByEmployeeId(curentEmployee.getEmployee().getEmployeeId());
-        ArticleInformation articleInformation = new ArticleInformation();
-        articleInformation.setEmployee(employee.get());
-        model.addAttribute("articleInformation", articleInformation);
-        return "articleInformation";
+        if(employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+            Optional<Employee> employee = employeeService.findByEmployeeId(curentEmployee.getEmployee().getEmployeeId());
+            ArticleInformation articleInformation = new ArticleInformation();
+            articleInformation.setEmployee(employee.get());
+            model.addAttribute("articleInformation", articleInformation);
+            return "articleInformation";
+        } else{
+            return "redirect:/verifyEmail";
+        }
     }
     @PostMapping("/add/articleInformation")
     public String saveArticleInformationFromForm(@Valid ArticleInformation articleInformation, BindingResult bindingResult){

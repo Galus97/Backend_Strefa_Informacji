@@ -11,17 +11,20 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.ArticleInformation;
+import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.ArticleInformationService;
+import pl.strefainformacji.service.EmployeeService;
 import pl.strefainformacji.service.SpecificArticleService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class SpecificArticleFormControllerTest {
+
     @Mock
     private ArticleInformationService articleInformationService;
 
@@ -37,6 +40,12 @@ class SpecificArticleFormControllerTest {
     @Mock
     private HttpServletRequest request;
 
+    @Mock
+    private CurrentEmployee currentEmployee;
+
+    @Mock
+    private EmployeeService employeeService;
+
     @InjectMocks
     private SpecificArticleFormController specificArticleFormController;
 
@@ -51,12 +60,43 @@ class SpecificArticleFormControllerTest {
 
     @Test
     public void testSpecificArticleForm() {
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
         Long articleId = 1L;
-        when(articleInformationService.getArticleInformationByArticleId(articleId)).thenReturn(new ArticleInformation());
 
-        String viewName = specificArticleFormController.specificArticleForm(model, eq(articleId), request);
+        when(articleInformationService.getArticleInformationByArticleId(articleId)).thenReturn(new ArticleInformation());
+        when(currentEmployee.getEmployee()).thenReturn(employee);
+        when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
+
+        String viewName = specificArticleFormController.specificArticleForm(model, articleId, currentEmployee);
         assertEquals("specificArticle", viewName);
         verify(model).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
+    }
+
+    @Test
+    public void testSpecificArticleForm_ArticleIdNull() {
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
+
+        when(currentEmployee.getEmployee()).thenReturn(employee);
+        when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
+
+        String viewName = specificArticleFormController.specificArticleForm(model, null, currentEmployee);
+        assertEquals("articleImages", viewName);
+        verify(model, never()).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
+    }
+
+    @Test
+    public void testSpecificArticleForm_EmployeeNotEnabled() {
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
+
+        when(currentEmployee.getEmployee()).thenReturn(employee);
+        when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(false);
+
+        String viewName = specificArticleFormController.specificArticleForm(model, 1L, currentEmployee);
+        assertEquals("redirect:verifyEmail", viewName);
+        verify(model, never()).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
     }
 
     @Test

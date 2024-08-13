@@ -22,4 +22,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     default boolean isEnabledById(Long employeeId) {
         return existsById(employeeId) && getOne(employeeId).isEnabled();
     }
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Employee e SET e.emailCode = :emailCode WHERE e.employeeId = :employeeId")
+    void updateEmailCodeByEmployeeId(@Param("employeeId") Long employeeId, @Param("emailCode") String emailCode);
 }

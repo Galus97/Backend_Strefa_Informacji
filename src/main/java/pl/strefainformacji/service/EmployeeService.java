@@ -24,4 +24,8 @@ public class EmployeeService {
     public Optional<Employee> findByEmployeeId(Long id){
         return employeeRepository.findByEmployeeId(id);
     }
+
+    public void updateEmailCode(Long id, String emailCode){
+        employeeRepository.updateEmailCodeByEmployeeId(id, emailCode);
+    }
 }
