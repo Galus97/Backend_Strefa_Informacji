@@ -5,38 +5,42 @@
 <head>
     <meta charset="UTF-8">
     <title>Login form</title>
-
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/login.css">
 </head>
-<body>
+<body class="body">
 
-<form:form method="post" action="/login">
+<div class="login-container">
+    <img src="${pageContext.request.contextPath}/images/logo-no-background.png" alt="Logo" class="logo">
 
+<form:form method="post" action="/login" class="form">
 
-    <label>
+    <label class="label">
         Podaj nazwę użytkownika:
-        <input name="username" />
+        <input name="username" class="input-text" />
     </label>
     <br>
-    <label>
+    <label class="label">
         Podaj hasło:
-        <input type="password" name="password"/>
+        <input type="password" name="password" class="input-password"/>
     </label>
     <br>
-    <label>
-        <input type="submit" value="Zaloguj się">
+    <label class="label">
+        <input type="submit" value="Zaloguj się" class="button-submit">
     </label>
     <br>
-    <label>
-        <input type="reset" value="Usuń wartości">
+    <label class="label">
+        <input type="reset" value="Usuń wartości" class="button-reset">
     </label>
     <br>
     <br>
-    <label>
-        <h3>Nie masz jeszcze konta</h3>
-        <a href="/register">Załóż nowe konto</a>
+    <label class="label">
+        <h3 class="header">Nie masz jeszcze konta</h3>
+        <a href="/register" class="register-link">Załóż nowe konto</a>
     </label>
 
 </form:form>
+
+<%@ include file="/WEB-INF/includes/footer.html" %>
 
 </body>
 </html>
