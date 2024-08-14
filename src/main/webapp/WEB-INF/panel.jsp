@@ -16,6 +16,10 @@
 </label>
 <br>
 <label>
+    <a href="https://be.contentful.com/login/">Dodaj nowy artykuł przez Contentful</a>
+</label>
+<br>
+<label>
     <a href="/yourarticles">Artykuły dodane przez Ciebie</a>
 </label>
 <br>
