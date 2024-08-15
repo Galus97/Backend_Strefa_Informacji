@@ -23,6 +23,8 @@ public class SpecificArticle {
     private String title;
 
     @Size(min = 30)
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @OneToOne
