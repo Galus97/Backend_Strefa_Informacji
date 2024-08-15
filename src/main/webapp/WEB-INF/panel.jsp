@@ -18,7 +18,7 @@
             <a href="https://be.contentful.com/login/" class="button-addArticle">Dodaj nowy artykuł przez Contentful</a>
         </label>
         <label class="label">
-            <a href="/yourarticles" class="button-yourarticles">Artykuły dodane przez Ciebie</a>
+            <a href="/yourarticles" class="button-yourarticles">Wszystkie artykuły dodane przez Ciebie</a>
         </label>
     </div>
 
