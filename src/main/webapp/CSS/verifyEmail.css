@@ -1,0 +1,76 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    text-align: center;
+}
+
+.logo {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.mail-resend {
+    margin-top: 55px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 14px;
+    color: #333;
+    text-align: center;
+}
+
+.form-input {
+    width: calc(100% - 20px);
+    padding: 8px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+.button-submit, .button-resend {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 14px;
+    color: white;
+    background-color: #4CAF50;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+.button-resend {
+    background-color: #2196F3;
+    margin-top: 15px;
+}
+
+.button-submit:hover, .button-resend:hover {
+    opacity: 0.9;
+}

@@ -5,33 +5,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Panel</title>
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/panel.css">
 </head>
+
 <body>
-<h1>
-    Witaj <c:out value="${employee.firstName}"/>
-</h1>
+<div class="container">
+    <div class="menu">
+        <label class="label">
+            <a href="/add/articleInformation" class="button-addArticle">Dodaj nowy artykuł</a>
+        </label>
+        <label class="label">
+            <a href="https://be.contentful.com/login/" class="button-addArticle">Dodaj nowy artykuł przez Contentful</a>
+        </label>
+        <label class="label">
+            <a href="/yourarticles" class="button-yourarticles">Artykuły dodane przez Ciebie</a>
+        </label>
+    </div>
 
-<label>
-    <a href="/add/articleInformation">Dodaj nowy artykuł</a>
-</label>
-<br>
-<label>
-    <a href="https://be.contentful.com/login/">Dodaj nowy artykuł przez Contentful</a>
-</label>
-<br>
-<label>
-    <a href="/yourarticles">Artykuły dodane przez Ciebie</a>
-</label>
-<br>
-<label>
-    <a href="/logout">Logout</a>
-</label>
-<br>
+    <label class="page-title">
+        Witaj <c:out value="${employee.firstName}"/>
+    </label>
 
-<label id="weather">
-    Aktualna pogoda w Warszawie <br>
+    <label class="label">
+        <a href="/logout" class="button-logout">Logout</a>
+    </label>
+</div>
+
+<label class="weather-info">
+    Aktualna pogoda w Warszawie &nbsp;
     <b>Temperatura:</b> <c:out value="${weather.temperatue}"/> <sup>o</sup>C
-    <b>Ciśnienie;</b> <c:out value="${weather.pressure}"/> hPa
+    <b>Ciśnienie:</b> <c:out value="${weather.pressure}"/> hPa
     <b>Wilgotność:</b> <c:out value="${weather.humidity}"/> %
     <b>Prędkość wiatru:</b> <c:out value="${weather.speed}"/> <sup>m</sup>/<sub>s</sub>
 </label>
