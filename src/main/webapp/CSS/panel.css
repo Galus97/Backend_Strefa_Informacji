@@ -1,0 +1,93 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-title {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 250px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.button-addArticle, .button-yourarticles {
+    display: block;
+    width: 250px; /* Upewnia się, że każdy przycisk zajmuje pełną szerokość menu */
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.button-logout {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    margin-bottom: 20px;
+    margin-top: auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #f44336;
+}
+
+.button-addArticle {
+    background-color: #4CAF50;
+}
+
+.button-yourarticles {
+    background-color: #2196F3;
+}
+
+.button-addArticle:hover, .button-yourarticles:hover, .button-logout:hover {
+    opacity: 0.8;
+}
+
+.weather-info {
+    background-color: #7ea0e0;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    font-size: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: auto;
+    position: relative;
+}
