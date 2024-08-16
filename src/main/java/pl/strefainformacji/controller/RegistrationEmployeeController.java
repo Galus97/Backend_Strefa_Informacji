@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class EmployeeRegistrationController {
+public class RegistrationEmployeeController {
 
     private final RegistrationService registrationService;
     private final EmailService emailService;
