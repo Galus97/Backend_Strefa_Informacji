@@ -22,10 +22,14 @@ public class RegistrationService {
     private final PasswordEncoder passwordEncoder;
 
     private List<String> validate(Employee employee){
-        Optional<Employee> employeeExist = employeeRepository.findByUsername(employee.getUsername());
+        Optional<Employee> employeeExistByUsername = employeeRepository.findByUsername(employee.getUsername());
+        Optional<Employee> employeeExistByEmail = employeeRepository.findByEmail(employee.getEmail());
         List<String> errors = new ArrayList<>();
-        if(employeeExist.isPresent()){
+        if(employeeExistByUsername.isPresent()){
             errors.add("Użytkownik z taką nazwą użytkownika już istnieje. Musisz wpisać inny adres e-mail");
+        }
+        if(employeeExistByEmail.isPresent()){
+            errors.add("Ten adres email jest już używany. Wpisz inny adres email");
         }
         return errors;
     }

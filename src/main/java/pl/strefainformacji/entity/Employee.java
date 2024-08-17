@@ -22,9 +22,11 @@ public class Employee {
     private String lastName;
 
     @Size(min = 3)
+    @Column(unique = true)
     private String email;
 
     @Size(min = 3)
+    @Column(unique = true)
     private String username;
 
     @Size(min = 5)

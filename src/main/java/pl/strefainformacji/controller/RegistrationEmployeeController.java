@@ -18,7 +18,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class EmployeeRegistrationController {
+public class RegistrationEmployeeController {
 
     private final RegistrationService registrationService;
     private final EmailService emailService;
@@ -35,9 +35,9 @@ public class EmployeeRegistrationController {
             return "register";
         }
         try{
-            String emailCode = sendActivationEmail(request, employee.getEmail());
-            employee.setEmailCode(emailCode);
+            employee.setEmailCode(emailService.valueOfEmailActiveCode());
             registrationService.newEmployeeRegistration(employee);
+            sendActivationEmail(request, employee.getEmail());
             return "redirect:login";
         } catch (ValidationException exception){
             List<String> errors = exception.getValidationErrors();
@@ -46,9 +46,9 @@ public class EmployeeRegistrationController {
         }
     }
 
-    private String sendActivationEmail(HttpServletRequest request, String email){
+    private void sendActivationEmail(HttpServletRequest request, String email){
         HttpSession registerEmail = request.getSession();
         registerEmail.setAttribute("registerEmail", email);
-        return emailService.sendEmail();
+        emailService.sendEmail();
     }
 }
