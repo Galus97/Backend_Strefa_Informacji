@@ -90,6 +90,8 @@ public class ContentfulService {
                 articleInformation.setEmployee(employee.get());
             } else generalEmployee.ifPresent(articleInformation::setEmployee);
 
+            LOGGER.info("EmployeeId: " + articleInformation.getEmployee().getEmployeeId());
+
             articleInformation.setContentfulId(element.getSys().getId());
             articleInformation.setImportance(element.getFields().getImportance());
             articleInformation.setTitle(element.getFields().getHeadTitle());
@@ -104,8 +106,6 @@ public class ContentfulService {
             specificArticle.setArticleInformation(articleInformation);
 
             specificArticleService.saveSpecificArticle(specificArticle);
-
-            LOGGER.info("element.getFields().getImgSrcList().size() --> " + element.getFields().getImgSrcList().size());
 
             for(ContentfulArticleDto.Fields.Sys img : element.getFields().getImgSrcList()){
                 ArticleImages articleImages = new ArticleImages();

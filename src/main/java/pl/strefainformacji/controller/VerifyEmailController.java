@@ -31,7 +31,6 @@ public class VerifyEmailController {
         System.out.println(("Kod z bazy danych: " + curentEmployee.getEmployee().getEmailCode()));
         if("Wyślij".equals(action)){
             String verifyEmailCode = request.getParameter("verifyEmailCode");
-            System.out.println(("Kod wpisany przez użytkownika: " + verifyEmailCode));
             if(verifyEmailCode.equals(curentEmployee.getEmployee().getEmailCode())){
                 employeeService.updateEnable(curentEmployee.getEmployee().getEmployeeId(), true);
                 return "redirect:panel";
@@ -39,16 +38,17 @@ public class VerifyEmailController {
                 return "verifyEmail";
             }
         } else if ("ResendCode".equals(action)) {
-            String emailCode = sendActivationEmail(request, curentEmployee.getEmployee().getEmail());
+            String emailCode = emailService.valueOfEmailActiveCode();
             employee.setEmailCode(emailCode);
+            sendActivationEmail(request, curentEmployee.getEmployee().getEmail());
             employeeService.updateEmailCode(curentEmployee.getEmployee().getEmployeeId(), emailCode);
         }
         return "verifyEmail";
     }
 
-    private String sendActivationEmail(HttpServletRequest request, String email){
+    private void sendActivationEmail(HttpServletRequest request, String email){
         HttpSession registerEmail = request.getSession();
         registerEmail.setAttribute("registerEmail", email);
-        return emailService.sendEmail();
+        emailService.sendEmail();
     }
 }
