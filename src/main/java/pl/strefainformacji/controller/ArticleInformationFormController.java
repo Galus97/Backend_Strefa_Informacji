@@ -1,6 +1,6 @@
 package pl.strefainformacji.controller;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,17 +18,16 @@ import pl.strefainformacji.service.EmployeeService;
 import java.util.Optional;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ArticleInformationFormController {
-    private static final Logger logger = LoggerFactory.getLogger(ArticleInformationFormController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArticleInformationFormController.class);
     private final ArticleInformationService articleInformationService;
     private final EmployeeService employeeService;
+    public ArticleInformation articleInformation;
     @GetMapping("/add/articleInformation")
     public String articleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee){
         if(employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
-            Optional<Employee> employee = employeeService.findByEmployeeId(curentEmployee.getEmployee().getEmployeeId());
-            ArticleInformation articleInformation = new ArticleInformation();
-            articleInformation.setEmployee(employee.get());
+            articleInformation = new ArticleInformation();
             model.addAttribute("articleInformation", articleInformation);
             return "articleInformation";
         } else{
@@ -38,11 +37,12 @@ public class ArticleInformationFormController {
     @PostMapping("/add/articleInformation")
     public String saveArticleInformationFromForm(@Valid ArticleInformation articleInformation, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            logger.error("Error saving article information: " + bindingResult.getAllErrors());
+            LOGGER.error("Error saving article information: " + bindingResult.getAllErrors());
             return "articleInformation";
         }
-        articleInformationService.saveArticle(articleInformation);
+        this.articleInformation = articleInformation;
+        //articleInformationService.saveArticle(articleInformation);
 
-        return "redirect:specificArticle?articleId=" + articleInformation.getArticleId();
+        return "redirect:specificArticle";
     }
 }

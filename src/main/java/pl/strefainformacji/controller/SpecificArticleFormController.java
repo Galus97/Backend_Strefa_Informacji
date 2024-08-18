@@ -3,6 +3,7 @@ package pl.strefainformacji.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,39 +20,35 @@ import pl.strefainformacji.service.EmployeeService;
 import pl.strefainformacji.service.SpecificArticleService;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SpecificArticleFormController {
 
     private final ArticleInformationService articleInformationService;
     private final SpecificArticleService specificArticleService;
     private final EmployeeService employeeService;
+    public SpecificArticle specificArticle;
     private static final Logger logger = LoggerFactory.getLogger(SpecificArticleFormController.class);
 
     @GetMapping("/add/specificArticle")
-    public String specificArticleForm(Model model, @RequestParam(required = false) Long articleId, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
+    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
-            SpecificArticle specificArticle = new SpecificArticle();
-
-            if (articleId != null) {
-                specificArticle.setArticleInformation(articleInformationService.getArticleInformationByArticleId(articleId));
-                model.addAttribute("specificArticle", specificArticle);
-                return "specificArticle";
-            } else {
-                return "articleImages";
-            }
+            specificArticle = new SpecificArticle();
+             model.addAttribute("specificArticle", specificArticle);
+             return "specificArticle";
         } else {
             return "redirect:/verifyEmail";
         }
     }
 
     @PostMapping("/add/specificArticle")
-    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpServletRequest request) {
+    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             logger.error("Error saving specific article information: " + bindingResult.getAllErrors());
             return "specificArticle";
         }
-        specificArticleService.saveSpecificArticle(specificArticle);
+        this.specificArticle = specificArticle;
+        //specificArticleService.saveSpecificArticle(specificArticle);
 
-        return "redirect:articleImages?specificArticleId=" + specificArticle.getSpecificArticleId();
+        return "redirect:articleImages";
     }
 }

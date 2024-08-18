@@ -32,7 +32,7 @@ public class ArticleInformation {
 
     @Min(1)
     @Max(10)
-    private int importance;
+    private Integer importance;
 
     @Size(min = 1)
     private String imgSrc;
