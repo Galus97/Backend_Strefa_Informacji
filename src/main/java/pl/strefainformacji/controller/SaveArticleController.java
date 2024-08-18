@@ -3,6 +3,7 @@ package pl.strefainformacji.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.ArticleImages;
@@ -13,7 +14,6 @@ import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,7 +26,7 @@ public class SaveArticleController {
     private final ArticleImagesFormController articleImagesFormController;
 
     @GetMapping("/article")
-    public String getArticle(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
+    public String getArticle(@AuthenticationPrincipal CurrentEmployee curentEmployee, Model model) {
 
         ArticleInformation articleInformation = articleInformationFormController.articleInformation;
         SpecificArticle specificArticle = specificArticleFormController.specificArticle;
@@ -46,6 +46,9 @@ public class SaveArticleController {
                 articleImagesService.saveArticleImages(articleImages);
             }
         }
+        model.addAttribute("articleInformation", articleInformation);
+        model.addAttribute("specificArticle", specificArticle);
+        model.addAttribute("articleImages", articleImagesList);
         return "article";
     }
 

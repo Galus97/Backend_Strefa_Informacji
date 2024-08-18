@@ -4,10 +4,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Added Article</title>
+    <title>Success added Article</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/addedArticle.css">
 </head>
 <body>
+
 <header>
     <h1>Artykuł został dodany</h1>
 </header>
@@ -43,5 +44,6 @@
         <a href="/panel" class="button">Powróć do panelu głównego</a>
     </nav>
 </main>
+
 </body>
 </html>
