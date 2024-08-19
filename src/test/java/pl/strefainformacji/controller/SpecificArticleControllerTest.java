@@ -5,10 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -23,7 +21,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,7 +30,7 @@ public class SpecificArticleControllerTest {
     private SpecificArticleController controller;
 
     @Mock
-    private SpecificArticleService service;
+    private SpecificArticleService specificArticleService;
 
     private MockMvc mockMvc;
 
@@ -50,7 +47,7 @@ public class SpecificArticleControllerTest {
         expectedArticle.setSpecificArticleId(1L);
         expectedArticle.setTitle("Title");
         expectedArticle.setDescription("Description");
-        when(service.getSpecificArticleByArticleInformationId(anyLong())).thenReturn(expectedArticle);
+        when(specificArticleService.getSpecificArticleByArticleInformationId(anyLong())).thenReturn(expectedArticle);
 
         mockMvc.perform(get("/article/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -62,7 +59,7 @@ public class SpecificArticleControllerTest {
 
     @Test
     public void whenInvalidArticle_thenStatus404() throws Exception {
-        when(service.getSpecificArticleByArticleInformationId(anyLong())).thenThrow(new NoSuchElementException());
+        when(specificArticleService.getSpecificArticleByArticleInformationId(anyLong())).thenThrow(new NoSuchElementException());
 
         mockMvc.perform(get("/article/9999")
                         .contentType(MediaType.APPLICATION_JSON))

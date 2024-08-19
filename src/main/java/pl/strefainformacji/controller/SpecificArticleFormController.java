@@ -1,8 +1,6 @@
 package pl.strefainformacji.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,29 +10,24 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.SpecificArticle;
-import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.EmployeeService;
-import pl.strefainformacji.service.SpecificArticleService;
 
 @Controller
 @RequiredArgsConstructor
 public class SpecificArticleFormController {
 
-    private final ArticleInformationService articleInformationService;
-    private final SpecificArticleService specificArticleService;
     private final EmployeeService employeeService;
     public SpecificArticle specificArticle;
-    private static final Logger logger = LoggerFactory.getLogger(SpecificArticleFormController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpecificArticleFormController.class);
 
     @GetMapping("/add/specificArticle")
     public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             specificArticle = new SpecificArticle();
-             model.addAttribute("specificArticle", specificArticle);
-             return "specificArticle";
+            model.addAttribute("specificArticle", specificArticle);
+            return "specificArticle";
         } else {
             return "redirect:/verifyEmail";
         }
@@ -43,12 +36,10 @@ public class SpecificArticleFormController {
     @PostMapping("/add/specificArticle")
     public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            logger.error("Error saving specific article information: " + bindingResult.getAllErrors());
+            LOGGER.error("Error saving specific article information: " + bindingResult.getAllErrors());
             return "specificArticle";
         }
         this.specificArticle = specificArticle;
-        //specificArticleService.saveSpecificArticle(specificArticle);
-
         return "redirect:articleImages";
     }
 }
