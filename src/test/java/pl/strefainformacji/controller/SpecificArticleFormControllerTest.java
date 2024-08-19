@@ -71,7 +71,7 @@ class SpecificArticleFormControllerTest {
     }
 
     @Test
-    public void testSaveSpecificArticleFromForm_Success() {
+    public void testSpecificArticleFromForm_Success() {
         SpecificArticle specificArticle = new SpecificArticle();
         specificArticle.setSpecificArticleId(1L);
 
