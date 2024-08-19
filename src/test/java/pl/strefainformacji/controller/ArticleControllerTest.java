@@ -1,12 +1,9 @@
 package pl.strefainformacji.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +26,6 @@ class ArticleControllerTest {
 
     @Test
     public void shouldReturnListOfArticles(){
-        //given
         List<ArticleInformation> mockArticles = new ArrayList<>();
         ArticleInformation articleInformation1 = new ArticleInformation();
         articleInformation1.setTitle("Title1");
@@ -46,10 +42,8 @@ class ArticleControllerTest {
 
         when(articleInformationService.getAllArticles()).thenReturn(mockArticles);
 
-        //when
         ResponseEntity<?> responseEntity = articleController.getAllArticles();
 
-        //then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
 
         assertEquals(mockArticles, responseEntity.getBody());
@@ -57,13 +51,11 @@ class ArticleControllerTest {
 
     @Test
     public void testGetAllArticlesNotFound() {
-        // Arrange
+
         when(articleInformationService.getAllArticles()).thenThrow(new NoSuchElementException("No articles found"));
 
-        // Act
         ResponseEntity<?> response = articleController.getAllArticles();
 
-        // Assert
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("No articles found", response.getBody());
     }
