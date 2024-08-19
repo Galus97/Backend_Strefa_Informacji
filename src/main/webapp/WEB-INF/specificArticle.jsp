@@ -10,7 +10,6 @@
 <body>
 
 <form:form action="/add/specificArticle" method="post" modelAttribute="specificArticle" class="article-form">
-    <form:hidden path="articleInformation"/>
 
     <label class="form-label">
         Tytuł artykułu:
