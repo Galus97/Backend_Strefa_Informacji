@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SpecificArticleControllerTest {
 
     @InjectMocks
-    private SpecificArticleController controller;
+    private OneArticleController controller;
 
     @Mock
     private SpecificArticleService specificArticleService;
