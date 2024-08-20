@@ -21,8 +21,6 @@
             <p><strong>ID:</strong> <c:out value="${article.articleId}"/></p>
             <p><strong>Opis:</strong> <c:out value="${article.shortDescription}"/></p>
             <p><strong>Ważność:</strong> <c:out value="${article.importance}"/></p>
-            <p><strong>Link do zdjęcia:</strong> <c:out value="${article.imgSrc}"/></p>
-            <p><strong>Opis zdjęcia:</strong> <c:out value="${article.altImg}"/></p>
         </article>
         </a>
     </c:forEach>
