@@ -27,5 +27,10 @@
     </div>
 </form:form>
 
+<footer>
+    <a href="/panel" class="button">Powrót do panelu</a>
+    <a href="/logout" class="button">Logout</a>
+</footer>
+
 </body>
 </html>
