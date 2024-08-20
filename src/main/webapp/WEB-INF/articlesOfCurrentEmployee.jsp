@@ -15,6 +15,7 @@
 
 <main>
     <c:forEach items="${allArticlesByEmployee}" var="article">
+        <a href="/article/${article.articleId}" target="_blank">
         <article class="article-item">
             <h3><c:out value="${article.title}"/></h3>
             <p><strong>ID:</strong> <c:out value="${article.articleId}"/></p>
@@ -23,6 +24,7 @@
             <p><strong>Link do zdjęcia:</strong> <c:out value="${article.imgSrc}"/></p>
             <p><strong>Opis zdjęcia:</strong> <c:out value="${article.altImg}"/></p>
         </article>
+        </a>
     </c:forEach>
 </main>
 
