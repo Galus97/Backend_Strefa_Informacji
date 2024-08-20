@@ -22,7 +22,7 @@ class ArticleControllerTest {
     @Mock
     private ArticleInformationService articleInformationService;
     @InjectMocks
-    private ArticleController articleController;
+    private AllArticlesController articleController;
 
     @Test
     public void shouldReturnListOfArticles(){

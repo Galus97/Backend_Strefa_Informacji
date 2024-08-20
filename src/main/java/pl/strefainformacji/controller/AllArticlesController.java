@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @AllArgsConstructor
-public class ArticleController {
+public class AllArticlesController {
 
 
     private final ArticleInformationService articleInformationService;
