@@ -1,25 +1,36 @@
 package pl.strefainformacji.controller;
 
-import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import pl.strefainformacji.entity.ArticleImages;
+import pl.strefainformacji.entity.ArticleInformation;
+import pl.strefainformacji.entity.SpecificArticle;
+import pl.strefainformacji.service.ArticleImagesService;
+import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
 
-import java.util.NoSuchElementException;
+import java.util.List;
 
-@RestController
-@AllArgsConstructor
-public class SpecificArticleController {
+@Controller
+@RequiredArgsConstructor
+public class OneArticleController {
 
-    private SpecificArticleService specificArticleService;
+    private final SpecificArticleService specificArticleService;
+    private final ArticleInformationService articleInformationService;
+    private final ArticleImagesService articleImagesService;
 
     @GetMapping("/article/{articleId}")
-    public ResponseEntity<?> getOneArticle(@PathVariable Long articleId) {
-        try {
-            return ResponseEntity.ok(specificArticleService.getSpecificArticleByArticleInformationId(articleId));
-        } catch (NoSuchElementException exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-        }
+    public String getOneArticle(@PathVariable Long articleId, Model model) {
+        SpecificArticle specificArticle = specificArticleService.getSpecificArticleByArticleInformationId(articleId);
+        ArticleInformation articleInformation = articleInformationService.getArticleInformationByArticleId(articleId);
+        List<ArticleImages> articleImages = articleImagesService.getAllArticleImagesBySpecificArticle(specificArticle);
+
+        model.addAttribute("specificArticle", specificArticle);
+        model.addAttribute("articleInformation", articleInformation);
+        model.addAttribute("articleImages", articleImages);
+
+        return "oneArticle";
     }
 }
