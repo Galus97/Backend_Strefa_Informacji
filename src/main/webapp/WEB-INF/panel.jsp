@@ -20,6 +20,9 @@
         <label class="label">
             <a href="/yourarticles" class="button-yourarticles">Wszystkie artykuły dodane przez Ciebie</a>
         </label>
+        <label class="label">
+            <a href="/articles" class="button-allarticles">Wszystkie artykuły na portalu</a>
+        </label>
     </div>
 
     <label class="page-title">

@@ -7,21 +7,16 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/yourArticle.css">
 </head>
 <body>
-<header>
-    <h1>
-        <c:out value="${employee.firstName}"/>, to dodane przez Ciebie artykuły
-    </h1>
-</header>
 
 <main>
-    <c:forEach items="${allArticlesByEmployee}" var="article">
+    <c:forEach items="${allArticles}" var="article">
         <a href="/article/${article.articleId}" target="_self">
-        <article class="article-item">
-            <h3><c:out value="${article.title}"/></h3>
-            <p><strong>ID:</strong> <c:out value="${article.articleId}"/></p>
-            <p><strong>Opis:</strong> <c:out value="${article.shortDescription}"/></p>
-            <p><strong>Ważność:</strong> <c:out value="${article.importance}"/></p>
-        </article>
+            <article class="article-item">
+                <h3><c:out value="${article.title}"/></h3>
+                <p><strong>ID:</strong> <c:out value="${article.articleId}"/></p>
+                <p><strong>Opis:</strong> <c:out value="${article.shortDescription}"/></p>
+                <p><strong>Ważność:</strong> <c:out value="${article.importance}"/></p>
+            </article>
         </a>
     </c:forEach>
 </main>
