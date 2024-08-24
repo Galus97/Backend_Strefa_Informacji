@@ -42,7 +42,7 @@ body {
 
 .button-addArticle, .button-yourarticles {
     display: block;
-    width: 250px; /* Upewnia się, że każdy przycisk zajmuje pełną szerokość menu */
+    width: 250px;
     padding: 15px;
     border-radius: 10px;
     text-align: center;
@@ -51,6 +51,24 @@ body {
     font-size: 18px;
     margin-bottom: 20px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.button-allarticles {
+    display: block;
+    width: 250px; /* Pasuje do szerokości innych przycisków */
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    font-size: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #FF9800;
+}
+
+.button-allarticles:hover {
+    opacity: 0.8;
 }
 
 .button-logout {
@@ -76,7 +94,7 @@ body {
     background-color: #2196F3;
 }
 
-.button-addArticle:hover, .button-yourarticles:hover, .button-logout:hover {
+.button-addArticle:hover, .button-yourarticles:hover, .button-logout:hover{
     opacity: 0.8;
 }
 
