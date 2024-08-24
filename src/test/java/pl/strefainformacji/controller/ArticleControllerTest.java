@@ -1,62 +1,69 @@
 package pl.strefainformacji.controller;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import pl.strefainformacji.entity.ArticleInformation;
+import org.mockito.MockitoAnnotations;
+import org.springframework.ui.Model;
+import pl.strefainformacji.component.CurrentEmployee;
+import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.service.ArticleInformationService;
+import pl.strefainformacji.service.EmployeeService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-@ExtendWith(MockitoExtension.class)
-class ArticleControllerTest {
+
+class AllArticlesControllerTest {
 
     @Mock
     private ArticleInformationService articleInformationService;
+
+    @Mock
+    private EmployeeService employeeService;
+
+    @Mock
+    private Model model;
+
+    @Mock
+    private CurrentEmployee currentEmployee;
+
     @InjectMocks
-    private AllArticlesController articleController;
+    private AllArticlesController allArticlesController;
 
-    @Test
-    public void shouldReturnListOfArticles(){
-        List<ArticleInformation> mockArticles = new ArrayList<>();
-        ArticleInformation articleInformation1 = new ArticleInformation();
-        articleInformation1.setTitle("Title1");
-        articleInformation1.setShortDescription("Description1");
-        articleInformation1.setImportance(5);
-        mockArticles.add(articleInformation1);
-
-        ArticleInformation articleInformation2 = new ArticleInformation();
-        articleInformation2.setTitle("Title2");
-        articleInformation2.setShortDescription("Description2");
-        articleInformation2.setImportance(6);
-        mockArticles.add(articleInformation1);
-
-
-        when(articleInformationService.getAllArticles()).thenReturn(mockArticles);
-
-        ResponseEntity<?> responseEntity = articleController.getAllArticles();
-
-        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-
-        assertEquals(mockArticles, responseEntity.getBody());
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    public void testGetAllArticlesNotFound() {
+    void testGetAllArticles_EmployeeEnabled() {
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
+        when(currentEmployee.getEmployee()).thenReturn(employee);
 
-        when(articleInformationService.getAllArticles()).thenThrow(new NoSuchElementException("No articles found"));
+        when(employeeService.isEnabledById(1L)).thenReturn(true);
 
-        ResponseEntity<?> response = articleController.getAllArticles();
+        String viewName = allArticlesController.getAllArticles(currentEmployee, model);
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("No articles found", response.getBody());
+        assertEquals("allArticles", viewName);
+
+        verify(model).addAttribute(eq("allArticles"), any());
+    }
+
+    @Test
+    void testGetAllArticles_EmployeeNotEnabled() {
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
+        when(currentEmployee.getEmployee()).thenReturn(employee);
+
+        when(employeeService.isEnabledById(1L)).thenReturn(false);
+
+        String viewName = allArticlesController.getAllArticles(currentEmployee, model);
+
+        assertEquals("redirect:verifyEmail", viewName);
+
+        verify(model, never()).addAttribute(eq("allArticles"), any());
     }
 }
