@@ -15,7 +15,7 @@
 
 <main>
     <c:forEach items="${allArticlesByEmployee}" var="article">
-        <a href="/article/${article.articleId}" target="_blank">
+        <a href="/article/${article.articleId}" target="_self">
         <article class="article-item">
             <h3><c:out value="${article.title}"/></h3>
             <p><strong>ID:</strong> <c:out value="${article.articleId}"/></p>
