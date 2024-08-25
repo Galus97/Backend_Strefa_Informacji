@@ -8,10 +8,7 @@ import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.exception.ValidationException;
 import pl.strefainformacji.repository.EmployeeRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import java.util.*;
 
 @Service
 @Transactional
@@ -21,21 +18,21 @@ public class RegistrationService {
     private final EmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private List<String> validate(Employee employee){
+    private Map<String, String> validate(Employee employee){
         Optional<Employee> employeeExistByUsername = employeeRepository.findByUsername(employee.getUsername());
         Optional<Employee> employeeExistByEmail = employeeRepository.findByEmail(employee.getEmail());
-        List<String> errors = new ArrayList<>();
+        Map<String, String> errors = new HashMap<>();
         if(employeeExistByUsername.isPresent()){
-            errors.add("Użytkownik z taką nazwą użytkownika już istnieje. Musisz wpisać inny adres e-mail");
+            errors.put("username", "Użytkownik z taką nazwą już istnieje. Wpisz inną nazwę użytkownika");
         }
         if(employeeExistByEmail.isPresent()){
-            errors.add("Ten adres email jest już używany. Wpisz inny adres email");
+            errors.put("email", "Ten adres email jest już używany. Wpisz inny adres email");
         }
         return errors;
     }
 
     public Employee newEmployeeRegistration(Employee employee) throws pl.strefainformacji.exception.ValidationException{
-        List<String> validationFailures = validate(employee);
+        Map<String, String> validationFailures = validate(employee);
         if(validationFailures.isEmpty()){
             employee.setEmployeeId(null);
             employee.setPassword(passwordEncoder.encode(employee.getPassword()));

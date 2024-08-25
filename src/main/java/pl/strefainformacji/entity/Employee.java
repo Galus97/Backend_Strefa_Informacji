@@ -1,6 +1,7 @@
 package pl.strefainformacji.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -15,21 +16,22 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long employeeId;
 
-    @Size(min = 3)
+    @Size(min = 3, message = "{Size.employee.firstName}")
     private String firstName;
 
-    @Size(min = 3)
+    @Size(min = 3, message = "{Size.employee.lastName}")
     private String lastName;
 
-    @Size(min = 3)
+    @Size(min = 5, message = "{Size.employee.email}")
     @Column(unique = true)
+    @Email(message = "{Email.employee.email}")
     private String email;
 
-    @Size(min = 3)
+    @Size(min = 3, message = "{Size.employee.username}")
     @Column(unique = true)
     private String username;
 
-    @Size(min = 5)
+    @Size(min = 5, message = "{Size.employee.password}")
     private String password;
 
     private boolean enabled;

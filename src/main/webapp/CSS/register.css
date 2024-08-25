@@ -80,3 +80,9 @@ body {
     border-top: 1px solid #ddd;
     width: 100%;
 }
+
+.error-message {
+    color: #f44336;
+    font-size: 12px;
+    margin-top: 5px;
+}
