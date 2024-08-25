@@ -1,15 +1,14 @@
 package pl.strefainformacji.exception;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
+@Getter
 public class ValidationException extends Exception{
 
-    private final List<String> validationErrors;
-
-    public List<String> getValidationErrors() {
-        return validationErrors;
-    }
+    private final Map<String, String> validationErrors;
 }
