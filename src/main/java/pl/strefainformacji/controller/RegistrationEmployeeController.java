@@ -14,7 +14,7 @@ import pl.strefainformacji.exception.ValidationException;
 import pl.strefainformacji.service.EmailService;
 import pl.strefainformacji.service.RegistrationService;
 
-import java.util.List;
+import java.util.Map;
 
 @Controller
 @AllArgsConstructor
@@ -40,8 +40,11 @@ public class RegistrationEmployeeController {
             sendActivationEmail(request, employee.getEmail());
             return "redirect:login";
         } catch (ValidationException exception){
-            List<String> errors = exception.getValidationErrors();
-            model.addAttribute("errors", errors);
+            Map<String, String> errors = exception.getValidationErrors();
+            for(Map.Entry<String, String> error : errors.entrySet()){
+                bindingResult.rejectValue(error.getKey(), null, error.getValue());
+            }
+
             return "register";
         }
     }
