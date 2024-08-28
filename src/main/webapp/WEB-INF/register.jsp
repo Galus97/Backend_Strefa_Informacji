@@ -21,13 +21,13 @@
 
         <div class="personalData">
             <label class="fields">
-                First Name:
+                Imię:
                 <form:input type="text" path="firstName" class="input-text" oninput="clearError('firstName')" />
                 <form:errors path="firstName" cssClass="error-message"/>
             </label><br>
 
             <label class="fields">
-                Last Name:
+                Nazwisko:
                 <form:input type="text" path="lastName" class="input-text" oninput="clearError('lastName')" />
                 <form:errors path="lastName" cssClass="error-message"/>
             </label><br>
@@ -39,13 +39,13 @@
             </label><br>
 
             <label class="fields">
-                Username:
+                Nazwa użytkownika:
                 <form:input type="text" path="username" class="input-text" oninput="clearError('username')" />
                 <form:errors path="username" cssClass="error-message"/>
             </label><br>
 
             <label class="fields">
-                Password:
+                Hasło:
                 <form:input type="password" path="password" class="input-password" oninput="clearError('password')" />
                 <form:errors path="password" cssClass="error-message" element="div" id="password-error"/>
             </label>
