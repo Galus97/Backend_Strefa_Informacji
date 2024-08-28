@@ -1,7 +1,7 @@
 package pl.strefainformacji.service;
 
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.Employee;
@@ -12,7 +12,7 @@ import java.util.*;
 
 @Service
 @Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RegistrationService {
 
     private final EmployeeRepository employeeRepository;
@@ -23,10 +23,10 @@ public class RegistrationService {
         Optional<Employee> employeeExistByEmail = employeeRepository.findByEmail(employee.getEmail());
         Map<String, String> errors = new HashMap<>();
         if(employeeExistByUsername.isPresent()){
-            errors.put("username", "Użytkownik z taką nazwą już istnieje. Wpisz inną nazwę użytkownika");
+            errors.put("existUsername", "Użytkownik z taką nazwą już istnieje. Wpisz inną nazwę użytkownika");
         }
         if(employeeExistByEmail.isPresent()){
-            errors.put("email", "Ten adres email jest już używany. Wpisz inny adres email");
+            errors.put("existEmail", "Ten adres email jest już używany. Wpisz inny adres email");
         }
         return errors;
     }

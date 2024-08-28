@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,13 +16,15 @@ import pl.strefainformacji.service.EmailService;
 import pl.strefainformacji.service.RegistrationService;
 
 import java.util.Map;
+import java.util.logging.Logger;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class RegistrationEmployeeController {
 
     private final RegistrationService registrationService;
     private final EmailService emailService;
+    private static final Logger LOGGER = Logger.getLogger(RegistrationEmployeeController.class.getName());
 
     @GetMapping("/register")
     public String registerGet(Model model){
@@ -41,8 +44,12 @@ public class RegistrationEmployeeController {
             return "redirect:login";
         } catch (ValidationException exception){
             Map<String, String> errors = exception.getValidationErrors();
-            for(Map.Entry<String, String> error : errors.entrySet()){
-                bindingResult.rejectValue(error.getKey(), null, error.getValue());
+            LOGGER.info("errors registerPost" + errors.isEmpty());
+            if (errors.containsKey("existUsername")) {
+                bindingResult.rejectValue("username", "", errors.get("existUsername"));
+            }
+            if (errors.containsKey("existEmail")) {
+                bindingResult.rejectValue("email", "", errors.get("existEmail"));
             }
 
             return "register";
