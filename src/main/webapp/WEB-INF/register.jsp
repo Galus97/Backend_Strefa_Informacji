@@ -23,25 +23,25 @@
             <label class="fields">
                 Imię:
                 <form:input type="text" path="firstName" class="input-text" oninput="clearError('firstName')" />
-                <form:errors path="firstName" cssClass="error-message"/>
+                <form:errors path="firstName" cssClass="error-message" element="div" id="firstName-error"/>
             </label><br>
 
             <label class="fields">
                 Nazwisko:
                 <form:input type="text" path="lastName" class="input-text" oninput="clearError('lastName')" />
-                <form:errors path="lastName" cssClass="error-message"/>
+                <form:errors path="lastName" cssClass="error-message" element="div" id="lastName-error"/>
             </label><br>
 
             <label class="fields">
                 Email:
                 <form:input type="text" path="email" class="input-text" oninput="clearError('email')" />
-                <form:errors path="email" cssClass="error-message"/>
+                <form:errors path="email" cssClass="error-message" element="div" id="email-error"/>
             </label><br>
 
             <label class="fields">
                 Nazwa użytkownika:
                 <form:input type="text" path="username" class="input-text" oninput="clearError('username')" />
-                <form:errors path="username" cssClass="error-message"/>
+                <form:errors path="username" cssClass="error-message" element="div" id="username-error"/>
             </label><br>
 
             <label class="fields">
