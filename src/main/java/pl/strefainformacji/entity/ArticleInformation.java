@@ -24,20 +24,20 @@ public class ArticleInformation {
     @Size(min = 5)
     private String contentfulId;
 
-    @Size(min = 3)
+    @Size(min = 3, message = "{Size.articleInformation.title}")
     private String title;
 
-    @Size(min = 10)
+    @Size(min = 10, message = "{Size.articleInformation.shortDescription}")
     private String shortDescription;
 
-    @Min(1)
-    @Max(10)
+    @Min(value = 1, message = "{Min.articleInformation.importance}")
+    @Max(value = 10, message = "{Max.articleInformation.importance}")
     private Integer importance;
 
-    @Size(min = 1)
+    @Size(min = 1, message = "{Size.articleInformation.imgSrc}")
     private String imgSrc;
 
-    @Size(min = 1)
+    @Size(min = 1, message = "{Size.articleInformation.altImg}")
     private String altImg;
 
     @ManyToOne
