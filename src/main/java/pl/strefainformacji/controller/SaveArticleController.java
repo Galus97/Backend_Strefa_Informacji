@@ -1,5 +1,7 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -26,7 +28,7 @@ public class SaveArticleController {
     private final ArticleImagesFormController articleImagesFormController;
 
     @GetMapping("/article")
-    public String getArticle(@AuthenticationPrincipal CurrentEmployee curentEmployee, Model model) {
+    public String getArticle(@AuthenticationPrincipal CurrentEmployee curentEmployee, Model model, HttpServletRequest request) {
 
         ArticleInformation articleInformation = articleInformationFormController.articleInformation;
         SpecificArticle specificArticle = specificArticleFormController.specificArticle;
@@ -49,7 +51,14 @@ public class SaveArticleController {
         model.addAttribute("articleInformation", articleInformation);
         model.addAttribute("specificArticle", specificArticle);
         model.addAttribute("articleImages", articleImagesList);
-        return "article";
+
+        HttpSession session = request.getSession();
+        if(session.getAttribute("Article") != null && "articleImages".equals(session.getAttribute("Article"))){
+            session.invalidate();
+            return "article";
+        } else {
+            return "redirect:/panel";
+        }
     }
 
     private boolean isEveryFieldsExist(ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImages) {
