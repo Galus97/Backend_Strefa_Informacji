@@ -10,10 +10,15 @@
 </head>
 <body>
 
-<h3>Dodaj zdjęcia do artykułu</h3>
-<form action="/add/articleImages" method="post" class="image-form">
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 
+<h3>Dodaj zdjęcia do artykułu</h3>
+<form:form action="/add/articleImages" method="post" class="image-form">
+    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+    <c:if test="${not empty errorImage}">
+        <div class="error-message error-image">
+                ${errorImage}
+        </div>
+    </c:if>
     <c:forEach var="i" begin="1" end="10">
         <label>
             Podaj ścieżkę do zdjęcia ${i}
@@ -27,7 +32,7 @@
         <input type="submit" value="Przejdź dalej"/>
         <input type="reset" value="Usuń wartości"/>
     </label>
-</form>
+</form:form>
 
 <footer>
     <a href="/panel" class="button">Powrót do panelu</a>
