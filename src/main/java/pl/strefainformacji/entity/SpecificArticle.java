@@ -19,10 +19,10 @@ public class SpecificArticle {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long specificArticleId;
 
-    @Size(min = 3)
+    @Size(min = 3, message = "{Size.specificArticle.title}")
     private String title;
 
-    @Size(min = 30)
+    @Size(min = 30, message = "{Size.specificArticle.description}")
     @Lob
     @Column(columnDefinition = "TEXT")
     private String description;

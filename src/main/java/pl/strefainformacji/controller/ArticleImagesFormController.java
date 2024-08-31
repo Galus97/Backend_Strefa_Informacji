@@ -3,6 +3,7 @@ package pl.strefainformacji.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,7 +33,7 @@ public class ArticleImagesFormController {
     }
 
     @PostMapping("/add/articleImages")
-    public String saveArticleImagesFromForm(@RequestParam Map<String, String> allParams) {
+    public String saveArticleImagesFromForm(@RequestParam Map<String, String> allParams, Model model) {
 
         articleImagesList = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
@@ -48,6 +49,7 @@ public class ArticleImagesFormController {
         }
 
         if(articleImagesList.isEmpty()){
+            model.addAttribute("errorImage", "Musisz dodać przynajmniej jedno zdjęcie (ścieżkę i opis)");
             return "articleImages";
         }
 
