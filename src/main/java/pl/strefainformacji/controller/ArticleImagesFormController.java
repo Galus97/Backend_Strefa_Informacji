@@ -1,5 +1,7 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -23,9 +25,15 @@ public class ArticleImagesFormController {
     public List<ArticleImages> articleImagesList;
 
     @GetMapping("/add/articleImages")
-    public String articleImagesForm(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
+    public String articleImagesForm(@AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request) {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
-            return "articleImages";
+            HttpSession session = request.getSession();
+            if(session.getAttribute("Article") != null && "specificArticle".equals(session.getAttribute("Article"))){
+                return "articleImages";
+            } else {
+                return "redirect:/add/articleInformation";
+            }
+
         } else {
             return "redirect:/verifyEmail";
         }
@@ -33,7 +41,7 @@ public class ArticleImagesFormController {
     }
 
     @PostMapping("/add/articleImages")
-    public String saveArticleImagesFromForm(@RequestParam Map<String, String> allParams, Model model) {
+    public String saveArticleImagesFromForm(@RequestParam Map<String, String> allParams, Model model, HttpServletRequest request) {
 
         articleImagesList = new ArrayList<>();
         for (int i = 1; i <= 10; i++) {
@@ -52,6 +60,9 @@ public class ArticleImagesFormController {
             model.addAttribute("errorImage", "Musisz dodać przynajmniej jedno zdjęcie (ścieżkę i opis)");
             return "articleImages";
         }
+
+        HttpSession session = request.getSession();
+        session.setAttribute("Article", "articleImages");
 
         return "redirect:/article";
     }

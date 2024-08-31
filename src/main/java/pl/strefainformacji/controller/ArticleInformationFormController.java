@@ -1,5 +1,7 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
@@ -17,7 +19,6 @@ import pl.strefainformacji.service.EmployeeService;
 @Controller
 @RequiredArgsConstructor
 public class ArticleInformationFormController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ArticleInformationFormController.class);
     private final EmployeeService employeeService;
     public ArticleInformation articleInformation;
 
@@ -33,12 +34,13 @@ public class ArticleInformationFormController {
     }
 
     @PostMapping("/add/articleInformation")
-    public String saveArticleInformationFromForm(@Valid ArticleInformation articleInformation, BindingResult bindingResult) {
+    public String saveArticleInformationFromForm(@Valid ArticleInformation articleInformation, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-            LOGGER.error("Error saving article information: " + bindingResult.getAllErrors());
             return "articleInformation";
         }
         this.articleInformation = articleInformation;
+        HttpSession session = request.getSession();
+        session.setAttribute("Article", "articleInformation");
         return "redirect:specificArticle";
     }
 }

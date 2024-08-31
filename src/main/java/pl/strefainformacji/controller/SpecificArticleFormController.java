@@ -1,5 +1,7 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -22,22 +24,30 @@ public class SpecificArticleFormController {
     public SpecificArticle specificArticle;
 
     @GetMapping("/add/specificArticle")
-    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
+    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request) {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             specificArticle = new SpecificArticle();
-            model.addAttribute("specificArticle", specificArticle);
-            return "specificArticle";
+            HttpSession session = request.getSession();
+            if(session.getAttribute("Article") != null && "articleInformation".equals(session.getAttribute("Article"))){
+                model.addAttribute("specificArticle", specificArticle);
+                return "specificArticle";
+            } else {
+                return "redirect:/add/articleInformation";
+            }
+
         } else {
             return "redirect:/verifyEmail";
         }
     }
 
     @PostMapping("/add/specificArticle")
-    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult) {
+    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "specificArticle";
         }
         this.specificArticle = specificArticle;
+        HttpSession session = request.getSession();
+        session.setAttribute("Article", "specificArticle");
         return "redirect:articleImages";
     }
 }
