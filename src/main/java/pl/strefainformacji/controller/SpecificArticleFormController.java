@@ -20,7 +20,6 @@ public class SpecificArticleFormController {
 
     private final EmployeeService employeeService;
     public SpecificArticle specificArticle;
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpecificArticleFormController.class);
 
     @GetMapping("/add/specificArticle")
     public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
@@ -36,7 +35,6 @@ public class SpecificArticleFormController {
     @PostMapping("/add/specificArticle")
     public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            LOGGER.error("Error saving specific article information: " + bindingResult.getAllErrors());
             return "specificArticle";
         }
         this.specificArticle = specificArticle;
