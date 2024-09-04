@@ -1,5 +1,7 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -29,12 +31,19 @@ class ArticleInformationFormControllerTest {
     @Mock
     private EmployeeService employeeService;
 
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpSession session;
+
     @InjectMocks
     private ArticleInformationFormController articleInformationFormController;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        when(request.getSession()).thenReturn(session);
     }
 
     @Test
@@ -71,10 +80,11 @@ class ArticleInformationFormControllerTest {
 
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        String viewName = articleInformationFormController.saveArticleInformationFromForm(articleInformation, bindingResult);
+        String viewName = articleInformationFormController.saveArticleInformationFromForm(articleInformation, bindingResult, request);
 
         assertEquals("redirect:specificArticle", viewName);
         assertEquals(articleInformation, articleInformationFormController.articleInformation);
+        verify(session).setAttribute("Article", "articleInformation");
     }
 
     @Test
@@ -83,9 +93,9 @@ class ArticleInformationFormControllerTest {
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        String viewName = articleInformationFormController.saveArticleInformationFromForm(articleInformation, bindingResult);
+        String viewName = articleInformationFormController.saveArticleInformationFromForm(articleInformation, bindingResult, request);
 
         assertEquals("articleInformation", viewName);
-        verify(bindingResult).getAllErrors();
+        verify(session, never()).setAttribute(eq("Article"), anyString());
     }
 }
