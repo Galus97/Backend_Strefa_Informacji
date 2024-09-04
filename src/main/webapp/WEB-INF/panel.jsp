@@ -25,6 +25,9 @@
         <label class="label">
             <a href="/articles">Wszystkie artykuły</a>
         </label>
+        <label class="label">
+            <a href="/settings">Ustawienia</a>
+        </label>
     </div>
 
 
