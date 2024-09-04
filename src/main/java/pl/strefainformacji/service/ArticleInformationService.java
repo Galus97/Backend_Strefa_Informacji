@@ -1,6 +1,7 @@
 package pl.strefainformacji.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
@@ -42,5 +43,8 @@ public class ArticleInformationService {
         return contentfulIds;
     }
 
-
+    public List<ArticleInformation> getLastFiveArticlesByEmployee(Employee employee){
+        PageRequest pageRequest = PageRequest.of(0, 5);
+        return articleInformationRepository.findLastFiveArticlesByEmployee(employee, pageRequest);
+    }
 }
