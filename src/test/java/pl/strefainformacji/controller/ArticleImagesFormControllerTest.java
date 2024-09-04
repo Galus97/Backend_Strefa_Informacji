@@ -1,10 +1,13 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.ui.Model;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.service.EmployeeService;
@@ -23,25 +26,50 @@ class ArticleImagesFormControllerTest {
     @Mock
     CurrentEmployee currentEmployee;
 
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpSession session;
+
+    @Mock
+    private Model model;
+
     @InjectMocks
     private ArticleImagesFormController articleImagesFormController;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
+        when(request.getSession()).thenReturn(session);
     }
 
     @Test
-    public void testArticleImagesForm_EmployeeEnabled() {
+    public void testArticleImagesForm_EmployeeEnabled_SpecificArticle() {
         Employee employee = new Employee();
         employee.setEmployeeId(1L);
 
         when(currentEmployee.getEmployee()).thenReturn(employee);
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
+        when(session.getAttribute("Article")).thenReturn("specificArticle");
 
-        String viewName = articleImagesFormController.articleImagesForm(currentEmployee);
+        String viewName = articleImagesFormController.articleImagesForm(currentEmployee, request);
 
         assertEquals("articleImages", viewName);
+    }
+
+    @Test
+    public void testArticleImagesForm_EmployeeEnabled_NoSpecificArticle() {
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
+
+        when(currentEmployee.getEmployee()).thenReturn(employee);
+        when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
+        when(session.getAttribute("Article")).thenReturn(null);
+
+        String viewName = articleImagesFormController.articleImagesForm(currentEmployee, request);
+
+        assertEquals("redirect:/add/articleInformation", viewName);
     }
 
     @Test
@@ -52,7 +80,7 @@ class ArticleImagesFormControllerTest {
         when(currentEmployee.getEmployee()).thenReturn(employee);
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(false);
 
-        String viewName = articleImagesFormController.articleImagesForm(currentEmployee);
+        String viewName = articleImagesFormController.articleImagesForm(currentEmployee, request);
 
         assertEquals("redirect:/verifyEmail", viewName);
     }
@@ -65,8 +93,9 @@ class ArticleImagesFormControllerTest {
             allParams.put("altImg" + i, "altText" + i);
         }
 
-        String viewName = articleImagesFormController.saveArticleImagesFromForm(allParams);
+        String viewName = articleImagesFormController.saveArticleImagesFromForm(allParams, model, request);
 
+        verify(session).setAttribute("Article", "articleImages");
         assertEquals("redirect:/article", viewName);
     }
 
@@ -76,8 +105,9 @@ class ArticleImagesFormControllerTest {
         allParams.put("imgSrc1", "");
         allParams.put("altImg1", "");
 
-        String viewName = articleImagesFormController.saveArticleImagesFromForm(allParams);
+        String viewName = articleImagesFormController.saveArticleImagesFromForm(allParams, model, request);
 
+        verify(model).addAttribute(eq("errorImage"), anyString());
         assertEquals("articleImages", viewName);
     }
 }
