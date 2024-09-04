@@ -1,5 +1,7 @@
 package pl.strefainformacji.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -32,29 +34,50 @@ class SpecificArticleFormControllerTest {
     @Mock
     private EmployeeService employeeService;
 
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpSession session;
+
     @InjectMocks
     private SpecificArticleFormController specificArticleFormController;
 
-    private Validator validator;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        when(request.getSession()).thenReturn(session);
     }
 
     @Test
-    public void testSpecificArticleForm() {
+    public void testSpecificArticleForm_EmployeeEnabled_ArticleInformationPresent() {
         Employee employee = new Employee();
         employee.setEmployeeId(1L);
 
         when(currentEmployee.getEmployee()).thenReturn(employee);
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
+        when(session.getAttribute("Article")).thenReturn("articleInformation");
 
-        String viewName = specificArticleFormController.specificArticleForm(model, currentEmployee);
+        String viewName = specificArticleFormController.specificArticleForm(model, currentEmployee, request);
+
         assertEquals("specificArticle", viewName);
         verify(model).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
+    }
+
+    @Test
+    public void testSpecificArticleForm_EmployeeEnabled_ArticleInformationAbsent() {
+        Employee employee = new Employee();
+        employee.setEmployeeId(1L);
+
+        when(currentEmployee.getEmployee()).thenReturn(employee);
+        when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
+        when(session.getAttribute("Article")).thenReturn(null);
+
+        String viewName = specificArticleFormController.specificArticleForm(model, currentEmployee, request);
+
+        assertEquals("redirect:/add/articleInformation", viewName);
+        verify(model, never()).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
     }
 
     @Test
@@ -65,7 +88,8 @@ class SpecificArticleFormControllerTest {
         when(currentEmployee.getEmployee()).thenReturn(employee);
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(false);
 
-        String viewName = specificArticleFormController.specificArticleForm(model, currentEmployee);
+        String viewName = specificArticleFormController.specificArticleForm(model, currentEmployee, request);
+
         assertEquals("redirect:/verifyEmail", viewName);
         verify(model, never()).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
     }
@@ -77,8 +101,10 @@ class SpecificArticleFormControllerTest {
 
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        String viewName = specificArticleFormController.saveSpecificArticleFromForm(specificArticle, bindingResult);
+        String viewName = specificArticleFormController.saveSpecificArticleFromForm(specificArticle, bindingResult, request);
+
         assertEquals("redirect:articleImages", viewName);
+        verify(session).setAttribute("Article", "specificArticle");
     }
 
     @Test
@@ -87,7 +113,9 @@ class SpecificArticleFormControllerTest {
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        String viewName = specificArticleFormController.saveSpecificArticleFromForm(specificArticle, bindingResult);
+        String viewName = specificArticleFormController.saveSpecificArticleFromForm(specificArticle, bindingResult, request);
+
         assertEquals("specificArticle", viewName);
+        verify(session, never()).setAttribute(eq("Article"), anyString());
     }
 }
