@@ -28,4 +28,8 @@ public class EmployeeService {
     public void updateEmailCode(Long id, String emailCode){
         employeeRepository.updateEmailCodeByEmployeeId(id, emailCode);
     }
+
+    public void changePassword(Long id, String password){
+        employeeRepository.changePasswordByEmployeeId(id, password);
+    }
 }
