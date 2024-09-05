@@ -24,6 +24,7 @@ public class RegistrationEmployeeController {
 
     private final RegistrationService registrationService;
     private final EmailService emailService;
+
     private static final Logger LOGGER = Logger.getLogger(RegistrationEmployeeController.class.getName());
 
     @GetMapping("/register")
@@ -33,7 +34,7 @@ public class RegistrationEmployeeController {
     }
 
     @PostMapping("/register")
-    public String registerPost(@Valid Employee employee, BindingResult bindingResult, HttpServletRequest request, Model model){
+    public String registerPost(@Valid Employee employee, BindingResult bindingResult, HttpServletRequest request){
         if(bindingResult.hasErrors()){
             return "register";
         }
