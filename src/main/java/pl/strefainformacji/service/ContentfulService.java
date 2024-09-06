@@ -6,7 +6,7 @@ import com.contentful.java.cda.CDAEntry;
 import com.contentful.java.cda.CDAResource;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.webclient.contentful.ContentfulClient;
-import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArticleDto;
+import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
 import java.util.ArrayList;
 import java.util.List;

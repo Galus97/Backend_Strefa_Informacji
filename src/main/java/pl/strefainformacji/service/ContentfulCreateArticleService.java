@@ -6,7 +6,7 @@ import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.entity.SpecificArticle;
-import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArticleDto;
+import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
 import java.util.ArrayList;
 import java.util.List;

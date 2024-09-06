@@ -1,11 +1,11 @@
-package pl.strefainformacji.webclient.contenful2;
+package pl.strefainformacji.webclient.contentful;
 
 import com.contentful.java.cda.CDAClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ContentfulClient2 {
+public class ContentfulClient {
 
     @Value("${access.token.contentful}")
     private String ACCESS_TOKEN;

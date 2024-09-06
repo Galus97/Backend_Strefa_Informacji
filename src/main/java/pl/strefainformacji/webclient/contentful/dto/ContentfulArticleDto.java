@@ -1,4 +1,4 @@
-package pl.strefainformacji.webclient.contenful2.jsonArticles.dto;
+package pl.strefainformacji.webclient.contentful.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
