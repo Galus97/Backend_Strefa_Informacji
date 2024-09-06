@@ -1,29 +1,23 @@
-package pl.strefainformacji.webclient.contentful;
+package pl.strefainformacji.webclient.contenful2;
 
+import com.contentful.java.cda.CDAClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pl.strefainformacji.webclient.contentful.jsonArticles.JsonFetcher;
-import pl.strefainformacji.webclient.contentful.jsonArticles.JsonExtractor;
-import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArticleDto;
-
-import java.util.List;
 
 @Component
-public class ContentfulClient {
-    @Value("${contentful.json}")
-    private String contenfulKey;
+public class ContentfulClient2 {
 
-    @Value("${contentful.access.token}")
-    private String accesToken;
+    @Value("${access.token.contentful}")
+    private String ACCESS_TOKEN;
 
-    @Value("${contentful.entry}")
-    private String entry;
+    @Value("${space.id}")
+    private String SPACE_ID;
 
-    public List<String> getLastAddedArticles() throws Exception {
-        return JsonExtractor.extractIdsAndTitles(JsonFetcher.fetchJsonFromUrl(contenfulKey));
-    }
 
-    public ContentfulArticleDto getJsonFieldsValue (String entryId) throws Exception{
-            return JsonExtractor.getFildsFromJson(JsonFetcher.fetchJsonFromUrl(entry + entryId + accesToken));
+    public CDAClient createClient(){
+        return CDAClient.builder()
+                .setSpace(SPACE_ID)
+                .setToken(ACCESS_TOKEN)
+                .build();
     }
 }

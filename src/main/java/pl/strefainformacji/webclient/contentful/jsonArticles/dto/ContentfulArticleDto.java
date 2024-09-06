@@ -1,4 +1,4 @@
-package pl.strefainformacji.webclient.contentful.jsonArticles.dto;
+package pl.strefainformacji.webclient.contenful2.jsonArticles.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,7 +33,7 @@ public class ContentfulArticleDto {
         @JsonProperty("shortDescription")
         private String shortDescription;
         @JsonProperty("importance")
-        private int importance;
+        private Integer importance;
         @JsonProperty("headImgSrc")
         private Sys headImgSrc;
         @JsonProperty("headAltImg")
@@ -45,7 +45,7 @@ public class ContentfulArticleDto {
         @JsonProperty("imgSrc")
         private List<Sys> imgSrcList;
         @JsonProperty("employeeId")
-        private int employeeId;
+        private Integer employeeId;
 
         @Getter
         @Setter
