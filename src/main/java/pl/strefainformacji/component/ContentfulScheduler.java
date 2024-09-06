@@ -3,15 +3,15 @@ package pl.strefainformacji.component;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import pl.strefainformacji.service.ContentfulService;
+import pl.strefainformacji.service.ContentfulCreateArticleService;
 
 @Component
 @RequiredArgsConstructor
 public class ContentfulScheduler {
-    private final ContentfulService contentfulService;
+    private final ContentfulCreateArticleService contentfulCreateArticleService;
 
     @Scheduled(fixedRate = 180000)
     public void fetchArticlesPeriodically(){
-        contentfulService.createArticlesFromContentfulArticleDto();
+        contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
     }
 }

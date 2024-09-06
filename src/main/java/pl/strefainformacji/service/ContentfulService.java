@@ -1,118 +1,86 @@
 package pl.strefainformacji.service;
 
-import lombok.AllArgsConstructor;
+import com.contentful.java.cda.CDAAsset;
+import com.contentful.java.cda.CDAClient;
+import com.contentful.java.cda.CDAEntry;
+import com.contentful.java.cda.CDAResource;
 import org.springframework.stereotype.Service;
-import pl.strefainformacji.entity.ArticleImages;
-import pl.strefainformacji.entity.ArticleInformation;
-import pl.strefainformacji.entity.Employee;
-import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.webclient.contentful.ContentfulClient;
-import pl.strefainformacji.webclient.contentful.jsonArticles.dto.ContentfulArticleDto;
+import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.logging.Logger;
 
 @Service
-@AllArgsConstructor
 public class ContentfulService {
+    private final CDAClient client;
 
-    private final ContentfulClient contentfulClient;
-    private final ArticleInformationService articleInformationService;
-    private final SpecificArticleService specificArticleService;
-    private final ArticleImagesService articleImagesService;
-    private final EmployeeService employeeService;
-    private static final Logger LOGGER = Logger.getLogger(ContentfulService.class.getName());
-
-    public List<String> addedArticleInContentful() {
-        List<String> lastAddedArticles = new ArrayList<>();
-        try {
-            lastAddedArticles = contentfulClient.getLastAddedArticles();
-            return lastAddedArticles;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return lastAddedArticles;
+    public ContentfulService(ContentfulClient contentfulClient2) {
+        this.client = contentfulClient2.createClient();
     }
 
-    public List<String> articleToAddToDatabase() {
-        List<String> notAddedArticle = new ArrayList<>();
-        if(articleInformationService.findAllContentfulIds().isEmpty()){
-            notAddedArticle = addedArticleInContentful();
-        } else{
-            for(String contentfulArticleId : addedArticleInContentful()){
-                if(isArticleExistInDatabase(contentfulArticleId, articleInformationService.findAllContentfulIds())){
-                    notAddedArticle.add(contentfulArticleId);
-                }
-            }
+    public List<String> getAllArticlesIds(){
+        List<CDAResource> entries = client.fetch(CDAEntry.class)
+                .where("content_type", "article")
+                .where("order", "-sys.createdAt")
+                .limit(10)
+                .all()
+                .items();
+
+        List<String> articleIds = new ArrayList<>();
+        for(CDAResource resource : entries){
+            CDAEntry entry = (CDAEntry) resource;
+            articleIds.add(entry.id());
         }
-        return notAddedArticle;
+        return articleIds;
     }
 
-    private boolean isArticleExistInDatabase (String contentfulArticleId, List<String> database){
-            for(String databaseElement : database){
-                if(contentfulArticleId.equals(databaseElement)){
-                    return false;
-                }
-            }
-        return true;
+    public ContentfulArticleDto getArticleById(String id){
+        CDAEntry entry = client.fetch(CDAEntry.class).one(id);
+        if(entry == null){
+            return null;
+        }
+        return mapToContentfulArticleDto(entry);
     }
 
-    public List<ContentfulArticleDto> contentfulArticleDtoList(){
-        List<ContentfulArticleDto> listOfContentfulArticleDto = new ArrayList<>();
-        List<String> listOfArticlesIdToAdd = articleToAddToDatabase();
 
-        for (String entry : listOfArticlesIdToAdd) {
-            ContentfulArticleDto jsonFieldsValue = null;
-            try {
-                if(contentfulClient.getJsonFieldsValue(entry) != null){
-                    jsonFieldsValue = contentfulClient.getJsonFieldsValue(entry);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            listOfContentfulArticleDto.add(jsonFieldsValue);
+    private ContentfulArticleDto mapToContentfulArticleDto(CDAEntry entry) {
+        ContentfulArticleDto article = new ContentfulArticleDto();
+        ContentfulArticleDto.Fields fields = new ContentfulArticleDto.Fields();
+
+        fields.setHeadTitle(entry.getField("headTitle"));
+        fields.setShortDescription(entry.getField("shortDescription"));
+        fields.setImportance(((Double) entry.getField("importance")).intValue());
+        fields.setHeadAltImg(entry.getField("headAltImg"));
+        fields.setSpecificTitle(entry.getField("specificTitle"));
+        fields.setDescription(entry.getField("description"));
+        fields.setEmployeeId(((Double) entry.getField("employeeId")).intValue());
+
+
+        CDAAsset headImgSrcAsset = entry.getField("headImgSrc");
+        if (headImgSrcAsset != null) {
+            ContentfulArticleDto.Fields.Sys headImgSrc = new ContentfulArticleDto.Fields.Sys();
+            headImgSrc.setId(headImgSrcAsset.id());
+            fields.setHeadImgSrc(headImgSrc);
         }
-        return listOfContentfulArticleDto;
-    }
 
-    public void createArticlesFromContentfulArticleDto(){
-        List<ContentfulArticleDto> contentfulArticleDtos = contentfulArticleDtoList();
-
-        for(ContentfulArticleDto element : contentfulArticleDtos){
-            ArticleInformation articleInformation = new ArticleInformation();
-            SpecificArticle specificArticle = new SpecificArticle();
-
-            Optional<Employee> employee = employeeService.findByEmployeeId((long)element.getFields().getEmployeeId());
-            Optional<Employee> generalEmployee = employeeService.findByEmployeeId(1L);
-            if(employee.isPresent()){
-                articleInformation.setEmployee(employee.get());
-            } else generalEmployee.ifPresent(articleInformation::setEmployee);
-
-            LOGGER.info("EmployeeId: " + articleInformation.getEmployee().getEmployeeId());
-
-            articleInformation.setContentfulId(element.getSys().getId());
-            articleInformation.setImportance(element.getFields().getImportance());
-            articleInformation.setTitle(element.getFields().getHeadTitle());
-            articleInformation.setShortDescription(element.getFields().getShortDescription());
-            articleInformation.setImgSrc(element.getFields().getHeadImgSrc().getId());
-            articleInformation.setAltImg(element.getFields().getHeadAltImg());
-
-            articleInformationService.saveArticle(articleInformation);
-
-            specificArticle.setTitle(element.getFields().getSpecificTitle());
-            specificArticle.setDescription(element.getFields().getDescription());
-            specificArticle.setArticleInformation(articleInformation);
-
-            specificArticleService.saveSpecificArticle(specificArticle);
-
-            for(ContentfulArticleDto.Fields.Sys img : element.getFields().getImgSrcList()){
-                ArticleImages articleImages = new ArticleImages();
-                articleImages.setSpecificArticle(specificArticle);
-                articleImages.setImgSrc(img.getId());
-                articleImagesService.saveArticleImages(articleImages);
+        List<CDAAsset> imgSrcList = entry.getField("imgSrc");
+        if (imgSrcList != null) {
+            List<ContentfulArticleDto.Fields.Sys> imgSrcDtos = new ArrayList<>();
+            for (CDAAsset imgEntry : imgSrcList) {
+                ContentfulArticleDto.Fields.Sys imgSrc = new ContentfulArticleDto.Fields.Sys();
+                imgSrc.setId(imgEntry.id());
+                imgSrcDtos.add(imgSrc);
             }
+            fields.setImgSrcList(imgSrcDtos);
         }
+
+        article.setFields(fields);
+
+        ContentfulArticleDto.Sys sys = new ContentfulArticleDto.Sys();
+        sys.setId(entry.id());
+        article.setSys(sys);
+
+        return article;
     }
 }
