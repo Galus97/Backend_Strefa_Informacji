@@ -1,5 +1,6 @@
 package pl.strefainformacji.webclient.contentful.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -44,6 +45,8 @@ public class ContentfulArticleDto {
         private String description;
         @JsonProperty("imgSrc")
         private List<Sys> imgSrcList;
+        @JsonIgnore
+        private List<String> altImgList;
         @JsonProperty("employeeId")
         private Integer employeeId;
 

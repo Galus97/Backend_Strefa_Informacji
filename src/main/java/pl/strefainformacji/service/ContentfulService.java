@@ -67,12 +67,23 @@ public class ContentfulService {
         List<CDAAsset> imgSrcList = entry.getField("imgSrc");
         if (imgSrcList != null) {
             List<ContentfulArticleDto.Fields.Sys> imgSrcDtos = new ArrayList<>();
+            List<String> altImgList = new ArrayList<>();
             for (CDAAsset imgEntry : imgSrcList) {
                 ContentfulArticleDto.Fields.Sys imgSrc = new ContentfulArticleDto.Fields.Sys();
-                imgSrc.setId(imgEntry.id());
+                String assetId = imgEntry.id();
+                imgSrc.setId(assetId);
                 imgSrcDtos.add(imgSrc);
+
+                CDAAsset asset = client.fetch(CDAAsset.class).one(assetId);
+                String altImg = asset.getField("description").toString();
+                if(altImg != null){
+                    altImgList.add(altImg);
+                } else {
+                    altImgList.add("");
+                }
             }
             fields.setImgSrcList(imgSrcDtos);
+            fields.setAltImgList(altImgList);
         }
 
         article.setFields(fields);
