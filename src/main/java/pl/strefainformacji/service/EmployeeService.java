@@ -14,22 +14,35 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     public void updateEnable(Long id, boolean value){
-        employeeRepository.updateEnabledByEmployeeId(id, value);
+        if(findByEmployeeId(id).isPresent()){
+            employeeRepository.updateEnabledByEmployeeId(id, value);
+        }
     }
 
     public boolean isEnabledById(Long employeeId){
-        return employeeRepository.isEnabledById(employeeId);
+        if(findByEmployeeId(employeeId).isPresent()){
+            return employeeRepository.isEnabledById(employeeId);
+        }
+        throw new NullPointerException("No such employee found");
     }
 
     public Optional<Employee> findByEmployeeId(Long id){
-        return employeeRepository.findByEmployeeId(id);
+        if(employeeRepository.findByEmployeeId(id).isPresent()){
+            return employeeRepository.findByEmployeeId(id);
+        } else{
+            throw new NullPointerException();
+        }
     }
 
     public void updateEmailCode(Long id, String emailCode){
-        employeeRepository.updateEmailCodeByEmployeeId(id, emailCode);
+        if(employeeRepository.findByEmployeeId(id).isPresent() && emailCode != null && !emailCode.isBlank()){
+            employeeRepository.updateEmailCodeByEmployeeId(id, emailCode);
+        }
     }
 
     public void changePassword(Long id, String password){
-        employeeRepository.changePasswordByEmployeeId(id, password);
+        if(employeeRepository.findByEmployeeId(id).isPresent() && password != null && !password.isBlank()){
+            employeeRepository.changePasswordByEmployeeId(id, password);
+        }
     }
 }
