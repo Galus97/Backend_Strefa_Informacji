@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.ArticleImagesRepository;
-import pl.strefainformacji.repository.SpecificArticleRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -18,7 +17,9 @@ public class ArticleImagesService {
     private final ArticleImagesRepository articleImagesRepository;
 
     public void saveArticleImages(ArticleImages articleImages){
-        articleImagesRepository.save(articleImages);
+        if(articleImages != null){
+            articleImagesRepository.save(articleImages);
+        }
     }
 
     public List<ArticleImages> getAllArticleImagesBySpecificArticle(SpecificArticle specificArticle){
@@ -34,4 +35,3 @@ public class ArticleImagesService {
         return articleImagesRepository.findAllArticleImagesBySpecificArticle(specificArticle);
     }
 }
-
