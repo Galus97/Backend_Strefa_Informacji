@@ -1,6 +1,6 @@
 package pl.strefainformacji.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +13,7 @@ import pl.strefainformacji.repository.EmployeeRepository;
 import java.util.Collections;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CustomEmployeeDetailsService implements UserDetailsService {
     private final EmployeeRepository employeeRepository;
 
