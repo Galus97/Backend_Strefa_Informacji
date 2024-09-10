@@ -1,6 +1,6 @@
 package pl.strefainformacji.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.ArticleInformation;
@@ -9,10 +9,11 @@ import pl.strefainformacji.repository.ArticleInformationRepository;
 import java.util.*;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ArticleInformationService {
 
     private final ArticleInformationRepository articleInformationRepository;
+    private final EmployeeService employeeService;
 
     public List<ArticleInformation> getAllArticles (){
         List<ArticleInformation> allArticels = articleInformationRepository.findAll();
@@ -30,11 +31,17 @@ public class ArticleInformationService {
     }
 
     public void saveArticle(ArticleInformation articleInformation){
-        articleInformationRepository.save(articleInformation);
+        if(articleInformation != null){
+            articleInformationRepository.save(articleInformation);
+        }
     }
 
     public List<ArticleInformation> findAllArticlesByEmployee(Employee employee){
-        return articleInformationRepository.findAllByEmployee(employee);
+        if(employee != null && employeeService.findByEmployeeId(employee.getEmployeeId()).isPresent()){
+            return articleInformationRepository.findAllByEmployee(employee);
+        } else {
+            return null;
+        }
     }
 
     public List<String> findAllContentfulIds(){

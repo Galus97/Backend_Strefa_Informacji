@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class ArticlesOfCurrentEmployee {
+public class ArticlesOfCurrentEmployeeController {
 
     private final ArticleInformationService articleInformationService;
     private final EmployeeService employeeService;
@@ -23,8 +23,10 @@ public class ArticlesOfCurrentEmployee {
     public String currentEmployeeArticles(@AuthenticationPrincipal CurrentEmployee curentEmployee, Model model){
         if(employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             List<ArticleInformation> allArticlesByEmployee = articleInformationService.findAllArticlesByEmployee(curentEmployee.getEmployee());
-            model.addAttribute("allArticlesByEmployee", allArticlesByEmployee);
-            model.addAttribute("employee", curentEmployee.getEmployee());
+            if(allArticlesByEmployee != null){
+                model.addAttribute("allArticlesByEmployee", allArticlesByEmployee);
+                model.addAttribute("employee", curentEmployee.getEmployee());
+            }
             return "articlesOfCurrentEmployee";
         } else {
             return "redirect:verifyEmail";
