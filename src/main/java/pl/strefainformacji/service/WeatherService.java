@@ -16,5 +16,4 @@ public class WeatherService {
     public WeatherDto getWeather(){
         return weatherClient.getWeatherForCity(52.23, 21.01);
     }
-
 }
