@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 @AllArgsConstructor
 public class LoginEmployeeController {
     @GetMapping("/login")
-    public String loginGet(){
+    public String loginGet() {
         return "login";
     }
 }

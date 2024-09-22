@@ -28,22 +28,22 @@ public class RegistrationEmployeeController {
     private static final Logger LOGGER = Logger.getLogger(RegistrationEmployeeController.class.getName());
 
     @GetMapping("/register")
-    public String registerGet(Model model){
+    public String registerGet(Model model) {
         model.addAttribute("employee", new Employee());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerPost(@Valid Employee employee, BindingResult bindingResult, HttpServletRequest request){
-        if(bindingResult.hasErrors()){
+    public String registerPost(@Valid Employee employee, BindingResult bindingResult, HttpServletRequest request) {
+        if (bindingResult.hasErrors()) {
             return "register";
         }
-        try{
+        try {
             employee.setEmailCode(emailService.valueOfEmailActiveCode());
             registrationService.newEmployeeRegistration(employee);
             sendActivationEmail(request, employee.getEmail());
             return "redirect:login";
-        } catch (ValidationException exception){
+        } catch (ValidationException exception) {
             Map<String, String> errors = exception.getValidationErrors();
             LOGGER.info("errors registerPost" + errors.isEmpty());
             if (errors.containsKey("existUsername")) {
@@ -57,7 +57,7 @@ public class RegistrationEmployeeController {
         }
     }
 
-    private void sendActivationEmail(HttpServletRequest request, String email){
+    private void sendActivationEmail(HttpServletRequest request, String email) {
         HttpSession registerEmail = request.getSession();
         registerEmail.setAttribute("registerEmail", email);
         emailService.sendEmail();

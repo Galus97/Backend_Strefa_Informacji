@@ -13,35 +13,35 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-    public void updateEnable(Long id, boolean value){
-        if(findByEmployeeId(id).isPresent()){
+    public void updateEnable(Long id, boolean value) {
+        if (findByEmployeeId(id).isPresent()) {
             employeeRepository.updateEnabledByEmployeeId(id, value);
         }
     }
 
-    public boolean isEnabledById(Long employeeId){
-        if(findByEmployeeId(employeeId).isPresent()){
+    public boolean isEnabledById(Long employeeId) {
+        if (findByEmployeeId(employeeId).isPresent()) {
             return employeeRepository.isEnabledById(employeeId);
         }
         throw new NullPointerException("No such employee found");
     }
 
-    public Optional<Employee> findByEmployeeId(Long id){
-        if(employeeRepository.findByEmployeeId(id).isPresent()){
+    public Optional<Employee> findByEmployeeId(Long id) {
+        if (employeeRepository.findByEmployeeId(id).isPresent()) {
             return employeeRepository.findByEmployeeId(id);
-        } else{
+        } else {
             throw new NullPointerException();
         }
     }
 
-    public void updateEmailCode(Long id, String emailCode){
-        if(employeeRepository.findByEmployeeId(id).isPresent() && emailCode != null && !emailCode.isBlank()){
+    public void updateEmailCode(Long id, String emailCode) {
+        if (employeeRepository.findByEmployeeId(id).isPresent() && emailCode != null && !emailCode.isBlank()) {
             employeeRepository.updateEmailCodeByEmployeeId(id, emailCode);
         }
     }
 
-    public void changePassword(Long id, String password){
-        if(employeeRepository.findByEmployeeId(id).isPresent() && password != null && !password.isBlank()){
+    public void changePassword(Long id, String password) {
+        if (employeeRepository.findByEmployeeId(id).isPresent() && password != null && !password.isBlank()) {
             employeeRepository.changePasswordByEmployeeId(id, password);
         }
     }

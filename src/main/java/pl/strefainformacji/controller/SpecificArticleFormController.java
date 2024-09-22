@@ -28,7 +28,7 @@ public class SpecificArticleFormController {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             specificArticle = new SpecificArticle();
             HttpSession session = request.getSession();
-            if(session.getAttribute("Article") != null && "articleInformation".equals(session.getAttribute("Article"))){
+            if (session.getAttribute("Article") != null && "articleInformation".equals(session.getAttribute("Article"))) {
                 model.addAttribute("specificArticle", specificArticle);
                 return "specificArticle";
             } else {

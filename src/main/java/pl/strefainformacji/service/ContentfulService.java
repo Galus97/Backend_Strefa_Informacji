@@ -19,7 +19,7 @@ public class ContentfulService {
         this.client = contentfulClient2.createClient();
     }
 
-    public List<String> getAllArticlesIds(){
+    public List<String> getAllArticlesIds() {
         List<CDAResource> entries = client.fetch(CDAEntry.class)
                 .where("content_type", "article")
                 .where("order", "-sys.createdAt")
@@ -28,16 +28,16 @@ public class ContentfulService {
                 .items();
 
         List<String> articleIds = new ArrayList<>();
-        for(CDAResource resource : entries){
+        for (CDAResource resource : entries) {
             CDAEntry entry = (CDAEntry) resource;
             articleIds.add(entry.id());
         }
         return articleIds;
     }
 
-    public ContentfulArticleDto getArticleById(String id){
+    public ContentfulArticleDto getArticleById(String id) {
         CDAEntry entry = client.fetch(CDAEntry.class).one(id);
-        if(entry == null){
+        if (entry == null) {
             return null;
         }
         return mapToContentfulArticleDto(entry);
@@ -76,7 +76,7 @@ public class ContentfulService {
 
                 CDAAsset asset = client.fetch(CDAAsset.class).one(assetId);
                 String altImg = asset.getField("description").toString();
-                if(altImg != null){
+                if (altImg != null) {
                     altImgList.add(altImg);
                 } else {
                     altImgList.add("");

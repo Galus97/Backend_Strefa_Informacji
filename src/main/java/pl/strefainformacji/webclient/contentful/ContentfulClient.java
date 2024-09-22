@@ -14,7 +14,7 @@ public class ContentfulClient {
     private String SPACE_ID;
 
 
-    public CDAClient createClient(){
+    public CDAClient createClient() {
         return CDAClient.builder()
                 .setSpace(SPACE_ID)
                 .setToken(ACCESS_TOKEN)

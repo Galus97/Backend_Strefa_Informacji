@@ -53,7 +53,7 @@ public class SaveArticleController {
         model.addAttribute("articleImages", articleImagesList);
 
         HttpSession session = request.getSession();
-        if(session.getAttribute("Article") != null && "articleImages".equals(session.getAttribute("Article"))){
+        if (session.getAttribute("Article") != null && "articleImages".equals(session.getAttribute("Article"))) {
             session.invalidate();
             return "article";
         } else {

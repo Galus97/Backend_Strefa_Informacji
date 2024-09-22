@@ -9,11 +9,9 @@ import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.EmployeeService;
 
-
 @Controller
 @RequiredArgsConstructor
 public class AllArticlesController {
-
 
     private final ArticleInformationService articleInformationService;
     private final EmployeeService employeeService;
