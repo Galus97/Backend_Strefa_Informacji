@@ -7,7 +7,9 @@ import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
