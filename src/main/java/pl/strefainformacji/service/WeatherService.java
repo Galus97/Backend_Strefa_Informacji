@@ -13,7 +13,7 @@ public class WeatherService {
 
     private final WeatherClient weatherClient;
 
-    public WeatherDto getWeather(){
+    public WeatherDto getWeather() {
         return weatherClient.getWeatherForCity(52.23, 21.01);
     }
 }

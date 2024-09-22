@@ -21,29 +21,26 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ArticleImagesFormController {
     private final EmployeeService employeeService;
-
     public List<ArticleImages> articleImagesList;
 
     @GetMapping("/add/articleImages")
     public String articleImagesForm(@AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request) {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             HttpSession session = request.getSession();
-            if(session.getAttribute("Article") != null && "specificArticle".equals(session.getAttribute("Article"))){
+            if (session.getAttribute("Article") != null && "specificArticle".equals(session.getAttribute("Article"))) {
                 return "articleImages";
             } else {
                 return "redirect:/add/articleInformation";
             }
-
         } else {
             return "redirect:/verifyEmail";
         }
-
     }
 
     @PostMapping("/add/articleImages")
     public String saveArticleImagesFromForm(@RequestParam Map<String, String> allParams, Model model, HttpServletRequest request) {
-
         articleImagesList = new ArrayList<>();
+
         for (int i = 1; i <= 10; i++) {
             String imgSrc = allParams.get("imgSrc" + i);
             String altImg = allParams.get("altImg" + i);
@@ -56,7 +53,7 @@ public class ArticleImagesFormController {
             }
         }
 
-        if(articleImagesList.isEmpty()){
+        if (articleImagesList.isEmpty()) {
             model.addAttribute("errorImage", "Musisz dodać przynajmniej jedno zdjęcie (ścieżkę i opis)");
             return "articleImages";
         }

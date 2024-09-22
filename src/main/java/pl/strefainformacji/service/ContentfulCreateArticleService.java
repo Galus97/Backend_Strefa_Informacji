@@ -26,7 +26,7 @@ public class ContentfulCreateArticleService {
         List<String> notAddedArticle = new ArrayList<>();
         if (articleInformationService.findAllContentfulIds().isEmpty()) {
             notAddedArticle = contentfulService.getAllArticlesIds();
-        } else { 
+        } else {
             for (String contentfulArticleId : contentfulService.getAllArticlesIds()) {
                 if (isArticleExistInDatabase(contentfulArticleId, articleInformationService.findAllContentfulIds())) {
                     notAddedArticle.add(contentfulArticleId);
@@ -86,7 +86,7 @@ public class ContentfulCreateArticleService {
 
             specificArticleService.saveSpecificArticle(specificArticle);
 
-            for(int i = 0; i < element.getFields().getImgSrcList().size(); i++){
+            for (int i = 0; i < element.getFields().getImgSrcList().size(); i++) {
                 ArticleImages articleImages = new ArticleImages();
                 articleImages.setSpecificArticle(specificArticle);
                 articleImages.setImgSrc(element.getFields().getImgSrcList().get(i).getId());

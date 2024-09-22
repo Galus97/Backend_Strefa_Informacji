@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.SpecificArticleRepository;
+
 import java.util.NoSuchElementException;
 import java.util.Objects;
 
@@ -13,32 +14,32 @@ public class SpecificArticleService {
 
     private final SpecificArticleRepository specificArticleRepository;
 
-    public SpecificArticle getSpecificArticleByArticleInformationId(Long ArticleInformationId){
+    public SpecificArticle getSpecificArticleByArticleInformationId(Long ArticleInformationId) {
         if (ArticleInformationId <= 0) {
             throw new IllegalArgumentException("The article number must be greater than zero.");
         }
 
-        boolean isSpecificArticleExists =specificArticleRepository.existsByArticleInformation_ArticleId(ArticleInformationId);
+        boolean isSpecificArticleExists = specificArticleRepository.existsByArticleInformation_ArticleId(ArticleInformationId);
         if (!isSpecificArticleExists) {
             throw new NoSuchElementException("There is no specific article in the database.");
         }
 
         SpecificArticle article = specificArticleRepository.findByArticleInformation_ArticleId(ArticleInformationId);
-        if(Objects.isNull(article)){
+        if (Objects.isNull(article)) {
             throw new NullPointerException("This is not a number");
         }
 
         return article;
     }
 
-    public void saveSpecificArticle(SpecificArticle specificArticle){
+    public void saveSpecificArticle(SpecificArticle specificArticle) {
         specificArticleRepository.save(specificArticle);
     }
 
-    public SpecificArticle getSpecificArticle(Long specificArticleId){
-        if(specificArticleId < 0){
+    public SpecificArticle getSpecificArticle(Long specificArticleId) {
+        if (specificArticleId < 0) {
             throw new IllegalArgumentException();
-        } else if(Objects.isNull(specificArticleId)){
+        } else if (Objects.isNull(specificArticleId)) {
             throw new NullPointerException("Object SpecificArticle is null");
         } else {
             return specificArticleRepository.findBySpecificArticleId(specificArticleId);

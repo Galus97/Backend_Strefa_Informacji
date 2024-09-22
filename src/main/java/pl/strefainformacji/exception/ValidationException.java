@@ -7,7 +7,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 @Getter
-public class ValidationException extends Exception{
+public class ValidationException extends Exception {
 
     private final Map<String, String> validationErrors;
 }

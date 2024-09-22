@@ -16,19 +16,19 @@ public class ArticleImagesService {
 
     private final ArticleImagesRepository articleImagesRepository;
 
-    public void saveArticleImages(ArticleImages articleImages){
-        if(articleImages != null){
+    public void saveArticleImages(ArticleImages articleImages) {
+        if (articleImages != null) {
             articleImagesRepository.save(articleImages);
         }
     }
 
-    public List<ArticleImages> getAllArticleImagesBySpecificArticle(SpecificArticle specificArticle){
+    public List<ArticleImages> getAllArticleImagesBySpecificArticle(SpecificArticle specificArticle) {
         if (Objects.isNull(specificArticle)) {
             throw new NullPointerException("Object SpecificArticle is null");
         }
 
         boolean isImagesExists = articleImagesRepository.existsArticleImagesBySpecificArticle_SpecificArticleId(specificArticle.getSpecificArticleId());
-        if(!isImagesExists){
+        if (!isImagesExists) {
             throw new NoSuchElementException("There is no article images in the database.");
         }
 

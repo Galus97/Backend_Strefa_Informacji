@@ -20,18 +20,18 @@ public class VerifyEmailController {
     private final EmailService emailService;
 
     @GetMapping("/verifyEmail")
-    public String verifyEmail(){
-            return "verifyEmail";
+    public String verifyEmail() {
+        return "verifyEmail";
     }
 
     @PostMapping("/verifyEmail")
-    public String verifyEmailPost(HttpServletRequest request, @AuthenticationPrincipal CurrentEmployee curentEmployee){
+    public String verifyEmailPost(HttpServletRequest request, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
         Employee employee = curentEmployee.getEmployee();
         String action = request.getParameter("action");
         System.out.println(("Kod z bazy danych: " + curentEmployee.getEmployee().getEmailCode()));
-        if("Wyślij".equals(action)){
+        if ("Wyślij".equals(action)) {
             String verifyEmailCode = request.getParameter("verifyEmailCode");
-            if(verifyEmailCode.equals(curentEmployee.getEmployee().getEmailCode())){
+            if (verifyEmailCode.equals(curentEmployee.getEmployee().getEmailCode())) {
                 employeeService.updateEnable(curentEmployee.getEmployee().getEmployeeId(), true);
                 return "redirect:panel";
             } else {
@@ -46,7 +46,7 @@ public class VerifyEmailController {
         return "verifyEmail";
     }
 
-    private void sendActivationEmail(HttpServletRequest request, String email){
+    private void sendActivationEmail(HttpServletRequest request, String email) {
         HttpSession registerEmail = request.getSession();
         registerEmail.setAttribute("registerEmail", email);
         emailService.sendEmail();

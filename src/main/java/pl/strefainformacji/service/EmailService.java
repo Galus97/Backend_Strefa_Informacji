@@ -19,11 +19,11 @@ public class EmailService {
     public String emailActiveCode;
 
     @Async
-    public void sendEmail(){
+    public void sendEmail() {
         HttpSession registerEmail = request.getSession();
         String email = (String) registerEmail.getAttribute("registerEmail");
 
-        if(email != null){
+        if (email != null) {
             SimpleMailMessage message = new SimpleMailMessage();
             String text = "Twój kod aktywacyjny do Strefa Informacji to: " + emailActiveCode;
 
@@ -39,12 +39,12 @@ public class EmailService {
         }
     }
 
-    public String valueOfEmailActiveCode(){
+    public String valueOfEmailActiveCode() {
         emailActiveCode = generateActiveCode();
         return emailActiveCode;
     }
 
-    private String generateActiveCode(){
+    private String generateActiveCode() {
         Random random = new Random();
         return String.valueOf(random.nextInt(1000, 9999));
     }
