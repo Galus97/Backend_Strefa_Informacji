@@ -10,31 +10,15 @@
 </head>
 <body>
 
-<h1 class="page-title">Zmień hasło</h1>
+<h1 class="page-title">Ustawienia</h1>
 
-<c:if test="${not empty wrongPassword}">
-    <p class="error-message">${wrongPassword}</p>
-</c:if>
+<label>
+    <a href="/changePassword">Zmień hasło</a>
+</label>
+<label>
+    <a href="/changeEmail">Zmień adres E-mail</a>
+</label>
 
-<c:if test="${not empty passwordsDoNotMatch}">
-    <p class="error-message">${passwordsDoNotMatch}</p>
-</c:if>
-
-<form:form action="/settings" method="post" class="password-form">
-    <label for="lastPassword" class="form-label">Stare hasło:</label>
-    <input type="password" id="lastPassword" name="lastPassword" class="form-input" required>
-
-    <label for="newPassword" class="form-label">Nowe hasło:</label>
-    <input type="password" id="newPassword" name="newPassword" class="form-input" required>
-
-    <label for="newPasswordAgain" class="form-label">Powtórz nowe hasło:</label>
-    <input type="password" id="newPasswordAgain" name="newPasswordAgain" class="form-input" required>
-
-    <div class="form-actions">
-        <input type="submit" value="Zmień hasło" class="button submit-button">
-        <input type="reset" value="Usuń wartości" class="button reset-button">
-    </div>
-</form:form>
 
 <footer class="footer">
     <a href="/panel" class="button">Powrót do panelu</a>
