@@ -21,7 +21,7 @@ public class ChangePasswordController {
     @GetMapping("/changePassword")
     public String settingsGet(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
-            return "settings";
+            return "changePassword";
         } else {
             return "redirect:verifyEmail";
         }
@@ -38,12 +38,12 @@ public class ChangePasswordController {
 
         if (!passwordEncoder.matches(lastPassword, encodedPassword)) {
             model.addAttribute("wrongPassword", "Podane przez Ciebie hasło nie jest identyczne niż używane do tej pory");
-            return "settings";
+            return "changePassword";
         }
 
         if (!newPassword.equals(newPasswordAgain)) {
             model.addAttribute("passwordsDoNotMatch", "Podane przez Ciebie nowe hasło nie jest zgodne z jego powtórzeniem");
-            return "settings";
+            return "changePassword";
         }
 
         String encodedNewPassword = passwordEncoder.encode(newPassword);
