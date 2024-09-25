@@ -17,7 +17,7 @@
             <a href="/add/articleInformation">Dodaj nowy artykuł</a>
         </label>
         <label class="label">
-            <a href="https://be.contentful.com/login/">Dodaj artykuł przez Contentful</a>
+            <a href="https://be.contentful.com/login/" target="_blank">Dodaj artykuł przez Contentful</a>
         </label>
         <label class="label">
             <a href="/yourarticles">Twoje artykuły</a>
