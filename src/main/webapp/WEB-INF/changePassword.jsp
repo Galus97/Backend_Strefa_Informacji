@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Zmiana hasła</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/settings.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/changePassword.css">
 </head>
 <body>
 
