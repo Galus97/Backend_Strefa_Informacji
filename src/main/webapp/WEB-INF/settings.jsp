@@ -17,7 +17,6 @@
     <a href="/changeEmail">Zmień adres E-mail</a>
 </label>
 
-
 <footer class="footer">
     <a href="/panel" class="button">Powrót do panelu</a>
     <a href="/logout" class="button">Logout</a>
