@@ -19,7 +19,7 @@ public class ChangePasswordController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/changePassword")
-    public String settingsGet(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
+    public String changePasswordGet(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
         if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
             return "changePassword";
         } else {
@@ -29,7 +29,7 @@ public class ChangePasswordController {
     }
 
     @PostMapping("/changePassword")
-    public String settingsPost(@AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request, Model model) {
+    public String changePasswordPost(@AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request, Model model) {
         String lastPassword = request.getParameter("lastPassword");
         String newPassword = request.getParameter("newPassword");
         String newPasswordAgain = request.getParameter("newPasswordAgain");
