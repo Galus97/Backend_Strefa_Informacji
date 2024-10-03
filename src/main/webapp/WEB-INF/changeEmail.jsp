@@ -12,6 +12,26 @@
 
 <h1 class="page-title">Zmień adres E-mail</h1>
 
+<form:form action="/changeEmail" method="post" class="password-form">
+    <label for="lastEmail" class="form-label">Stary adres E-mail:</label>
+    <input type="email" id="lastEmail" name="lastEmail" class="form-input" required>
+
+    <label for="newEmail" class="form-label">Nowe adres E-mail:</label>
+    <input type="email" id="newEmail" name="newEmail" class="form-input" required>
+
+    <label for="newEmailAgain" class="form-label">Powtórz nowy adres E-mail:</label>
+    <input type="email" id="newEmailAgain" name="newEmailAgain" class="form-input" required>
+
+    <div class="form-actions">
+        <input type="submit" value="Zmień hasło" class="button submit-button">
+        <input type="reset" value="Usuń wartości" class="button reset-button">
+    </div>
+</form:form>
+
+<footer class="footer">
+    <a href="/panel" class="button">Powrót do panelu</a>
+    <a href="/logout" class="button">Logout</a>
+</footer>
 
 </body>
 </html>
