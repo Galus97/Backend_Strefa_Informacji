@@ -13,8 +13,6 @@
 <h1 class="page-title">Zmień adres E-mail</h1>
 
 <form:form action="/changeEmail" method="post" class="password-form">
-    <label for="lastEmail" class="form-label">Stary adres E-mail:</label>
-    <input type="email" id="lastEmail" name="lastEmail" class="form-input" required>
 
     <label for="newEmail" class="form-label">Nowe adres E-mail:</label>
     <input type="email" id="newEmail" name="newEmail" class="form-input" required>
