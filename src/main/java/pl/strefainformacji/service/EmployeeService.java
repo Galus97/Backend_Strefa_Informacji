@@ -45,4 +45,10 @@ public class EmployeeService {
             employeeRepository.changePasswordByEmployeeId(id, password);
         }
     }
+
+    public void changeEmail(Long id, String email) {
+        if (employeeRepository.findByEmployeeId(id).isPresent() && email != null && !email.isBlank()) {
+            employeeRepository.changeEmailByEmployeeId(id, email);
+        }
+    }
 }
