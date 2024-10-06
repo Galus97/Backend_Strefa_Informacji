@@ -3,34 +3,42 @@ body {
     background-color: #f4f7f6;
     color: #333;
     margin: 0;
-    padding: 20px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
+    width: 100%;
+    max-width: 500px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .page-title {
     font-size: 28px;
     margin-bottom: 20px;
     color: #333;
+    text-align: center;
 }
 
 .error-message {
     color: #e74c3c;
     font-weight: bold;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .general-form {
-    background-color: #ffffff;
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    max-width: 400px;
     width: 100%;
-    margin-bottom: 20px;
 }
 
 .form-label {
@@ -89,9 +97,8 @@ body {
 }
 
 .footer {
-    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     width: 100%;
-    max-width: 400px;
+    margin-top: 20px;
 }
