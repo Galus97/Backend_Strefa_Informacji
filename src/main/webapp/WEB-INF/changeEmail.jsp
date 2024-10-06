@@ -6,13 +6,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Zmiana Email</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/changePassword.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/changeSettings.css">
 </head>
 <body>
 
 <h1 class="page-title">Zmień adres E-mail</h1>
 
-<form:form action="/changeEmail" method="post" class="password-form">
+<form:form action="/changeEmail" method="post" class="general-form">
 
     <label for="newEmail" class="form-label">Nowe adres E-mail:</label>
     <input type="email" id="newEmail" name="newEmail" class="form-input" required>

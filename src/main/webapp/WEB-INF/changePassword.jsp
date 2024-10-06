@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Zmiana hasła</title>
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/changePassword.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/CSS/changeSettings.css">
 </head>
 <body>
 
@@ -20,7 +20,7 @@
     <p class="error-message">${passwordsDoNotMatch}</p>
 </c:if>
 
-<form:form action="/changePassword" method="post" class="password-form">
+<form:form action="/changePassword" method="post" class="general-form">
     <label for="lastPassword" class="form-label">Stare hasło:</label>
     <input type="password" id="lastPassword" name="lastPassword" class="form-input" required>
 
