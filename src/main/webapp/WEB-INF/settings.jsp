@@ -8,19 +8,17 @@
 </head>
 <body>
 
-<h1 class="page-title">Ustawienia</h1>
+<div class="container">
+    <h1 class="page-title">Ustawienia</h1>
 
-<label>
-    <a href="/changePassword">Zmień hasło</a>
-</label>
-<label>
-    <a href="/changeEmail">Zmień adres E-mail</a>
-</label>
+    <button class="button" onclick="window.location.href='/changePassword'">Zmień hasło</button>
+    <button class="button" onclick="window.location.href='/changeEmail'">Zmień adres E-mail</button>
 
-<footer class="footer">
-    <a href="/panel" class="button">Powrót do panelu</a>
-    <a href="/logout" class="button">Logout</a>
-</footer>
+    <footer class="footer">
+        <button class="button" onclick="window.location.href='/panel'">Powrót do panelu</button>
+        <button class="button" onclick="window.location.href='/logout'">Logout</button>
+    </footer>
+</div>
 
 </body>
 </html>
