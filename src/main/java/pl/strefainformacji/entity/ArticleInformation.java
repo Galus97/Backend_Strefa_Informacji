@@ -15,6 +15,8 @@ import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "articleInformation")
 @Getter
@@ -49,4 +51,6 @@ public class ArticleInformation {
 
     @ManyToOne
     private Employee employee;
+
+    private LocalDateTime localDateTime;
 }
