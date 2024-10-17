@@ -14,6 +14,8 @@ import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.service.EmployeeService;
 
+import java.time.LocalDateTime;
+
 @Controller
 @RequiredArgsConstructor
 public class ArticleInformationFormController {
@@ -36,6 +38,7 @@ public class ArticleInformationFormController {
         if (bindingResult.hasErrors()) {
             return "articleInformation";
         }
+        articleInformation.setLocalDateTime(LocalDateTime.now());
         this.articleInformation = articleInformation;
         HttpSession session = request.getSession();
         session.setAttribute("Article", "articleInformation");
