@@ -8,6 +8,7 @@ import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +78,7 @@ public class ContentfulCreateArticleService {
             articleInformation.setShortDescription(element.getFields().getShortDescription());
             articleInformation.setImgSrc(element.getFields().getHeadImgSrc().getId());
             articleInformation.setAltImg(element.getFields().getHeadAltImg());
+            articleInformation.setLocalDateTime(LocalDateTime.now());
 
             articleInformationService.saveArticle(articleInformation);
 
