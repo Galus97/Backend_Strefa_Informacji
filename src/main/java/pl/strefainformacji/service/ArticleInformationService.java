@@ -57,4 +57,15 @@ public class ArticleInformationService {
         PageRequest pageRequest = PageRequest.of(0, 5);
         return articleInformationRepository.findLastFiveArticlesByEmployee(employee, pageRequest);
     }
+
+    public List<ArticleInformation> getAddedArticleInPeriod(Employee employee, int beginYear, int beginMonth, int beginDayOfMouth,
+                                                            int endYear, int endnMonth, int endDayOfMouth) {
+        List<ArticleInformation> allArticlesByEmployee = articleInformationRepository.findAllByEmployee(employee);
+
+        for (ArticleInformation articleInformation : allArticlesByEmployee) {
+
+        }
+
+        return allArticlesByEmployee;
+    }
 }
