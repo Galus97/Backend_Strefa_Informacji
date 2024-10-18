@@ -30,7 +30,7 @@ public class EmployeeService {
         if (employeeRepository.findByEmployeeId(id).isPresent()) {
             return employeeRepository.findByEmployeeId(id);
         } else {
-            throw new NullPointerException();
+            return Optional.empty();
         }
     }
 
