@@ -9,6 +9,8 @@
 </head>
 <body>
 
+<p>Artykuły dodane w tym tygodniu: ${articlesAddedThisWeek}</p>
+
 
 <footer>
     <a href="/panel" class="button">Powrót do panelu</a>
