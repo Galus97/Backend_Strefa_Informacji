@@ -7,6 +7,8 @@ import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -58,14 +60,21 @@ public class ArticleInformationService {
         return articleInformationRepository.findLastFiveArticlesByEmployee(employee, pageRequest);
     }
 
-    public List<ArticleInformation> getAddedArticleInPeriod(Employee employee, int beginYear, int beginMonth, int beginDayOfMouth,
-                                                            int endYear, int endnMonth, int endDayOfMouth) {
+    public List<ArticleInformation> getAddedArticleInPeriod(Employee employee, LocalDateTime weekStart) {
         List<ArticleInformation> allArticlesByEmployee = articleInformationRepository.findAllByEmployee(employee);
+        List<ArticleInformation> articlesInGivenWeek = new ArrayList<>();
 
-        for (ArticleInformation articleInformation : allArticlesByEmployee) {
+        if (weekStart != null) {
+            LocalDateTime weekEnd = weekStart.plusDays(7);
 
+            for (ArticleInformation articleInformation : allArticlesByEmployee) {
+                LocalDateTime articleDateTime = articleInformation.getLocalDateTime();
+
+                if (articleDateTime != null && !articleDateTime.isBefore(weekStart) && articleDateTime.isBefore(weekEnd)) {
+                    articlesInGivenWeek.add(articleInformation);
+                }
+            }
         }
-
-        return allArticlesByEmployee;
+        return articlesInGivenWeek;
     }
 }
