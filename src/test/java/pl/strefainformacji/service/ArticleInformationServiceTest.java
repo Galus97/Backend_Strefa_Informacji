@@ -10,10 +10,23 @@ import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ArticleInformationServiceTest {
 
@@ -144,5 +157,93 @@ class ArticleInformationServiceTest {
         assertNotNull(result);
         assertEquals(2, result.size());
         verify(articleInformationRepository, times(1)).findLastFiveArticlesByEmployee(employee, pageRequest);
+    }
+
+    @Test
+    void testGetAddedArticleInPeriod_NoArticles() {
+        // Given
+        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(Collections.emptyList());
+
+        // When
+        LocalDateTime weekStart = LocalDateTime.now().withDayOfMonth(1);
+        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, weekStart);
+
+        // Then
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void testGetAddedArticleInPeriod_ArticlesInWeek() {
+        // Given
+        LocalDateTime weekStart = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime articleDateTime = weekStart.plusDays(2);
+
+        ArticleInformation article = new ArticleInformation();
+        article.setLocalDateTime(articleDateTime);
+
+        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(Collections.singletonList(article));
+
+        // When
+        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, weekStart);
+
+        // Then
+        assertEquals(1, result.size());
+        assertEquals(article, result.get(0));
+    }
+
+    @Test
+    void testGetAddedArticleInPeriod_ArticlesOutOfWeek() {
+        // Given
+        LocalDateTime weekStart = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime articleDateTime = weekStart.minusDays(3);
+
+        ArticleInformation article = new ArticleInformation();
+        article.setLocalDateTime(articleDateTime);
+
+        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(Collections.singletonList(article));
+
+        // When
+        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, weekStart);
+
+        // Then
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void testGetAddedArticleInPeriod_NullWeekStart() {
+        // Given
+        ArticleInformation article = new ArticleInformation();
+        article.setLocalDateTime(LocalDateTime.now());
+        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(Collections.singletonList(article));
+
+        // When
+        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, null);
+
+        // Then
+        assertEquals(0, result.size());
+    }
+
+    @Test
+    void testGetAddedArticleInPeriod_MultipleArticles() {
+        // Given
+        LocalDateTime weekStart = LocalDateTime.now().withDayOfMonth(1);
+        LocalDateTime inWeekDate = weekStart.plusDays(3);
+        LocalDateTime outOfWeekDate = weekStart.minusDays(5);
+
+        ArticleInformation articleInWeek = new ArticleInformation();
+        articleInWeek.setLocalDateTime(inWeekDate);
+
+        ArticleInformation articleOutOfWeek = new ArticleInformation();
+        articleOutOfWeek.setLocalDateTime(outOfWeekDate);
+
+        when(articleInformationRepository.findAllByEmployee(employee))
+                .thenReturn(List.of(articleInWeek, articleOutOfWeek));
+
+        // When
+        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, weekStart);
+
+        // Then
+        assertEquals(1, result.size());
+        assertEquals(articleInWeek, result.get(0));
     }
 }
