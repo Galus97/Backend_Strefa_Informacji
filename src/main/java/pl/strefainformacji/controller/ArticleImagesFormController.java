@@ -3,6 +3,7 @@ package pl.strefainformacji.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,12 +16,14 @@ import pl.strefainformacji.service.EmployeeService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
 public class ArticleImagesFormController {
     private final EmployeeService employeeService;
+    private final MessageSource messageSource;
     public List<ArticleImages> articleImagesList;
 
     @GetMapping("/add/articleImages")
@@ -54,7 +57,8 @@ public class ArticleImagesFormController {
         }
 
         if (articleImagesList.isEmpty()) {
-            model.addAttribute("errorImage", "Musisz dodać przynajmniej jedno zdjęcie (ścieżkę i opis)");
+            String errorMessage = messageSource.getMessage("error.articleImages.empty", null, Locale.getDefault());
+            model.addAttribute("errorImage", errorMessage);
             return "articleImages";
         }
 
