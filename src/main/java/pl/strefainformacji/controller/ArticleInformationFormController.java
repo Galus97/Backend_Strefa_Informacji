@@ -23,8 +23,8 @@ public class ArticleInformationFormController {
     public ArticleInformation articleInformation;
 
     @GetMapping("/add/articleInformation")
-    public String articleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String articleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             articleInformation = new ArticleInformation();
             model.addAttribute("articleInformation", articleInformation);
             return "articleInformation";

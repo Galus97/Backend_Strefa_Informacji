@@ -20,12 +20,12 @@ public class ArticlesOfCurrentEmployeeController {
     private final EmployeeService employeeService;
 
     @GetMapping("/yourarticles")
-    public String currentEmployeeArticles(@AuthenticationPrincipal CurrentEmployee curentEmployee, Model model) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
-            List<ArticleInformation> allArticlesByEmployee = articleInformationService.findAllArticlesByEmployee(curentEmployee.getEmployee());
+    public String currentEmployeeArticles(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
+            List<ArticleInformation> allArticlesByEmployee = articleInformationService.findAllArticlesByEmployee(currentEmployee.getEmployee());
             if (allArticlesByEmployee != null) {
                 model.addAttribute("allArticlesByEmployee", allArticlesByEmployee);
-                model.addAttribute("employee", curentEmployee.getEmployee());
+                model.addAttribute("employee", currentEmployee.getEmployee());
             }
             return "articlesOfCurrentEmployee";
         } else {

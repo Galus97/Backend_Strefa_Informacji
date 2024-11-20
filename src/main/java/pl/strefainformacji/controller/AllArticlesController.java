@@ -17,8 +17,8 @@ public class AllArticlesController {
     private final EmployeeService employeeService;
 
     @GetMapping("/articles")
-    public String getAllArticles(@AuthenticationPrincipal CurrentEmployee curentEmployee, Model model) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String getAllArticles(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             model.addAttribute("allArticles", articleInformationService.getAllArticles());
             return "allArticles";
         } else {
