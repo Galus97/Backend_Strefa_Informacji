@@ -7,21 +7,30 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.MessageSource;
 import org.springframework.ui.Model;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.service.EmployeeService;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ArticleImagesFormControllerTest {
 
     @Mock
     private EmployeeService employeeService;
+
+    @Mock
+    private MessageSource messageSource;
 
     @Mock
     CurrentEmployee currentEmployee;
@@ -105,9 +114,14 @@ class ArticleImagesFormControllerTest {
         allParams.put("imgSrc1", "");
         allParams.put("altImg1", "");
 
-        String viewName = articleImagesFormController.saveArticleImagesFromForm(allParams, model, request);
+        String expectedErrorMessage = "Musisz dodać przynajmniej jedno zdjęcie (ścieżkę i opis)";
+        when(messageSource.getMessage(eq("error.articleImages.empty"), isNull(), any(Locale.class)))
+                .thenReturn(expectedErrorMessage);
 
-        verify(model).addAttribute(eq("errorImage"), anyString());
+        String viewName = articleImagesFormController.saveArticleImagesFromForm(allParams, model, request);
+        
+        verify(messageSource).getMessage(eq("error.articleImages.empty"), isNull(), any(Locale.class));
+        verify(model).addAttribute("errorImage", expectedErrorMessage);
         assertEquals("articleImages", viewName);
     }
 }
