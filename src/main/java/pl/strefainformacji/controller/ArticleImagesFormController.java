@@ -24,8 +24,8 @@ public class ArticleImagesFormController {
     public List<ArticleImages> articleImagesList;
 
     @GetMapping("/add/articleImages")
-    public String articleImagesForm(@AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String articleImagesForm(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             HttpSession session = request.getSession();
             if (session.getAttribute("Article") != null && "specificArticle".equals(session.getAttribute("Article"))) {
                 return "articleImages";
