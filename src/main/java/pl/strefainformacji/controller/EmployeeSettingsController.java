@@ -13,8 +13,8 @@ public class EmployeeSettingsController {
     private final EmployeeService employeeService;
 
     @GetMapping("/settings")
-    public String settingsGet(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String settingsGet(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             return "settings";
         } else {
             return "redirect:verifyEmail";
