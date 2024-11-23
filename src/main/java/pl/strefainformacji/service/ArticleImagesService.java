@@ -7,7 +7,6 @@ import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.ArticleImagesRepository;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
@@ -17,19 +16,19 @@ public class ArticleImagesService {
     private final ArticleImagesRepository articleImagesRepository;
 
     public void saveArticleImages(ArticleImages articleImages) {
-        if (articleImages != null) {
+        if (Objects.nonNull(articleImages)) {
             articleImagesRepository.save(articleImages);
         }
     }
 
     public List<ArticleImages> getAllArticleImagesBySpecificArticle(SpecificArticle specificArticle) {
         if (Objects.isNull(specificArticle)) {
-            throw new NullPointerException("Object SpecificArticle is null");
+            throw new IllegalArgumentException("SpecificArticle cannot be null.");
         }
 
-        boolean isImagesExists = articleImagesRepository.existsArticleImagesBySpecificArticle_SpecificArticleId(specificArticle.getSpecificArticleId());
-        if (!isImagesExists) {
-            throw new NoSuchElementException("There is no article images in the database.");
+        Long specificArticleId = specificArticle.getSpecificArticleId();
+        if (Objects.isNull(specificArticleId)) {
+            throw new IllegalArgumentException("SpecificArticle must have a valid ID.");
         }
 
         return articleImagesRepository.findAllArticleImagesBySpecificArticle(specificArticle);
