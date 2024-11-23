@@ -15,8 +15,8 @@ public class ChangeEmailController {
     private final EmployeeService employeeService;
 
     @GetMapping("/changeEmail")
-    public String changeEmailGet(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String changeEmailGet(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             return "changeEmail";
         } else {
             return "redirect:verifyEmail";
@@ -24,7 +24,7 @@ public class ChangeEmailController {
     }
 
     @PostMapping("/changeEmail")
-    public String changeEmailPost(@AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request) {
+    public String changeEmailPost(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
         String newEmail = request.getParameter("newEmail");
         String newEmailAgain = request.getParameter("newEmailAgain");
 
@@ -32,12 +32,12 @@ public class ChangeEmailController {
             return "changeEmail";
         }
 
-        if (newEmail.equals(curentEmployee.getEmployee().getEmail())) {
+        if (newEmail.equals(currentEmployee.getEmployee().getEmail())) {
             return "changeEmail";
         }
 
-        employeeService.changeEmail(curentEmployee.getEmployee().getEmployeeId(), newEmail);
-        curentEmployee.getEmployee().setEmail(newEmail);
+        employeeService.changeEmail(currentEmployee.getEmployee().getEmployeeId(), newEmail);
+        currentEmployee.getEmployee().setEmail(newEmail);
         return "redirect:panel";
     }
 }
