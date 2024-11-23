@@ -21,12 +21,12 @@ public class StatisticsController {
     private final ArticleInformationService articleInformationService;
 
     @GetMapping("/statistics")
-    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime startOfWeek = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
-            int articlesAddedThisWeek = articleInformationService.getAddedArticleInPeriod(curentEmployee.getEmployee(), startOfWeek).size();
+            int articlesAddedThisWeek = articleInformationService.getAddedArticleInPeriod(currentEmployee.getEmployee(), startOfWeek).size();
             model.addAttribute("articlesAddedThisWeek", articlesAddedThisWeek);
             return "statistics";
         } else {
