@@ -2,6 +2,7 @@ package pl.strefainformacji.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -11,16 +12,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.service.EmployeeService;
 
+import java.util.Locale;
+
 @Controller
 @RequiredArgsConstructor
 public class ChangePasswordController {
 
     private final EmployeeService employeeService;
     private final PasswordEncoder passwordEncoder;
+    private final MessageSource messageSource;
 
     @GetMapping("/changePassword")
-    public String changePasswordGet(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String changePasswordGet(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             return "changePassword";
         } else {
             return "redirect:verifyEmail";
@@ -29,26 +33,29 @@ public class ChangePasswordController {
     }
 
     @PostMapping("/changePassword")
-    public String changePasswordPost(@AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request, Model model) {
+    public String changePasswordPost(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request, Model model) {
         String lastPassword = request.getParameter("lastPassword");
         String newPassword = request.getParameter("newPassword");
         String newPasswordAgain = request.getParameter("newPasswordAgain");
 
-        String encodedPassword = curentEmployee.getEmployee().getPassword();
+        String encodedPassword = currentEmployee.getEmployee().getPassword();
 
+        String errorMessage;
         if (!passwordEncoder.matches(lastPassword, encodedPassword)) {
-            model.addAttribute("wrongPassword", "Podane przez Ciebie hasło nie jest identyczne niż używane do tej pory");
+            errorMessage = messageSource.getMessage("error.wrongPassword", null, Locale.getDefault());
+            model.addAttribute("wrongPassword", errorMessage);
             return "changePassword";
         }
 
         if (!newPassword.equals(newPasswordAgain)) {
-            model.addAttribute("passwordsDoNotMatch", "Podane przez Ciebie nowe hasło nie jest zgodne z jego powtórzeniem");
+            errorMessage = messageSource.getMessage("error.passwordsDoNotMatch", null, Locale.getDefault());
+            model.addAttribute("passwordsDoNotMatch", errorMessage);
             return "changePassword";
         }
 
         String encodedNewPassword = passwordEncoder.encode(newPassword);
-        employeeService.changePassword(curentEmployee.getEmployee().getEmployeeId(), encodedNewPassword);
-        curentEmployee.getEmployee().setPassword(encodedNewPassword);
+        employeeService.changePassword(currentEmployee.getEmployee().getEmployeeId(), encodedNewPassword);
+        currentEmployee.getEmployee().setPassword(encodedNewPassword);
 
         return "redirect:panel";
     }

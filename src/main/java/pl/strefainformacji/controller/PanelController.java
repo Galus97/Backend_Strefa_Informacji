@@ -19,11 +19,11 @@ public class PanelController {
     private final ArticleInformationService articleInformationService;
 
     @GetMapping("/panel")
-    public String panel(@AuthenticationPrincipal CurrentEmployee curentEmployee, Model model) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
-            model.addAttribute("employee", curentEmployee.getEmployee());
+    public String panel(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
+            model.addAttribute("employee", currentEmployee.getEmployee());
             model.addAttribute("weather", weatherService.getWeather());
-            model.addAttribute("lastArticles", articleInformationService.getLastFiveArticlesByEmployee(curentEmployee.getEmployee()));
+            model.addAttribute("lastArticles", articleInformationService.getLastFiveArticlesByEmployee(currentEmployee.getEmployee()));
             return "panel";
         } else {
             return "redirect:verifyEmail";

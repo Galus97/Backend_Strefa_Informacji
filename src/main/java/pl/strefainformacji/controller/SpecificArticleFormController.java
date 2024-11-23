@@ -22,8 +22,8 @@ public class SpecificArticleFormController {
     public SpecificArticle specificArticle;
 
     @GetMapping("/add/specificArticle")
-    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee curentEmployee, HttpServletRequest request) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             specificArticle = new SpecificArticle();
             HttpSession session = request.getSession();
             if (session.getAttribute("Article") != null && "articleInformation".equals(session.getAttribute("Article"))) {
