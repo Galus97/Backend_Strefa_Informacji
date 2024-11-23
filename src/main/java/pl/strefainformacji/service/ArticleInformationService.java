@@ -21,11 +21,11 @@ public class ArticleInformationService {
     private final EmployeeService employeeService;
 
     public List<ArticleInformation> getAllArticles() {
-        List<ArticleInformation> allArticels = articleInformationRepository.findAll();
-        if (allArticels.isEmpty()) {
+        List<ArticleInformation> allArticles = articleInformationRepository.findAll();
+        if (allArticles.isEmpty()) {
             throw new NoSuchElementException("There are no articles in the database");
         }
-        return allArticels;
+        return allArticles;
     }
 
     public ArticleInformation getArticleInformationByArticleId(Long id) {
