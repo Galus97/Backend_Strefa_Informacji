@@ -25,14 +25,13 @@ public class VerifyEmailController {
     }
 
     @PostMapping("/verifyEmail")
-    public String verifyEmailPost(HttpServletRequest request, @AuthenticationPrincipal CurrentEmployee curentEmployee) {
-        Employee employee = curentEmployee.getEmployee();
+    public String verifyEmailPost(HttpServletRequest request, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
+        Employee employee = currentEmployee.getEmployee();
         String action = request.getParameter("action");
-        System.out.println(("Kod z bazy danych: " + curentEmployee.getEmployee().getEmailCode()));
         if ("Wyślij".equals(action)) {
             String verifyEmailCode = request.getParameter("verifyEmailCode");
-            if (verifyEmailCode.equals(curentEmployee.getEmployee().getEmailCode())) {
-                employeeService.updateEnable(curentEmployee.getEmployee().getEmployeeId(), true);
+            if (verifyEmailCode.equals(currentEmployee.getEmployee().getEmailCode())) {
+                employeeService.updateEnable(currentEmployee.getEmployee().getEmployeeId(), true);
                 return "redirect:panel";
             } else {
                 return "verifyEmail";
@@ -40,8 +39,8 @@ public class VerifyEmailController {
         } else if ("ResendCode".equals(action)) {
             String emailCode = emailService.valueOfEmailActiveCode();
             employee.setEmailCode(emailCode);
-            sendActivationEmail(request, curentEmployee.getEmployee().getEmail());
-            employeeService.updateEmailCode(curentEmployee.getEmployee().getEmployeeId(), emailCode);
+            sendActivationEmail(request, currentEmployee.getEmployee().getEmail());
+            employeeService.updateEmailCode(currentEmployee.getEmployee().getEmployeeId(), emailCode);
         }
         return "verifyEmail";
     }
