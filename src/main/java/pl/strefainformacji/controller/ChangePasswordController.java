@@ -19,8 +19,8 @@ public class ChangePasswordController {
     private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/changePassword")
-    public String changePasswordGet(@AuthenticationPrincipal CurrentEmployee curentEmployee) {
-        if (employeeService.isEnabledById(curentEmployee.getEmployee().getEmployeeId())) {
+    public String changePasswordGet(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
+        if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             return "changePassword";
         } else {
             return "redirect:verifyEmail";
