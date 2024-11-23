@@ -28,13 +28,13 @@ public class SaveArticleController {
     private final ArticleImagesFormController articleImagesFormController;
 
     @GetMapping("/article")
-    public String getArticle(@AuthenticationPrincipal CurrentEmployee curentEmployee, Model model, HttpServletRequest request) {
+    public String getArticle(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model, HttpServletRequest request) {
 
         ArticleInformation articleInformation = articleInformationFormController.articleInformation;
         SpecificArticle specificArticle = specificArticleFormController.specificArticle;
         List<ArticleImages> articleImagesList = articleImagesFormController.articleImagesList;
 
-        articleInformation.setEmployee(curentEmployee.getEmployee());
+        articleInformation.setEmployee(currentEmployee.getEmployee());
         articleInformation.setContentfulId("00000");
         specificArticle.setArticleInformation(articleInformationFormController.articleInformation);
         for (ArticleImages articleImages : articleImagesList) {
