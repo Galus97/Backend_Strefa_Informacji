@@ -7,7 +7,7 @@ import lombok.Getter;
 @Builder
 public class WeatherDto {
 
-    private float temperatue;
+    private float temperature;
     private int pressure;
     private int humidity;
     private float speed;

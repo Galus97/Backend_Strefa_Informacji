@@ -18,7 +18,7 @@ public class WeatherClient {
                 WEATER_URL + "weather?lat={lat}&lon={lon}&appid={apiKey}&units=metric&lang=pl",
                 OpenWeatherDto.class, lat, lon, apiKey);
         return WeatherDto.builder()
-                .temperatue(openWeatherDto.getMain().getTemp())
+                .temperature(openWeatherDto.getMain().getTemp())
                 .pressure(openWeatherDto.getMain().getPressure())
                 .humidity(openWeatherDto.getMain().getHumidity())
                 .speed(openWeatherDto.getWind().getSpeed())

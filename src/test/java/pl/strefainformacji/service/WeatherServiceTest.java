@@ -8,8 +8,9 @@ import org.mockito.MockitoAnnotations;
 import pl.strefainformacji.model.WeatherDto;
 import pl.strefainformacji.webclient.weather.WeatherClient;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.when;
 
 class WeatherServiceTest {
 
@@ -27,7 +28,7 @@ class WeatherServiceTest {
     @Test
     void testGetWeather() {
         WeatherDto weatherDto = WeatherDto.builder()
-                .temperatue(22f)
+                .temperature(22f)
                 .pressure(1015)
                 .humidity(65)
                 .speed(4.5f)
@@ -38,7 +39,7 @@ class WeatherServiceTest {
         WeatherDto result = weatherService.getWeather();
 
         assertNotNull(result);
-        assertEquals(22.0, result.getTemperatue());
+        assertEquals(22.0, result.getTemperature());
         assertEquals(1015, result.getPressure());
         assertEquals(65, result.getHumidity());
         assertEquals(4.5, result.getSpeed());
