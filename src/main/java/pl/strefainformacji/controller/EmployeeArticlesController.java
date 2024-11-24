@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class ArticlesOfCurrentEmployeeController {
+public class EmployeeArticlesController {
 
     private final ArticleInformationService articleInformationService;
     private final EmployeeService employeeService;
@@ -32,5 +32,4 @@ public class ArticlesOfCurrentEmployeeController {
             return "redirect:verifyEmail";
         }
     }
-
 }
