@@ -27,7 +27,7 @@ public class ArticleImagesFormController {
     public List<ArticleImages> articleImagesList;
 
     @GetMapping("/add/articleImages")
-    public String articleImagesForm(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
+    public String showArticleImagesForm(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             HttpSession session = request.getSession();
             if (session.getAttribute("Article") != null && "specificArticle".equals(session.getAttribute("Article"))) {
@@ -41,7 +41,7 @@ public class ArticleImagesFormController {
     }
 
     @PostMapping("/add/articleImages")
-    public String saveArticleImagesFromForm(@RequestParam Map<String, String> allParams, Model model, HttpServletRequest request) {
+    public String saveArticleImages(@RequestParam Map<String, String> allParams, Model model, HttpServletRequest request) {
         articleImagesList = new ArrayList<>();
 
         for (int i = 1; i <= 10; i++) {

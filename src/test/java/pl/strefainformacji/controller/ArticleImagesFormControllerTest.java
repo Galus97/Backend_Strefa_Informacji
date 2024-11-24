@@ -62,7 +62,7 @@ class ArticleImagesFormControllerTest {
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
         when(session.getAttribute("Article")).thenReturn("specificArticle");
 
-        String viewName = articleImagesFormController.articleImagesForm(currentEmployee, request);
+        String viewName = articleImagesFormController.showArticleImagesForm(currentEmployee, request);
 
         assertEquals("articleImages", viewName);
     }
@@ -76,7 +76,7 @@ class ArticleImagesFormControllerTest {
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
         when(session.getAttribute("Article")).thenReturn(null);
 
-        String viewName = articleImagesFormController.articleImagesForm(currentEmployee, request);
+        String viewName = articleImagesFormController.showArticleImagesForm(currentEmployee, request);
 
         assertEquals("redirect:/add/articleInformation", viewName);
     }
@@ -89,7 +89,7 @@ class ArticleImagesFormControllerTest {
         when(currentEmployee.getEmployee()).thenReturn(employee);
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(false);
 
-        String viewName = articleImagesFormController.articleImagesForm(currentEmployee, request);
+        String viewName = articleImagesFormController.showArticleImagesForm(currentEmployee, request);
 
         assertEquals("redirect:/verifyEmail", viewName);
     }
@@ -102,7 +102,7 @@ class ArticleImagesFormControllerTest {
             allParams.put("altImg" + i, "altText" + i);
         }
 
-        String viewName = articleImagesFormController.saveArticleImagesFromForm(allParams, model, request);
+        String viewName = articleImagesFormController.saveArticleImages(allParams, model, request);
 
         verify(session).setAttribute("Article", "articleImages");
         assertEquals("redirect:/article", viewName);
@@ -118,8 +118,8 @@ class ArticleImagesFormControllerTest {
         when(messageSource.getMessage(eq("error.articleImages.empty"), isNull(), any(Locale.class)))
                 .thenReturn(expectedErrorMessage);
 
-        String viewName = articleImagesFormController.saveArticleImagesFromForm(allParams, model, request);
-        
+        String viewName = articleImagesFormController.saveArticleImages(allParams, model, request);
+
         verify(messageSource).getMessage(eq("error.articleImages.empty"), isNull(), any(Locale.class));
         verify(model).addAttribute("errorImage", expectedErrorMessage);
         assertEquals("articleImages", viewName);
