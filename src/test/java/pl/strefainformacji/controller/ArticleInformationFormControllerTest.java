@@ -15,7 +15,12 @@ import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.service.EmployeeService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ArticleInformationFormControllerTest {
 
@@ -54,7 +59,7 @@ class ArticleInformationFormControllerTest {
         when(currentEmployee.getEmployee()).thenReturn(employee);
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(true);
 
-        String viewName = articleInformationFormController.articleInformationForm(model, currentEmployee);
+        String viewName = articleInformationFormController.showArticleInformationForm(model, currentEmployee);
 
         assertEquals("articleInformation", viewName);
         verify(model).addAttribute(eq("articleInformation"), any(ArticleInformation.class));
@@ -68,7 +73,7 @@ class ArticleInformationFormControllerTest {
         when(currentEmployee.getEmployee()).thenReturn(employee);
         when(employeeService.isEnabledById(employee.getEmployeeId())).thenReturn(false);
 
-        String viewName = articleInformationFormController.articleInformationForm(model, currentEmployee);
+        String viewName = articleInformationFormController.showArticleInformationForm(model, currentEmployee);
 
         assertEquals("redirect:/verifyEmail", viewName);
         verify(model, never()).addAttribute(eq("articleInformation"), any(ArticleInformation.class));
@@ -80,7 +85,7 @@ class ArticleInformationFormControllerTest {
 
         when(bindingResult.hasErrors()).thenReturn(false);
 
-        String viewName = articleInformationFormController.saveArticleInformationFromForm(articleInformation, bindingResult, request);
+        String viewName = articleInformationFormController.saveArticleInformation(articleInformation, bindingResult, request);
 
         assertEquals("redirect:specificArticle", viewName);
         assertEquals(articleInformation, articleInformationFormController.articleInformation);
@@ -93,7 +98,7 @@ class ArticleInformationFormControllerTest {
 
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        String viewName = articleInformationFormController.saveArticleInformationFromForm(articleInformation, bindingResult, request);
+        String viewName = articleInformationFormController.saveArticleInformation(articleInformation, bindingResult, request);
 
         assertEquals("articleInformation", viewName);
         verify(session, never()).setAttribute(eq("Article"), anyString());
