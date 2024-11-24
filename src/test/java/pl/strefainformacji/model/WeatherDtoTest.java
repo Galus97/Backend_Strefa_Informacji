@@ -14,13 +14,13 @@ class WeatherDtoTest {
         float expectedSpeed = 5.4f;
 
         WeatherDto weatherDto = WeatherDto.builder()
-                .temperatue(expectedTemperature)
+                .temperature(expectedTemperature)
                 .pressure(expectedPressure)
                 .humidity(expectedHumidity)
                 .speed(expectedSpeed)
                 .build();
 
-        assertThat(weatherDto.getTemperatue()).isEqualTo(expectedTemperature);
+        assertThat(weatherDto.getTemperature()).isEqualTo(expectedTemperature);
         assertThat(weatherDto.getPressure()).isEqualTo(expectedPressure);
         assertThat(weatherDto.getHumidity()).isEqualTo(expectedHumidity);
         assertThat(weatherDto.getSpeed()).isEqualTo(expectedSpeed);
@@ -34,13 +34,13 @@ class WeatherDtoTest {
         float expectedSpeed = -2.5f;
 
         WeatherDto weatherDto = WeatherDto.builder()
-                .temperatue(expectedTemperature)
+                .temperature(expectedTemperature)
                 .pressure(expectedPressure)
                 .humidity(expectedHumidity)
                 .speed(expectedSpeed)
                 .build();
 
-        assertThat(weatherDto.getTemperatue()).isEqualTo(expectedTemperature);
+        assertThat(weatherDto.getTemperature()).isEqualTo(expectedTemperature);
         assertThat(weatherDto.getPressure()).isEqualTo(expectedPressure);
         assertThat(weatherDto.getHumidity()).isEqualTo(expectedHumidity);
         assertThat(weatherDto.getSpeed()).isEqualTo(expectedSpeed);
@@ -54,13 +54,13 @@ class WeatherDtoTest {
         float expectedSpeed = 0.0f;
 
         WeatherDto weatherDto = WeatherDto.builder()
-                .temperatue(expectedTemperature)
+                .temperature(expectedTemperature)
                 .pressure(expectedPressure)
                 .humidity(expectedHumidity)
                 .speed(expectedSpeed)
                 .build();
 
-        assertThat(weatherDto.getTemperatue()).isEqualTo(expectedTemperature);
+        assertThat(weatherDto.getTemperature()).isEqualTo(expectedTemperature);
         assertThat(weatherDto.getPressure()).isEqualTo(expectedPressure);
         assertThat(weatherDto.getHumidity()).isEqualTo(expectedHumidity);
         assertThat(weatherDto.getSpeed()).isEqualTo(expectedSpeed);

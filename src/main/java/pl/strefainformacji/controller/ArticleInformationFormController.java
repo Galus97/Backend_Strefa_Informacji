@@ -23,7 +23,7 @@ public class ArticleInformationFormController {
     public ArticleInformation articleInformation;
 
     @GetMapping("/add/articleInformation")
-    public String articleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
+    public String showArticleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             articleInformation = new ArticleInformation();
             model.addAttribute("articleInformation", articleInformation);
@@ -34,7 +34,7 @@ public class ArticleInformationFormController {
     }
 
     @PostMapping("/add/articleInformation")
-    public String saveArticleInformationFromForm(@Valid ArticleInformation articleInformation, BindingResult bindingResult, HttpServletRequest request) {
+    public String saveArticleInformation(@Valid ArticleInformation articleInformation, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "articleInformation";
         }
