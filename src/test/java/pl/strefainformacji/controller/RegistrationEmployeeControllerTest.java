@@ -18,7 +18,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class RegistrationEmployeeControllerTest {
 
@@ -53,7 +58,7 @@ class RegistrationEmployeeControllerTest {
 
     @Test
     void testRegisterGet() {
-        String result = registrationEmployeeController.registerGet(model);
+        String result = registrationEmployeeController.showRegisterForm(model);
 
         verify(model).addAttribute(eq("employee"), any(Employee.class));
 
@@ -68,7 +73,7 @@ class RegistrationEmployeeControllerTest {
 
         when(request.getSession()).thenReturn(session);
 
-        String result = registrationEmployeeController.registerPost(employee, bindingResult, request);
+        String result = registrationEmployeeController.saveNewEmployee(employee, bindingResult, request);
 
         verify(employee).setEmailCode("123456");
 
@@ -84,7 +89,7 @@ class RegistrationEmployeeControllerTest {
     void testRegisterPost_BindingErrors() throws ValidationException {
         when(bindingResult.hasErrors()).thenReturn(true);
 
-        String result = registrationEmployeeController.registerPost(employee, bindingResult, request);
+        String result = registrationEmployeeController.saveNewEmployee(employee, bindingResult, request);
 
         assertEquals("register", result);
 
@@ -99,7 +104,7 @@ class RegistrationEmployeeControllerTest {
         ValidationException validationException = new ValidationException(getSampleErrors());
         doThrow(validationException).when(registrationService).newEmployeeRegistration(any(Employee.class));
 
-        String result = registrationEmployeeController.registerPost(employee, bindingResult, request);
+        String result = registrationEmployeeController.saveNewEmployee(employee, bindingResult, request);
 
         verify(bindingResult).rejectValue("username", "", "Username already exists");
         verify(bindingResult).rejectValue("email", "", "Email already exists");

@@ -27,13 +27,13 @@ public class RegistrationEmployeeController {
     private static final Logger LOGGER = Logger.getLogger(RegistrationEmployeeController.class.getName());
 
     @GetMapping("/register")
-    public String registerGet(Model model) {
+    public String showRegisterForm(Model model) {
         model.addAttribute("employee", new Employee());
         return "register";
     }
 
     @PostMapping("/register")
-    public String registerPost(@Valid Employee employee, BindingResult bindingResult, HttpServletRequest request) {
+    public String saveNewEmployee(@Valid Employee employee, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "register";
         }
