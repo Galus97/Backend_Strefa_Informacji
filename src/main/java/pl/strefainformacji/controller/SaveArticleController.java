@@ -28,7 +28,7 @@ public class SaveArticleController {
     private final ArticleImagesFormController articleImagesFormController;
 
     @GetMapping("/article")
-    public String getArticle(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model, HttpServletRequest request) {
+    public String saveWholeArticle(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model, HttpServletRequest request) {
 
         ArticleInformation articleInformation = articleInformationFormController.articleInformation;
         SpecificArticle specificArticle = specificArticleFormController.specificArticle;
