@@ -19,7 +19,7 @@ public class PanelController {
     private final ArticleInformationService articleInformationService;
 
     @GetMapping("/panel")
-    public String panel(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model) {
+    public String showPanelPage(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             model.addAttribute("employee", currentEmployee.getEmployee());
             model.addAttribute("weather", weatherService.getWeather());

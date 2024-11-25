@@ -48,7 +48,7 @@ class ChangeEmailControllerTest {
         when(employeeService.isEnabledById(1L)).thenReturn(true);
 
         // When
-        String viewName = changeEmailController.changeEmailGet(currentEmployee);
+        String viewName = changeEmailController.showChangeEmailForm(currentEmployee);
 
         // Then
         assertEquals("changeEmail", viewName);
@@ -63,7 +63,7 @@ class ChangeEmailControllerTest {
         when(employeeService.isEnabledById(1L)).thenReturn(false);
 
         // When
-        String viewName = changeEmailController.changeEmailGet(currentEmployee);
+        String viewName = changeEmailController.showChangeEmailForm(currentEmployee);
 
         // Then
         assertEquals("redirect:verifyEmail", viewName);
@@ -77,7 +77,7 @@ class ChangeEmailControllerTest {
         when(request.getParameter("newEmailAgain")).thenReturn("differentemail@example.com");
 
         // When
-        String viewName = changeEmailController.changeEmailPost(currentEmployee, request);
+        String viewName = changeEmailController.saveChangedEmail(currentEmployee, request);
 
         // Then
         assertEquals("changeEmail", viewName);
@@ -92,7 +92,7 @@ class ChangeEmailControllerTest {
         when(employee.getEmail()).thenReturn("currentemail@example.com");
 
         // When
-        String viewName = changeEmailController.changeEmailPost(currentEmployee, request);
+        String viewName = changeEmailController.saveChangedEmail(currentEmployee, request);
 
         // Then
         assertEquals("changeEmail", viewName);
@@ -108,7 +108,7 @@ class ChangeEmailControllerTest {
         when(employee.getEmployeeId()).thenReturn(1L);
 
         // When
-        String viewName = changeEmailController.changeEmailPost(currentEmployee, request);
+        String viewName = changeEmailController.saveChangedEmail(currentEmployee, request);
 
         // Then
         assertEquals("redirect:panel", viewName);

@@ -21,7 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class SaveArticleControllerTest {
 
@@ -109,7 +112,7 @@ class SaveArticleControllerTest {
         when(articleImages.getAltImg()).thenReturn("altImg");
         when(articleImages.getSpecificArticle()).thenReturn(specificArticle);
 
-        String result = saveArticleController.getArticle(currentEmployee, model, request);
+        String result = saveArticleController.saveWholeArticle(currentEmployee, model, request);
 
         verify(session).invalidate();
         assertEquals("article", result);
@@ -128,7 +131,7 @@ class SaveArticleControllerTest {
         when(articleInformation.getContentfulId()).thenReturn(null);
         when(specificArticle.getTitle()).thenReturn(null);
 
-        String result = saveArticleController.getArticle(currentEmployee, model, request);
+        String result = saveArticleController.saveWholeArticle(currentEmployee, model, request);
 
         verify(articleInformationService, never()).saveArticle(any());
         verify(specificArticleService, never()).saveSpecificArticle(any());
@@ -142,7 +145,7 @@ class SaveArticleControllerTest {
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("Article")).thenReturn("otherValue");
 
-        String result = saveArticleController.getArticle(currentEmployee, model, request);
+        String result = saveArticleController.saveWholeArticle(currentEmployee, model, request);
 
         verify(session, never()).invalidate();
         assertEquals("redirect:/panel", result);

@@ -23,7 +23,7 @@ public class ChangePasswordController {
     private final MessageSource messageSource;
 
     @GetMapping("/changePassword")
-    public String changePasswordGet(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
+    public String showChangePasswordForm(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             return "changePassword";
         } else {
@@ -33,7 +33,7 @@ public class ChangePasswordController {
     }
 
     @PostMapping("/changePassword")
-    public String changePasswordPost(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request, Model model) {
+    public String saveChangedPassword(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request, Model model) {
         String lastPassword = request.getParameter("lastPassword");
         String newPassword = request.getParameter("newPassword");
         String newPasswordAgain = request.getParameter("newPasswordAgain");

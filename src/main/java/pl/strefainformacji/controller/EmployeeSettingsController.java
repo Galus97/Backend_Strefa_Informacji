@@ -13,7 +13,7 @@ public class EmployeeSettingsController {
     private final EmployeeService employeeService;
 
     @GetMapping("/settings")
-    public String settingsGet(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
+    public String showSettingsPage(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             return "settings";
         } else {

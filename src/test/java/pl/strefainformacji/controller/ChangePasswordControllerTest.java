@@ -57,7 +57,7 @@ class ChangePasswordControllerTest {
         when(employeeService.isEnabledById(1L)).thenReturn(true);
 
         // When
-        String viewName = changePasswordController.changePasswordGet(currentEmployee);
+        String viewName = changePasswordController.showChangePasswordForm(currentEmployee);
 
         // Then
         assertEquals("changePassword", viewName);
@@ -71,7 +71,7 @@ class ChangePasswordControllerTest {
         when(employeeService.isEnabledById(1L)).thenReturn(false);
 
         // When
-        String viewName = changePasswordController.changePasswordGet(currentEmployee);
+        String viewName = changePasswordController.showChangePasswordForm(currentEmployee);
 
         // Then
         assertEquals("redirect:verifyEmail", viewName);
@@ -89,7 +89,7 @@ class ChangePasswordControllerTest {
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
 
         // When
-        String viewName = changePasswordController.changePasswordPost(currentEmployee, request, model);
+        String viewName = changePasswordController.saveChangedPassword(currentEmployee, request, model);
 
         // Then
         assertEquals("changePassword", viewName);
@@ -108,7 +108,7 @@ class ChangePasswordControllerTest {
         when(passwordEncoder.matches("correctPassword", "encodedPassword")).thenReturn(true);
 
         // When
-        String viewName = changePasswordController.changePasswordPost(currentEmployee, request, model);
+        String viewName = changePasswordController.saveChangedPassword(currentEmployee, request, model);
 
         // Then
         assertEquals("changePassword", viewName);
@@ -128,7 +128,7 @@ class ChangePasswordControllerTest {
         when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
 
         // When
-        String viewName = changePasswordController.changePasswordPost(currentEmployee, request, model);
+        String viewName = changePasswordController.saveChangedPassword(currentEmployee, request, model);
 
         // Then
         assertEquals("redirect:panel", viewName);
