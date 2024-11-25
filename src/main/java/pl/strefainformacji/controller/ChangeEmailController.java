@@ -15,7 +15,7 @@ public class ChangeEmailController {
     private final EmployeeService employeeService;
 
     @GetMapping("/changeEmail")
-    public String changeEmailGet(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
+    public String showChangeEmailForm(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             return "changeEmail";
         } else {
@@ -24,7 +24,7 @@ public class ChangeEmailController {
     }
 
     @PostMapping("/changeEmail")
-    public String changeEmailPost(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
+    public String saveChangedEmail(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
         String newEmail = request.getParameter("newEmail");
         String newEmailAgain = request.getParameter("newEmailAgain");
 
