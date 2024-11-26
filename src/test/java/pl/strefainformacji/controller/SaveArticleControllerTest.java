@@ -117,7 +117,7 @@ class SaveArticleControllerTest {
         verify(session).invalidate();
         assertEquals("article", result);
 
-        verify(articleInformationService).saveArticle(articleInformation);
+        verify(articleInformationService).saveArticleInformation(articleInformation);
         verify(specificArticleService).saveSpecificArticle(specificArticle);
         verify(articleImagesService).saveArticleImages(articleImages);
 
@@ -133,7 +133,7 @@ class SaveArticleControllerTest {
 
         String result = saveArticleController.saveWholeArticle(currentEmployee, model, request);
 
-        verify(articleInformationService, never()).saveArticle(any());
+        verify(articleInformationService, never()).saveArticleInformation(any());
         verify(specificArticleService, never()).saveSpecificArticle(any());
         verify(articleImagesService, never()).saveArticleImages(any());
 

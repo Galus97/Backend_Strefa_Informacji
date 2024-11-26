@@ -15,6 +15,7 @@ import pl.strefainformacji.service.ArticleImagesService;
 import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 @Controller
@@ -31,26 +32,16 @@ public class SaveArticleController {
     public String saveWholeArticle(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model, HttpServletRequest request) {
 
         ArticleInformation articleInformation = articleInformationFormController.articleInformation;
+        articleInformation.setContentfulId("00000");
         SpecificArticle specificArticle = specificArticleFormController.specificArticle;
         List<ArticleImages> articleImagesList = articleImagesFormController.articleImagesList;
 
-        articleInformation.setEmployee(currentEmployee.getEmployee());
-        articleInformation.setContentfulId("00000");
-        specificArticle.setArticleInformation(articleInformationFormController.articleInformation);
-        for (ArticleImages articleImages : articleImagesList) {
-            articleImages.setSpecificArticle(specificArticleFormController.specificArticle);
-        }
+        setForeignKey(currentEmployee, articleInformation, specificArticle, articleImagesList);
 
         if (isEveryFieldsExist(articleInformation, specificArticle, articleImagesList)) {
-            articleInformationService.saveArticle(articleInformation);
-            specificArticleService.saveSpecificArticle(specificArticle);
-            for (ArticleImages articleImages : articleImagesList) {
-                articleImagesService.saveArticleImages(articleImages);
-            }
+            saveArticleToDatabase(articleInformation, specificArticle, articleImagesList);
         }
-        model.addAttribute("articleInformation", articleInformation);
-        model.addAttribute("specificArticle", specificArticle);
-        model.addAttribute("articleImages", articleImagesList);
+        addModelAttribute(model, articleInformation, specificArticle, articleImagesList);
 
         HttpSession session = request.getSession();
         if (session.getAttribute("Article") != null && "articleImages".equals(session.getAttribute("Article"))) {
@@ -61,23 +52,58 @@ public class SaveArticleController {
         }
     }
 
-    private boolean isEveryFieldsExist(ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImages) {
 
-        if (articleInformation.getContentfulId() == null || articleInformation.getTitle() == null || articleInformation.getShortDescription() == null ||
-                articleInformation.getImportance() == null || articleInformation.getImgSrc() == null || articleInformation.getAltImg() == null || articleInformation.getEmployee() == null) {
-            return false;
+    private void setForeignKey(CurrentEmployee currentEmployee, ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImagesList) {
+        articleInformation.setEmployee(currentEmployee.getEmployee());
+        specificArticle.setArticleInformation(articleInformationFormController.articleInformation);
+        for (ArticleImages articleImages : articleImagesList) {
+            articleImages.setSpecificArticle(specificArticleFormController.specificArticle);
         }
+    }
 
-        if (specificArticle.getTitle() == null || specificArticle.getDescription() == null || specificArticle.getArticleInformation() == null) {
+    private void saveArticleToDatabase(ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImagesList) {
+        articleInformationService.saveArticleInformation(articleInformation);
+        specificArticleService.saveSpecificArticle(specificArticle);
+        for (ArticleImages articleImages : articleImagesList) {
+            articleImagesService.saveArticleImages(articleImages);
+        }
+    }
+
+    private void addModelAttribute(Model model, ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImagesList) {
+        model.addAttribute("articleInformation", articleInformation);
+        model.addAttribute("specificArticle", specificArticle);
+        model.addAttribute("articleImages", articleImagesList);
+    }
+
+    private boolean isEveryFieldsExist(ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImages) {
+        if (!areAllFieldsNonNull(articleInformation) || !areAllFieldsNonNull(specificArticle)) {
             return false;
         }
 
         for (ArticleImages articleImage : articleImages) {
-            if (articleImage.getImgSrc() == null || articleImage.getAltImg() == null || articleImage.getSpecificArticle() == null) {
+            if (!areAllFieldsNonNull(articleImage)) {
                 return false;
             }
         }
 
+        return true;
+    }
+
+    private boolean areAllFieldsNonNull(Object object) {
+        if (object == null) {
+            return false;
+        }
+
+        for (Field field : object.getClass().getFields()) {
+            field.setAccessible(true);
+            try {
+                if (field.get(object) == null) {
+                    return false;
+                }
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException("Unable to access field: " + field.getName(), e);
+            }
+        }
         return true;
     }
 }
