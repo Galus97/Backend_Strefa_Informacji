@@ -35,7 +35,7 @@ public class ArticleInformationService {
         return articleInformationRepository.findArticleInformationByArticleId(id);
     }
 
-    public void saveArticle(ArticleInformation articleInformation) {
+    public void saveArticleInformation(ArticleInformation articleInformation) {
         if (articleInformation != null) {
             articleInformationRepository.save(articleInformation);
         }

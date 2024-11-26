@@ -15,8 +15,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ContentfulCreateArticleServiceTest {
 
@@ -127,7 +134,7 @@ class ContentfulCreateArticleServiceTest {
         contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
 
         // Weryfikacja
-        verify(articleInformationService, times(1)).saveArticle(any(ArticleInformation.class));
+        verify(articleInformationService, times(1)).saveArticleInformation(any(ArticleInformation.class));
         verify(specificArticleService, times(1)).saveSpecificArticle(any(SpecificArticle.class));
         verify(articleImagesService, never()).saveArticleImages(any(ArticleImages.class));
     }
@@ -164,7 +171,7 @@ class ContentfulCreateArticleServiceTest {
         contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
 
         // Weryfikacja
-        verify(articleInformationService, times(1)).saveArticle(any(ArticleInformation.class));
+        verify(articleInformationService, times(1)).saveArticleInformation(any(ArticleInformation.class));
         verify(specificArticleService, times(1)).saveSpecificArticle(any(SpecificArticle.class));
         verify(articleImagesService, times(1)).saveArticleImages(any(ArticleImages.class));
     }

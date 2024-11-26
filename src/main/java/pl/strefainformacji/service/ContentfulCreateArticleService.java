@@ -80,7 +80,7 @@ public class ContentfulCreateArticleService {
             articleInformation.setAltImg(element.getFields().getHeadAltImg());
             articleInformation.setLocalDateTime(LocalDateTime.now());
 
-            articleInformationService.saveArticle(articleInformation);
+            articleInformationService.saveArticleInformation(articleInformation);
 
             specificArticle.setTitle(element.getFields().getSpecificTitle());
             specificArticle.setDescription(element.getFields().getDescription());

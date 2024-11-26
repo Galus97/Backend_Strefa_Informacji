@@ -96,14 +96,14 @@ class ArticleInformationServiceTest {
 
     @Test
     void testSaveArticle_NonNullArticle() {
-        articleInformationService.saveArticle(articleInformation);
+        articleInformationService.saveArticleInformation(articleInformation);
 
         verify(articleInformationRepository, times(1)).save(articleInformation);
     }
 
     @Test
     void testSaveArticle_NullArticle() {
-        articleInformationService.saveArticle(null);
+        articleInformationService.saveArticleInformation(null);
 
         verify(articleInformationRepository, never()).save(any(ArticleInformation.class));
     }
