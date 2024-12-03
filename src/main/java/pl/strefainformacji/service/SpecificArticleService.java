@@ -6,7 +6,6 @@ import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.SpecificArticleRepository;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -14,25 +13,24 @@ public class SpecificArticleService {
 
     private final SpecificArticleRepository specificArticleRepository;
 
-    public SpecificArticle getSpecificArticleByArticleInformationId(Long ArticleInformationId) {
-        if (ArticleInformationId <= 0) {
-            throw new IllegalArgumentException("The article number must be greater than zero.");
+    public SpecificArticle getSpecificArticleByArticleInformationId(Long articleInformationId) {
+        validateArticleInformationId(articleInformationId);
+
+        if (specificArticleRepository.existsByArticleInformation_ArticleId(articleInformationId)) {
+            return specificArticleRepository.findByArticleInformation_ArticleId(articleInformationId);
+        } else {
+            throw new NoSuchElementException(("Specific article not found for the given ID: " + articleInformationId));
         }
 
-        boolean isSpecificArticleExists = specificArticleRepository.existsByArticleInformation_ArticleId(ArticleInformationId);
-        if (!isSpecificArticleExists) {
-            throw new NoSuchElementException("There is no specific article in the database.");
-        }
-
-        SpecificArticle article = specificArticleRepository.findByArticleInformation_ArticleId(ArticleInformationId);
-        if (Objects.isNull(article)) {
-            throw new NullPointerException("This is not a number");
-        }
-
-        return article;
     }
 
     public void saveSpecificArticle(SpecificArticle specificArticle) {
         specificArticleRepository.save(specificArticle);
+    }
+
+    private void validateArticleInformationId(Long articleInformationId) {
+        if (articleInformationId == null || articleInformationId <= 0) {
+            throw new IllegalArgumentException("The article ID must be a positive number.");
+        }
     }
 }
