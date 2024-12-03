@@ -1,6 +1,6 @@
 package pl.strefainformacji.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.repository.SpecificArticleRepository;
@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SpecificArticleService {
 
     private final SpecificArticleRepository specificArticleRepository;
@@ -35,15 +35,4 @@ public class SpecificArticleService {
     public void saveSpecificArticle(SpecificArticle specificArticle) {
         specificArticleRepository.save(specificArticle);
     }
-
-    public SpecificArticle getSpecificArticle(Long specificArticleId) {
-        if (specificArticleId < 0) {
-            throw new IllegalArgumentException();
-        } else if (Objects.isNull(specificArticleId)) {
-            throw new NullPointerException("Object SpecificArticle is null");
-        } else {
-            return specificArticleRepository.findBySpecificArticleId(specificArticleId);
-        }
-    }
-
 }
