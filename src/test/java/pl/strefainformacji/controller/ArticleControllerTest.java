@@ -13,7 +13,10 @@ import pl.strefainformacji.service.EmployeeService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class AllArticlesControllerTest {
 
@@ -45,7 +48,7 @@ class AllArticlesControllerTest {
 
         when(employeeService.isEnabledById(1L)).thenReturn(true);
 
-        String viewName = allArticlesController.getAllArticles(currentEmployee, model);
+        String viewName = allArticlesController.showAllArticles(currentEmployee, model);
 
         assertEquals("allArticles", viewName);
 
@@ -60,7 +63,7 @@ class AllArticlesControllerTest {
 
         when(employeeService.isEnabledById(1L)).thenReturn(false);
 
-        String viewName = allArticlesController.getAllArticles(currentEmployee, model);
+        String viewName = allArticlesController.showAllArticles(currentEmployee, model);
 
         assertEquals("redirect:verifyEmail", viewName);
 
