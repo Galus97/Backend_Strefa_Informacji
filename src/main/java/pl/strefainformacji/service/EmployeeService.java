@@ -35,20 +35,24 @@ public class EmployeeService {
     }
 
     public void updateEmailCode(Long id, String emailCode) {
-        if (employeeRepository.findByEmployeeId(id).isPresent() && emailCode != null && !emailCode.isBlank()) {
+        if (validateData(id, emailCode)) {
             employeeRepository.updateEmailCodeByEmployeeId(id, emailCode);
         }
     }
 
     public void changePassword(Long id, String password) {
-        if (employeeRepository.findByEmployeeId(id).isPresent() && password != null && !password.isBlank()) {
+        if (validateData(id, password)) {
             employeeRepository.changePasswordByEmployeeId(id, password);
         }
     }
 
     public void changeEmail(Long id, String email) {
-        if (employeeRepository.findByEmployeeId(id).isPresent() && email != null && !email.isBlank()) {
+        if (validateData(id, email)) {
             employeeRepository.changeEmailByEmployeeId(id, email);
         }
+    }
+
+    private boolean validateData(Long id, String text) {
+        return employeeRepository.findByEmployeeId(id).isPresent() && text != null && !text.isBlank();
     }
 }
