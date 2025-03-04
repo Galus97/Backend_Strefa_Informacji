@@ -43,7 +43,7 @@ public class ArticleInformationService {
         if (employeeId == null || employeeId <= 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidEmployeeId", employeeId));
         }
-        Employee employee = employeeService.findByEmployeeId(employeeId);
+        Employee employee = employeeService.getEmployee(employeeId);
 
         return articleInformationRepository.findAllByEmployee(employee);
     }

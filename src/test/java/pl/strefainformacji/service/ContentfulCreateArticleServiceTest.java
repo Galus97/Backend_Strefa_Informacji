@@ -128,7 +128,7 @@ class ContentfulCreateArticleServiceTest {
 
         // Mockowanie pracownika
         Employee employee = mock(Employee.class);
-        when(employeeService.findByEmployeeId(1L)).thenReturn(Optional.of(employee));
+        when(employeeService.getEmployee(1L)).thenReturn(Optional.of(employee));
 
         // Testowanie
         contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
@@ -165,7 +165,7 @@ class ContentfulCreateArticleServiceTest {
 
         // Mockowanie pracownika
         Employee employee = mock(Employee.class);
-        when(employeeService.findByEmployeeId(1L)).thenReturn(Optional.of(employee));
+        when(employeeService.getEmployee(1L)).thenReturn(Optional.of(employee));
 
         // Testowanie
         contentfulCreateArticleService.createArticlesFromContentfulArticleDto();

@@ -10,8 +10,16 @@ import pl.strefainformacji.repository.EmployeeRepository;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class EmployeeServiceTest {
 
@@ -76,7 +84,7 @@ class EmployeeServiceTest {
         Long employeeId = 1L;
         when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.of(employee));
 
-        Optional<Employee> result = employeeService.findByEmployeeId(employeeId);
+        Optional<Employee> result = employeeService.getEmployee(employeeId);
 
         assertTrue(result.isPresent());
         assertEquals(employee, result.get());
@@ -89,7 +97,7 @@ class EmployeeServiceTest {
         when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.empty());
 
 
-        assertThrows(NullPointerException.class, () -> employeeService.findByEmployeeId(employeeId));
+        assertThrows(NullPointerException.class, () -> employeeService.getEmployee(employeeId));
 
         verify(employeeRepository, times(1)).findByEmployeeId(employeeId);
     }
