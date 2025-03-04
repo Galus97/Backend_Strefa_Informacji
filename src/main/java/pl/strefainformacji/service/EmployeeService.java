@@ -14,17 +14,23 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final MessageService messageService;
 
-    public void updateEnable(Long id, boolean value) {
-        if (findByEmployeeId(id).isPresent()) {
-            employeeRepository.updateEnabledByEmployeeId(id, value);
+    public void isEmployeeExistOrThrow(Long employeeId) {
+        if (!employeeRepository.existsById(employeeId)) {
+            throw new EmployeeNotFoundException(messageService.getMessage("error.employeeNotFound", employeeId));
         }
     }
 
+    public void updateEnable(Long employeeId, boolean value) {
+        isEmployeeExistOrThrow(employeeId);
+
+        employeeRepository.updateEnabledByEmployeeId(employeeId, value);
+
+    }
+
     public boolean isEnabledById(Long employeeId) {
-        if (findByEmployeeId(employeeId).isPresent()) {
-            return employeeRepository.isEnabledById(employeeId);
-        }
-        throw new NullPointerException("No such employee found");
+        isEmployeeExistOrThrow(employeeId);
+
+        return employeeRepository.isEnabledById(employeeId);
     }
 
     public Employee findByEmployeeId(Long employeeId) {
