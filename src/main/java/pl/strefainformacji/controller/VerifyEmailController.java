@@ -37,7 +37,7 @@ public class VerifyEmailController {
                 return "verifyEmail";
             }
         } else if ("ResendCode".equals(action)) {
-            String emailCode = emailService.valueOfEmailActiveCode();
+            String emailCode = emailService.getVerificationCode(employee.getEmail());
             employee.setEmailCode(emailCode);
             sendActivationEmail(request, currentEmployee.getEmployee().getEmail());
             employeeService.updateEmailCode(currentEmployee.getEmployee().getEmployeeId(), emailCode);
