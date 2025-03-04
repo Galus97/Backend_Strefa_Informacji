@@ -38,7 +38,7 @@ public class RegistrationEmployeeController {
             return "register";
         }
         try {
-            employee.setEmailCode(emailService.valueOfEmailActiveCode());
+            employee.setEmailCode(emailService.getVerificationCode(employee.getEmail()));
             registrationService.newEmployeeRegistration(employee);
             sendActivationEmail(request, employee.getEmail());
             return "redirect:login";
@@ -59,6 +59,6 @@ public class RegistrationEmployeeController {
     private void sendActivationEmail(HttpServletRequest request, String email) {
         HttpSession registerEmail = request.getSession();
         registerEmail.setAttribute("registerEmail", email);
-        emailService.sendEmail();
+        emailService.sendEmail(email);
     }
 }

@@ -1,6 +1,5 @@
-package pl.strefainformacji.controller;
+package pl.strefainformacji.controller.save;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.SpecificArticle;
+import pl.strefainformacji.model.ArticleDto;
 import pl.strefainformacji.service.EmployeeService;
 
 @Controller
@@ -19,33 +19,30 @@ import pl.strefainformacji.service.EmployeeService;
 public class SpecificArticleFormController {
 
     private final EmployeeService employeeService;
-    public SpecificArticle specificArticle;
 
     @GetMapping("/add/specificArticle")
-    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
+    public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
-            specificArticle = new SpecificArticle();
-            HttpSession session = request.getSession();
-            if (session.getAttribute("Article") != null && "articleInformation".equals(session.getAttribute("Article"))) {
-                model.addAttribute("specificArticle", specificArticle);
-                return "specificArticle";
-            } else {
-                return "redirect:/add/articleInformation";
-            }
-
+            model.addAttribute("specificArticle", new SpecificArticle());
+            return "specificArticle";
         } else {
             return "redirect:/verifyEmail";
         }
     }
 
     @PostMapping("/add/specificArticle")
-    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpServletRequest request) {
+    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return "specificArticle";
         }
-        this.specificArticle = specificArticle;
-        HttpSession session = request.getSession();
-        session.setAttribute("Article", "specificArticle");
+        ArticleDto articleDto = (ArticleDto) session.getAttribute("articleDto");
+        if (articleDto == null) {
+            articleDto = new ArticleDto();
+        }
+
+        articleDto.setSpecificArticle(specificArticle);
+        session.setAttribute("articleDto", articleDto);
+
         return "redirect:articleImages";
     }
 }

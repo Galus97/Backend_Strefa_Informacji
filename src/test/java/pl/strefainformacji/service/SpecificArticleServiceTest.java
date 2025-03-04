@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import pl.strefainformacji.entity.SpecificArticle;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.repository.SpecificArticleRepository;
 
 import java.util.NoSuchElementException;
@@ -30,12 +30,12 @@ public class SpecificArticleServiceTest {
     @Test
     public void testGetArticleWithValidNumber() {
         Long articleNumber = 1L;
-        SpecificArticle expectedArticle = new SpecificArticle();
+        Article expectedArticle = new Article();
 
         when(specificArticleRepository.existsByArticleInformation_ArticleId(articleNumber)).thenReturn(true);
         when(specificArticleRepository.findByArticleInformation_ArticleId(articleNumber)).thenReturn(expectedArticle);
 
-        SpecificArticle result = specificArticleService.getSpecificArticleByArticleInformationId(articleNumber);
+        Article result = specificArticleService.getSpecificArticleByArticleInformationId(articleNumber);
 
         assertEquals(expectedArticle, result);
     }

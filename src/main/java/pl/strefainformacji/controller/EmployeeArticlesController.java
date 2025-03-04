@@ -22,7 +22,7 @@ public class EmployeeArticlesController {
     @GetMapping("/yourarticles")
     public String currentEmployeeArticles(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
-            List<ArticleInformation> allArticlesByEmployee = articleInformationService.findAllArticlesByEmployee(currentEmployee.getEmployee());
+            List<ArticleInformation> allArticlesByEmployee = articleInformationService.findAllArticlesByEmployeeId(currentEmployee.getEmployee().getEmployeeId());
             if (allArticlesByEmployee != null) {
                 model.addAttribute("allArticlesByEmployee", allArticlesByEmployee);
                 model.addAttribute("employee", currentEmployee.getEmployee());

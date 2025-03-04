@@ -111,11 +111,11 @@ class ArticleInformationServiceTest {
     @Test
     void testFindAllArticlesByEmployee_WithValidEmployee() {
         when(employee.getEmployeeId()).thenReturn(1L);
-        when(employeeService.findByEmployeeId(1L)).thenReturn(Optional.of(employee));
+        when(employeeService.getEmployee(1L)).thenReturn(Optional.of(employee));
         List<ArticleInformation> articles = Arrays.asList(new ArticleInformation(), new ArticleInformation());
         when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(articles);
 
-        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployee(employee);
+        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployeeId(employee);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -125,9 +125,9 @@ class ArticleInformationServiceTest {
     @Test
     void testFindAllArticlesByEmployee_WithInvalidEmployee() {
         when(employee.getEmployeeId()).thenReturn(1L);
-        when(employeeService.findByEmployeeId(1L)).thenReturn(Optional.empty());
+        when(employeeService.getEmployee(1L)).thenReturn(Optional.empty());
 
-        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployee(employee);
+        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployeeId(employee);
 
         assertNull(result);
         verify(articleInformationRepository, never()).findAllByEmployee(any(Employee.class));

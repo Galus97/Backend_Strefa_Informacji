@@ -1,9 +1,7 @@
-package pl.strefainformacji.controller;
+package pl.strefainformacji.controller.save;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import pl.strefainformacji.component.CurrentEmployee;
+import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.ArticleImages;
+import pl.strefainformacji.model.ArticleDto;
 import pl.strefainformacji.service.EmployeeService;
 
 import java.util.ArrayList;
@@ -23,26 +23,20 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ArticleImagesFormController {
     private final EmployeeService employeeService;
-    private final MessageSource messageSource;
-    public List<ArticleImages> articleImagesList;
+    private final MessageService messageService;
 
     @GetMapping("/add/articleImages")
-    public String showArticleImagesForm(@AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
+    public String showArticleImagesForm(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
-            HttpSession session = request.getSession();
-            if (session.getAttribute("Article") != null && "specificArticle".equals(session.getAttribute("Article"))) {
-                return "articleImages";
-            } else {
-                return "redirect:/add/articleInformation";
-            }
+            return "articleImages";
         } else {
             return "redirect:/verifyEmail";
         }
     }
 
     @PostMapping("/add/articleImages")
-    public String saveArticleImages(@RequestParam Map<String, String> allParams, Model model, HttpServletRequest request) {
-        articleImagesList = new ArrayList<>();
+    public String saveArticleImages(@RequestParam Map<String, String> allParams, Model model, HttpSession session) {
+        List<ArticleImages> articleImagesList = new ArrayList<>();
 
         for (int i = 1; i <= 10; i++) {
             String imgSrc = allParams.get("imgSrc" + i);
@@ -57,13 +51,18 @@ public class ArticleImagesFormController {
         }
 
         if (articleImagesList.isEmpty()) {
-            String errorMessage = messageSource.getMessage("error.articleImages.empty", null, Locale.getDefault());
+            String errorMessage = messageService.getMessage("error.articleImages.empty", null, Locale.getDefault());
             model.addAttribute("errorImage", errorMessage);
             return "articleImages";
         }
 
-        HttpSession session = request.getSession();
-        session.setAttribute("Article", "articleImages");
+        ArticleDto articleDto = (ArticleDto) session.getAttribute("articleDto");
+        if (articleDto == null) {
+            articleDto = new ArticleDto();
+        }
+
+        articleDto.setImages(articleImagesList);
+        session.setAttribute("articleDto", articleDto);
 
         return "redirect:/article";
     }

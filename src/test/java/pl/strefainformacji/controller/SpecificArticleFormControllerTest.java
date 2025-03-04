@@ -2,9 +2,6 @@ package pl.strefainformacji.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -13,13 +10,18 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import pl.strefainformacji.component.CurrentEmployee;
+import pl.strefainformacji.controller.save.SpecificArticleFormController;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.entity.Employee;
-import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.EmployeeService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class SpecificArticleFormControllerTest {
     @Mock
@@ -62,7 +64,7 @@ class SpecificArticleFormControllerTest {
         String viewName = specificArticleFormController.specificArticleForm(model, currentEmployee, request);
 
         assertEquals("specificArticle", viewName);
-        verify(model).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
+        verify(model).addAttribute(eq("specificArticle"), any(Article.class));
     }
 
     @Test
@@ -77,7 +79,7 @@ class SpecificArticleFormControllerTest {
         String viewName = specificArticleFormController.specificArticleForm(model, currentEmployee, request);
 
         assertEquals("redirect:/add/articleInformation", viewName);
-        verify(model, never()).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
+        verify(model, never()).addAttribute(eq("specificArticle"), any(Article.class));
     }
 
     @Test
@@ -91,12 +93,12 @@ class SpecificArticleFormControllerTest {
         String viewName = specificArticleFormController.specificArticleForm(model, currentEmployee, request);
 
         assertEquals("redirect:/verifyEmail", viewName);
-        verify(model, never()).addAttribute(eq("specificArticle"), any(SpecificArticle.class));
+        verify(model, never()).addAttribute(eq("specificArticle"), any(Article.class));
     }
 
     @Test
     public void testSpecificArticleFromForm_Success() {
-        SpecificArticle specificArticle = new SpecificArticle();
+        Article specificArticle = new Article();
         specificArticle.setSpecificArticleId(1L);
 
         when(bindingResult.hasErrors()).thenReturn(false);
@@ -109,7 +111,7 @@ class SpecificArticleFormControllerTest {
 
     @Test
     public void testSaveSpecificArticleFromForm_Error() {
-        SpecificArticle specificArticle = new SpecificArticle();
+        Article specificArticle = new Article();
 
         when(bindingResult.hasErrors()).thenReturn(true);
 

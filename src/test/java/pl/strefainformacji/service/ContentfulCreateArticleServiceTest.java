@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
-import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
 import java.util.ArrayList;
@@ -128,14 +128,14 @@ class ContentfulCreateArticleServiceTest {
 
         // Mockowanie pracownika
         Employee employee = mock(Employee.class);
-        when(employeeService.findByEmployeeId(1L)).thenReturn(Optional.of(employee));
+        when(employeeService.getEmployee(1L)).thenReturn(Optional.of(employee));
 
         // Testowanie
         contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
 
         // Weryfikacja
         verify(articleInformationService, times(1)).saveArticleInformation(any(ArticleInformation.class));
-        verify(specificArticleService, times(1)).saveSpecificArticle(any(SpecificArticle.class));
+        verify(specificArticleService, times(1)).saveSpecificArticle(any(Article.class));
         verify(articleImagesService, never()).saveArticleImages(any(ArticleImages.class));
     }
 
@@ -165,14 +165,14 @@ class ContentfulCreateArticleServiceTest {
 
         // Mockowanie pracownika
         Employee employee = mock(Employee.class);
-        when(employeeService.findByEmployeeId(1L)).thenReturn(Optional.of(employee));
+        when(employeeService.getEmployee(1L)).thenReturn(Optional.of(employee));
 
         // Testowanie
         contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
 
         // Weryfikacja
         verify(articleInformationService, times(1)).saveArticleInformation(any(ArticleInformation.class));
-        verify(specificArticleService, times(1)).saveSpecificArticle(any(SpecificArticle.class));
+        verify(specificArticleService, times(1)).saveSpecificArticle(any(Article.class));
         verify(articleImagesService, times(1)).saveArticleImages(any(ArticleImages.class));
     }
 }

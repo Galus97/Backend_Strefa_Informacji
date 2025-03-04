@@ -11,7 +11,6 @@ import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -66,11 +65,13 @@ public class ContentfulCreateArticleService {
             ArticleInformation articleInformation = new ArticleInformation();
             SpecificArticle specificArticle = new SpecificArticle();
 
-            Optional<Employee> employee = employeeService.findByEmployeeId((long) element.getFields().getEmployeeId());
-            Optional<Employee> generalEmployee = employeeService.findByEmployeeId(1L);
-            if (employee.isPresent()) {
-                articleInformation.setEmployee(employee.get());
-            } else generalEmployee.ifPresent(articleInformation::setEmployee);
+            Employee employee = employeeService.getEmployee((long) element.getFields().getEmployeeId());
+            Employee generalEmployee = employeeService.getEmployee(1L);
+//            if (employeeService.validateEmployeeExists(employee.getEmployeeId())) {
+//                articleInformation.setEmployee(employee);
+//            } else {
+//                articleInformation.setEmployee(generalEmployee);
+//            }
 
             articleInformation.setContentfulId(element.getSys().getId());
             articleInformation.setImportance(element.getFields().getImportance());

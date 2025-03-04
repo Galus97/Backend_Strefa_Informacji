@@ -9,10 +9,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import pl.strefainformacji.component.CurrentEmployee;
+import pl.strefainformacji.controller.save.ArticleImagesFormController;
+import pl.strefainformacji.controller.save.ArticleInformationFormController;
+import pl.strefainformacji.controller.save.SaveArticleController;
+import pl.strefainformacji.controller.save.SpecificArticleFormController;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
-import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.ArticleImagesService;
 import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
@@ -68,7 +72,7 @@ class SaveArticleControllerTest {
     private ArticleInformation articleInformation;
 
     @Mock
-    private SpecificArticle specificArticle;
+    private Article specificArticle;
 
     @Mock
     private ArticleImages articleImages;
