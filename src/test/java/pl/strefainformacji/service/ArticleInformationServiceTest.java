@@ -78,7 +78,7 @@ class ArticleInformationServiceTest {
     void testGetArticleInformationByArticleId_ValidId() {
         when(articleInformationRepository.findArticleInformationByArticleId(1L)).thenReturn(articleInformation);
 
-        ArticleInformation result = articleInformationService.getArticleInformationByArticleId(1L);
+        ArticleInformation result = articleInformationService.getArticle(1L);
 
         assertNotNull(result);
         verify(articleInformationRepository, times(1)).findArticleInformationByArticleId(1L);
@@ -87,7 +87,7 @@ class ArticleInformationServiceTest {
     @Test
     void testGetArticleInformationByArticleId_InvalidId() {
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            articleInformationService.getArticleInformationByArticleId(0L);
+            articleInformationService.getArticle(0L);
         });
 
         assertEquals("The article number must be greater than zero.", exception.getMessage());

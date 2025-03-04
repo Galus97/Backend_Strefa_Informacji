@@ -25,7 +25,7 @@ public class OneArticleController {
     @GetMapping("/article/{articleId}")
     public String getOneArticle(@PathVariable Long articleId, Model model) {
         SpecificArticle specificArticle = specificArticleService.getSpecificArticleByArticleInformationId(articleId);
-        ArticleInformation articleInformation = articleInformationService.getArticleInformationByArticleId(articleId);
+        ArticleInformation articleInformation = articleInformationService.getArticle(articleId);
         List<ArticleImages> articleImages = articleImagesService.getAllArticleImagesBySpecificArticle(specificArticle);
 
         model.addAttribute("specificArticle", specificArticle);
