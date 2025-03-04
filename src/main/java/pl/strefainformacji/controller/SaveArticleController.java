@@ -8,9 +8,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import pl.strefainformacji.component.CurrentEmployee;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
-import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.ArticleImagesService;
 import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
@@ -33,7 +33,7 @@ public class SaveArticleController {
 
         ArticleInformation articleInformation = articleInformationFormController.articleInformation;
         articleInformation.setContentfulId("00000");
-        SpecificArticle specificArticle = specificArticleFormController.specificArticle;
+        Article specificArticle = specificArticleFormController.specificArticle;
         List<ArticleImages> articleImagesList = articleImagesFormController.articleImagesList;
 
         setForeignKey(currentEmployee, articleInformation, specificArticle, articleImagesList);
@@ -53,7 +53,7 @@ public class SaveArticleController {
     }
 
 
-    private void setForeignKey(CurrentEmployee currentEmployee, ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImagesList) {
+    private void setForeignKey(CurrentEmployee currentEmployee, ArticleInformation articleInformation, Article specificArticle, List<ArticleImages> articleImagesList) {
         articleInformation.setEmployee(currentEmployee.getEmployee());
         specificArticle.setArticleInformation(articleInformationFormController.articleInformation);
         for (ArticleImages articleImages : articleImagesList) {
@@ -61,7 +61,7 @@ public class SaveArticleController {
         }
     }
 
-    private void saveArticleToDatabase(ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImagesList) {
+    private void saveArticleToDatabase(ArticleInformation articleInformation, Article specificArticle, List<ArticleImages> articleImagesList) {
         articleInformationService.saveArticleInformation(articleInformation);
         specificArticleService.saveSpecificArticle(specificArticle);
         for (ArticleImages articleImages : articleImagesList) {
@@ -69,13 +69,13 @@ public class SaveArticleController {
         }
     }
 
-    private void addModelAttribute(Model model, ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImagesList) {
+    private void addModelAttribute(Model model, ArticleInformation articleInformation, Article specificArticle, List<ArticleImages> articleImagesList) {
         model.addAttribute("articleInformation", articleInformation);
         model.addAttribute("specificArticle", specificArticle);
         model.addAttribute("articleImages", articleImagesList);
     }
 
-    private boolean isEveryFieldsExist(ArticleInformation articleInformation, SpecificArticle specificArticle, List<ArticleImages> articleImages) {
+    private boolean isEveryFieldsExist(ArticleInformation articleInformation, Article specificArticle, List<ArticleImages> articleImages) {
         if (!areAllFieldsNonNull(articleInformation) || !areAllFieldsNonNull(specificArticle)) {
             return false;
         }

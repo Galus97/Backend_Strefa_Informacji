@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ArticleImagesRepository extends JpaRepository<ArticleImages, Long> {
 
-    List<ArticleImages> findAllArticleImagesBySpecificArticle(SpecificArticle specificArticle);
+    List<ArticleImages> findAllBySpecificArticle(SpecificArticle specificArticle);
 
-    boolean existsArticleImagesBySpecificArticle_SpecificArticleId(Long number);
+    boolean existsBySpecificArticle_SpecificArticleId(Long number);
 }

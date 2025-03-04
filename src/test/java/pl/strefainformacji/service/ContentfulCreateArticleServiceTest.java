@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
-import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
 import java.util.ArrayList;
@@ -135,7 +135,7 @@ class ContentfulCreateArticleServiceTest {
 
         // Weryfikacja
         verify(articleInformationService, times(1)).saveArticleInformation(any(ArticleInformation.class));
-        verify(specificArticleService, times(1)).saveSpecificArticle(any(SpecificArticle.class));
+        verify(specificArticleService, times(1)).saveSpecificArticle(any(Article.class));
         verify(articleImagesService, never()).saveArticleImages(any(ArticleImages.class));
     }
 
@@ -172,7 +172,7 @@ class ContentfulCreateArticleServiceTest {
 
         // Weryfikacja
         verify(articleInformationService, times(1)).saveArticleInformation(any(ArticleInformation.class));
-        verify(specificArticleService, times(1)).saveSpecificArticle(any(SpecificArticle.class));
+        verify(specificArticleService, times(1)).saveSpecificArticle(any(Article.class));
         verify(articleImagesService, times(1)).saveArticleImages(any(ArticleImages.class));
     }
 }

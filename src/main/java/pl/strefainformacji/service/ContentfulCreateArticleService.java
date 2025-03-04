@@ -2,10 +2,10 @@ package pl.strefainformacji.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
-import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
 import java.time.LocalDateTime;
@@ -64,7 +64,7 @@ public class ContentfulCreateArticleService {
 
         for (ContentfulArticleDto element : contentfulArticleDtos) {
             ArticleInformation articleInformation = new ArticleInformation();
-            SpecificArticle specificArticle = new SpecificArticle();
+            Article specificArticle = new Article();
 
             Optional<Employee> employee = employeeService.findByEmployeeId((long) element.getFields().getEmployeeId());
             Optional<Employee> generalEmployee = employeeService.findByEmployeeId(1L);

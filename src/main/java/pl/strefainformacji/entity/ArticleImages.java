@@ -40,5 +40,5 @@ public class ArticleImages {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specificArticleId")
     @JsonIgnore
-    private SpecificArticle specificArticle;
+    private Article specificArticle;
 }

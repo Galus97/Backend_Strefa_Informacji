@@ -11,7 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.strefainformacji.component.CurrentEmployee;
-import pl.strefainformacji.entity.SpecificArticle;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.service.EmployeeService;
 
 @Controller
@@ -19,12 +19,12 @@ import pl.strefainformacji.service.EmployeeService;
 public class SpecificArticleFormController {
 
     private final EmployeeService employeeService;
-    public SpecificArticle specificArticle;
+    public Article specificArticle;
 
     @GetMapping("/add/specificArticle")
     public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee, HttpServletRequest request) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
-            specificArticle = new SpecificArticle();
+            specificArticle = new Article();
             HttpSession session = request.getSession();
             if (session.getAttribute("Article") != null && "articleInformation".equals(session.getAttribute("Article"))) {
                 model.addAttribute("specificArticle", specificArticle);
@@ -39,7 +39,7 @@ public class SpecificArticleFormController {
     }
 
     @PostMapping("/add/specificArticle")
-    public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpServletRequest request) {
+    public String saveSpecificArticleFromForm(@Valid Article specificArticle, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             return "specificArticle";
         }

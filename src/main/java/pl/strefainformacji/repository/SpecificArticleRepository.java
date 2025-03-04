@@ -5,9 +5,8 @@ import pl.strefainformacji.entity.SpecificArticle;
 
 public interface SpecificArticleRepository extends JpaRepository<SpecificArticle, Long> {
 
-    SpecificArticle findByArticleInformation_ArticleId(Long number);
+    SpecificArticle findByArticleInformation_ArticleId(Long articleId);
 
     boolean existsByArticleInformation_ArticleId(Long number);
 
-    SpecificArticle findBySpecificArticleId(Long number);
 }

@@ -2,35 +2,34 @@ package pl.strefainformacji.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.SpecificArticle;
+import pl.strefainformacji.exception.SpecificArticleNotFoundException;
 import pl.strefainformacji.repository.SpecificArticleRepository;
-
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
 public class SpecificArticleService {
 
     private final SpecificArticleRepository specificArticleRepository;
+    private final MessageService messageService;
 
     public SpecificArticle getSpecificArticleByArticleInformationId(Long articleInformationId) {
-        validateArticleInformationId(articleInformationId);
-
-        if (specificArticleRepository.existsByArticleInformation_ArticleId(articleInformationId)) {
-            return specificArticleRepository.findByArticleInformation_ArticleId(articleInformationId);
-        } else {
-            throw new NoSuchElementException(("Specific article not found for the given ID: " + articleInformationId));
+        if (articleInformationId == null || articleInformationId <= 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidArticleId", articleInformationId));
         }
+        isSpecificArticleExistOrThrow(articleInformationId);
 
+        return specificArticleRepository.findByArticleInformation_ArticleId(articleInformationId);
     }
 
     public void saveSpecificArticle(SpecificArticle specificArticle) {
         specificArticleRepository.save(specificArticle);
     }
 
-    private void validateArticleInformationId(Long articleInformationId) {
-        if (articleInformationId == null || articleInformationId <= 0) {
-            throw new IllegalArgumentException("The article ID must be a positive number.");
+    public void isSpecificArticleExistOrThrow(Long id) {
+        if (!specificArticleRepository.existsByArticleInformation_ArticleId(id)) {
+            throw new SpecificArticleNotFoundException(messageService.getMessage("error.specificArticleNotFound", id));
         }
     }
 }

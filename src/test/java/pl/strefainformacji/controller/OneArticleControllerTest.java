@@ -10,8 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import pl.strefainformacji.entity.Article;
 import pl.strefainformacji.entity.ArticleInformation;
-import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.service.SpecificArticleService;
 
 import java.util.NoSuchElementException;
@@ -19,8 +19,8 @@ import java.util.NoSuchElementException;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,7 +42,7 @@ public class OneArticleControllerTest {
 
     @Test
     public void whenValidArticle_thenStatus200() throws Exception {
-        SpecificArticle expectedArticle = new SpecificArticle();
+        Article expectedArticle = new Article();
         expectedArticle.setArticleInformation(new ArticleInformation());
         expectedArticle.setSpecificArticleId(1L);
         expectedArticle.setTitle("Title");

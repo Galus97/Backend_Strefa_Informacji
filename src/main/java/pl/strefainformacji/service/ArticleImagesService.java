@@ -31,6 +31,6 @@ public class ArticleImagesService {
             throw new IllegalArgumentException("SpecificArticle must have a valid ID.");
         }
 
-        return articleImagesRepository.findAllArticleImagesBySpecificArticle(specificArticle);
+        return articleImagesRepository.findAllBySpecificArticle(specificArticle);
     }
 }

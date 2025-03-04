@@ -14,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class SpecificArticleTest {
 
     private Validator validator;
-    private SpecificArticle specificArticle;
+    private Article specificArticle;
 
     @BeforeEach
     public void setUp() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        specificArticle = new SpecificArticle();
+        specificArticle = new Article();
         specificArticle.setDescription("Valid description with more than 30 characters");
         specificArticle.setTitle("Title with more then 3 characters");
     }
@@ -28,7 +28,7 @@ public class SpecificArticleTest {
     @Test
     public void testValidSpecificArticle() {
 
-        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+        Set<ConstraintViolation<Article>> violations = validator.validate(specificArticle);
 
         assertEquals(0, violations.size());
     }
@@ -38,7 +38,7 @@ public class SpecificArticleTest {
 
         specificArticle.setDescription("Short");
 
-        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+        Set<ConstraintViolation<Article>> violations = validator.validate(specificArticle);
 
         assertEquals(1, violations.size());
     }
@@ -48,7 +48,7 @@ public class SpecificArticleTest {
 
         specificArticle.setTitle("A");
 
-        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+        Set<ConstraintViolation<Article>> violations = validator.validate(specificArticle);
 
         assertEquals(1, violations.size());
     }
