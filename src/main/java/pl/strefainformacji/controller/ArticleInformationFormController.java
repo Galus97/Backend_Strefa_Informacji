@@ -20,7 +20,6 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class ArticleInformationFormController {
     private final EmployeeService employeeService;
-    private ArticleDto articleDto;
 
     @GetMapping("/add/articleInformation")
     public String showArticleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
