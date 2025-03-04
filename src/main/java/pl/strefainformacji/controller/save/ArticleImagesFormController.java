@@ -1,4 +1,4 @@
-package pl.strefainformacji.controller;
+package pl.strefainformacji.controller.save;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
