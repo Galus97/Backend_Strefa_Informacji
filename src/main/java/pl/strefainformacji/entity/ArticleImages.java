@@ -41,4 +41,9 @@ public class ArticleImages {
     @JoinColumn(name = "specificArticleId")
     @JsonIgnore
     private SpecificArticle specificArticle;
+
+    public ArticleImages(String imgSrc, String altImg) {
+        this.imgSrc = imgSrc;
+        this.altImg = altImg;
+    }
 }
