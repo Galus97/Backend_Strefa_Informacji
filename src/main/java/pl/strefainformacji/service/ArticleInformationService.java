@@ -34,17 +34,18 @@ public class ArticleInformationService {
 
     public void saveArticleInformation(ArticleInformation articleInformation) {
         if (articleInformation == null) {
-            throw new IllegalArgumentException("error.articleIsNull");
+            throw new IllegalArgumentException(messageService.getMessage("error.articleIsNull"));
         }
         articleInformationRepository.save(articleInformation);
     }
 
-    public List<ArticleInformation> findAllArticlesByEmployee(Employee employee) {
-        if (employee != null && employeeService.findByEmployeeId(employee.getEmployeeId()).isPresent()) {
-            return articleInformationRepository.findAllByEmployee(employee);
-        } else {
-            return null;
+    public List<ArticleInformation> findAllArticlesByEmployee(Long employeeId) {
+        if (employeeId == null || employeeId <= 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidEmployeeId", employeeId));
         }
+        Employee employee = employeeService.findByEmployeeId(employeeId);
+
+        return articleInformationRepository.findAllByEmployee(employee);
     }
 
     public List<String> findAllContentfulIds() {
