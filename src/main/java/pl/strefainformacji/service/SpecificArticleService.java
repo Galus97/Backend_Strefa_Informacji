@@ -7,6 +7,8 @@ import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.exception.SpecificArticleNotFoundException;
 import pl.strefainformacji.repository.SpecificArticleRepository;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class SpecificArticleService {
@@ -24,6 +26,9 @@ public class SpecificArticleService {
     }
 
     public void saveSpecificArticle(SpecificArticle specificArticle) {
+        if (Objects.isNull(specificArticle)) {
+            throw new IllegalArgumentException(messageService.getMessage("error.specificArticleIsNull"));
+        }
         specificArticleRepository.save(specificArticle);
     }
 
