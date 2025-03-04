@@ -2,36 +2,40 @@ package pl.strefainformacji.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.Employee;
+import pl.strefainformacji.exception.EmployeeNotFoundException;
 import pl.strefainformacji.repository.EmployeeRepository;
-
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
+    private final MessageService messageService;
 
-    public void updateEnable(Long id, boolean value) {
-        if (findByEmployeeId(id).isPresent()) {
-            employeeRepository.updateEnabledByEmployeeId(id, value);
+    public void isEmployeeExistOrThrow(Long employeeId) {
+        if (!employeeRepository.existsById(employeeId)) {
+            throw new EmployeeNotFoundException(messageService.getMessage("error.employeeNotFound", employeeId));
         }
+    }
+
+    public void updateEnable(Long employeeId, boolean value) {
+        isEmployeeExistOrThrow(employeeId);
+
+        employeeRepository.updateEnabledByEmployeeId(employeeId, value);
+
     }
 
     public boolean isEnabledById(Long employeeId) {
-        if (findByEmployeeId(employeeId).isPresent()) {
-            return employeeRepository.isEnabledById(employeeId);
-        }
-        throw new NullPointerException("No such employee found");
+        isEmployeeExistOrThrow(employeeId);
+
+        return employeeRepository.isEnabledById(employeeId);
     }
 
-    public Optional<Employee> findByEmployeeId(Long id) {
-        if (employeeRepository.findByEmployeeId(id).isPresent()) {
-            return employeeRepository.findByEmployeeId(id);
-        } else {
-            return Optional.empty();
-        }
+    public Employee findByEmployeeId(Long employeeId) {
+        return employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EmployeeNotFoundException(messageService.getMessage("error.employeeNotFound", employeeId)));
     }
 
     public void updateEmailCode(Long id, String emailCode) {

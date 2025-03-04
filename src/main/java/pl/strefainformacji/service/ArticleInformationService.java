@@ -3,6 +3,7 @@ package pl.strefainformacji.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.repository.ArticleInformationRepository;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,34 +19,33 @@ public class ArticleInformationService {
 
     private final ArticleInformationRepository articleInformationRepository;
     private final EmployeeService employeeService;
+    private final MessageService messageService;
 
     public List<ArticleInformation> getAllArticles() {
-        List<ArticleInformation> allArticles = articleInformationRepository.findAll();
-        if (allArticles.isEmpty()) {
-            throw new NoSuchElementException("There are no articles in the database");
-        }
-        return allArticles;
+        return articleInformationRepository.findAll();
     }
 
-    public ArticleInformation getArticleInformationByArticleId(Long id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException("The article number must be greater than zero.");
+    public ArticleInformation getArticle(Long articleId) {
+        if (articleId == null || articleId <= 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidArticleId", articleId));
         }
-        return articleInformationRepository.findArticleInformationByArticleId(id);
+        return articleInformationRepository.findArticleInformationByArticleId(articleId);
     }
 
     public void saveArticleInformation(ArticleInformation articleInformation) {
-        if (articleInformation != null) {
-            articleInformationRepository.save(articleInformation);
+        if (articleInformation == null) {
+            throw new IllegalArgumentException(messageService.getMessage("error.articleIsNull"));
         }
+        articleInformationRepository.save(articleInformation);
     }
 
-    public List<ArticleInformation> findAllArticlesByEmployee(Employee employee) {
-        if (employee != null && employeeService.findByEmployeeId(employee.getEmployeeId()).isPresent()) {
-            return articleInformationRepository.findAllByEmployee(employee);
-        } else {
-            return null;
+    public List<ArticleInformation> findAllArticlesByEmployee(Long employeeId) {
+        if (employeeId == null || employeeId <= 0) {
+            throw new IllegalArgumentException(messageService.getMessage("error.invalidEmployeeId", employeeId));
         }
+        Employee employee = employeeService.findByEmployeeId(employeeId);
+
+        return articleInformationRepository.findAllByEmployee(employee);
     }
 
     public List<String> findAllContentfulIds() {
