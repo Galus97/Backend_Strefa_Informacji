@@ -33,9 +33,10 @@ public class ArticleInformationService {
     }
 
     public void saveArticleInformation(ArticleInformation articleInformation) {
-        if (articleInformation != null) {
-            articleInformationRepository.save(articleInformation);
+        if (articleInformation == null) {
+            throw new IllegalArgumentException("error.articleIsNull");
         }
+        articleInformationRepository.save(articleInformation);
     }
 
     public List<ArticleInformation> findAllArticlesByEmployee(Employee employee) {
