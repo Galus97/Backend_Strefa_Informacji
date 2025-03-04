@@ -39,7 +39,7 @@ public class ArticleInformationService {
         articleInformationRepository.save(articleInformation);
     }
 
-    public List<ArticleInformation> findAllArticlesByEmployee(Long employeeId) {
+    public List<ArticleInformation> findAllArticlesByEmployeeId(Long employeeId) {
         if (employeeId == null || employeeId <= 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidEmployeeId", employeeId));
         }

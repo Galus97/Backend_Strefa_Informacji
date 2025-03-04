@@ -67,11 +67,11 @@ public class ContentfulCreateArticleService {
 
             Employee employee = employeeService.getEmployee((long) element.getFields().getEmployeeId());
             Employee generalEmployee = employeeService.getEmployee(1L);
-            if (employeeService.isEmployeeExistOrThrow(employee.getEmployeeId())) {
-                articleInformation.setEmployee(employee);
-            } else {
-                articleInformation.setEmployee(generalEmployee);
-            }
+//            if (employeeService.validateEmployeeExists(employee.getEmployeeId())) {
+//                articleInformation.setEmployee(employee);
+//            } else {
+//                articleInformation.setEmployee(generalEmployee);
+//            }
 
             articleInformation.setContentfulId(element.getSys().getId());
             articleInformation.setImportance(element.getFields().getImportance());

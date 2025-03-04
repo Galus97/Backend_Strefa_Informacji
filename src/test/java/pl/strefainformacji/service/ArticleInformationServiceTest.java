@@ -115,7 +115,7 @@ class ArticleInformationServiceTest {
         List<ArticleInformation> articles = Arrays.asList(new ArticleInformation(), new ArticleInformation());
         when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(articles);
 
-        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployee(employee);
+        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployeeId(employee);
 
         assertNotNull(result);
         assertEquals(2, result.size());
@@ -127,7 +127,7 @@ class ArticleInformationServiceTest {
         when(employee.getEmployeeId()).thenReturn(1L);
         when(employeeService.getEmployee(1L)).thenReturn(Optional.empty());
 
-        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployee(employee);
+        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployeeId(employee);
 
         assertNull(result);
         verify(articleInformationRepository, never()).findAllByEmployee(any(Employee.class));

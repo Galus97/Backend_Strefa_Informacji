@@ -48,6 +48,6 @@ public class VerifyEmailController {
     private void sendActivationEmail(HttpServletRequest request, String email) {
         HttpSession registerEmail = request.getSession();
         registerEmail.setAttribute("registerEmail", email);
-        emailService.sendEmail();
+        emailService.sendEmail(email);
     }
 }

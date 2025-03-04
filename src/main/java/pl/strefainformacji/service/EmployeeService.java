@@ -1,5 +1,6 @@
 package pl.strefainformacji.service;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.component.MessageService;
@@ -9,6 +10,7 @@ import pl.strefainformacji.repository.EmployeeRepository;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
@@ -22,50 +24,50 @@ public class EmployeeService {
     public void deleteEmployee(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EmployeeNotFoundException("error.employeeNotFound"));
-        employeeRepository.deleteById(employeeId);
+        employeeRepository.delete(employee);
     }
 
 
     public void updateEnable(Long employeeId, boolean value) {
-        isEmployeeExistOrThrow(employeeId);
+        validateEmployeeExists(employeeId);
 
         employeeRepository.updateEnabledByEmployeeId(employeeId, value);
 
     }
 
     public boolean isEnabledById(Long employeeId) {
-        isEmployeeExistOrThrow(employeeId);
+        validateEmployeeExists(employeeId);
 
         return employeeRepository.isEnabledById(employeeId);
     }
 
 
     public void updateEmailCode(Long employeeId, String emailCode) {
-        if (validateData(employeeId, emailCode)) {
+        if (validateEmployeeAndText(employeeId, emailCode)) {
             employeeRepository.updateEmailCodeByEmployeeId(employeeId, emailCode);
         }
     }
 
     public void changePassword(Long employeeId, String password) {
-        if (validateData(employeeId, password)) {
+        if (validateEmployeeAndText(employeeId, password)) {
             employeeRepository.changePasswordByEmployeeId(employeeId, password);
         }
     }
 
     public void changeEmail(Long employeeId, String email) {
-        if (validateData(employeeId, email)) {
+        if (validateEmployeeAndText(employeeId, email)) {
             employeeRepository.changeEmailByEmployeeId(employeeId, email);
         }
     }
 
-    public boolean isEmployeeExistOrThrow(Long employeeId) {
+    public void validateEmployeeExists(Long employeeId) {
         if (!employeeRepository.existsById(employeeId)) {
             throw new EmployeeNotFoundException(messageService.getMessage("error.employeeNotFound", employeeId));
         }
-        return true;
     }
 
-    private boolean validateData(Long id, String text) {
-        return employeeRepository.findByEmployeeId(id).isPresent() && text != null && !text.isBlank();
+    private boolean validateEmployeeAndText(Long employeeId, String text) {
+        validateEmployeeExists(employeeId);
+        return text != null && !text.isBlank();
     }
 }
