@@ -9,7 +9,10 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.slf4j.Logger;
@@ -22,6 +25,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ArticleInformation {
 
     private final static Logger logger = LoggerFactory.getLogger(ArticleInformation.class);
