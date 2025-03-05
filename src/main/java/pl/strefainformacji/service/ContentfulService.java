@@ -10,29 +10,29 @@ import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ContentfulService {
     private final CDAClient client;
+    private static final String CONTENT_TYPE = "content_type";
+    private static final String CREATED_AT_DESC = "-sys.createdAt";
+    private static final int DEFAULT_LIMIT = 10;
 
     public ContentfulService(ContentfulClient contentfulClient2) {
         this.client = contentfulClient2.createClient();
     }
 
     public List<String> getAllArticlesIds() {
-        List<CDAResource> entries = client.fetch(CDAEntry.class)
-                .where("content_type", "article")
-                .where("order", "-sys.createdAt")
-                .limit(10)
+        return client.fetch(CDAEntry.class)
+                .withContentType(CONTENT_TYPE)
+                .orderBy(CREATED_AT_DESC)
+                .limit(DEFAULT_LIMIT)
                 .all()
-                .items();
-
-        List<String> articleIds = new ArrayList<>();
-        for (CDAResource resource : entries) {
-            CDAEntry entry = (CDAEntry) resource;
-            articleIds.add(entry.id());
-        }
-        return articleIds;
+                .items()
+                .stream()
+                .map(CDAResource::id)
+                .collect(Collectors.toList());
     }
 
     public ContentfulArticleDto getArticleById(String id) {
