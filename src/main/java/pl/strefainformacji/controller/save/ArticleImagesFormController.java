@@ -1,23 +1,27 @@
 package pl.strefainformacji.controller.save;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.model.ArticleDto;
+import pl.strefainformacji.model.ArticleImagesForm;
+import pl.strefainformacji.model.ImageDto;
 import pl.strefainformacji.service.EmployeeService;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -26,8 +30,14 @@ public class ArticleImagesFormController {
     private final MessageService messageService;
 
     @GetMapping("/add/articleImages")
-    public String showArticleImagesForm(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
+    public String showArticleImagesForm(@AuthenticationPrincipal CurrentEmployee currentEmployee, Model model, HttpSession session) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
+            ArticleImagesForm form = (ArticleImagesForm) session.getAttribute("articleImagesForm");
+            if (form == null) {
+                form = new ArticleImagesForm();
+                form.setImages(Collections.nCopies(10, new ImageDto()));
+            }
+            model.addAttribute("form", form);
             return "articleImages";
         } else {
             return "redirect:/verifyEmail";
@@ -35,33 +45,32 @@ public class ArticleImagesFormController {
     }
 
     @PostMapping("/add/articleImages")
-    public String saveArticleImages(@RequestParam Map<String, String> allParams, Model model, HttpSession session) {
-        List<ArticleImages> articleImagesList = new ArrayList<>();
+    public String saveArticleImages(@Valid @ModelAttribute("form") ArticleImagesForm form, BindingResult bindingResult,
+                                    HttpSession session, Locale locale) {
 
-        for (int i = 1; i <= 10; i++) {
-            String imgSrc = allParams.get("imgSrc" + i);
-            String altImg = allParams.get("altImg" + i);
-
-            if (imgSrc != null && altImg != null && !imgSrc.isEmpty() && !altImg.isEmpty()) {
-                ArticleImages articleImages = new ArticleImages();
-                articleImages.setImgSrc(imgSrc);
-                articleImages.setAltImg(altImg);
-                articleImagesList.add(articleImages);
-            }
-        }
-
-        if (articleImagesList.isEmpty()) {
-            String errorMessage = messageService.getMessage("error.articleImages.empty", null, Locale.getDefault());
-            model.addAttribute("errorImage", errorMessage);
+        if (bindingResult.hasErrors()) {
             return "articleImages";
         }
 
+        List<ImageDto> validImages = form.getImages().stream()
+                .filter(img -> !img.getImgSrc().isEmpty() && !img.getAltImg().isEmpty())
+                .collect(Collectors.toList());
+
+        if (validImages.size() < 1) {
+            bindingResult.rejectValue("images", "error.images",
+                    messageService.getMessage("error.images.min", null, locale));
+            return "articleImages";
+        }
         ArticleDto articleDto = (ArticleDto) session.getAttribute("articleDto");
         if (articleDto == null) {
             articleDto = new ArticleDto();
         }
 
-        articleDto.setImages(articleImagesList);
+
+        articleDto.setImages(validImages.stream()
+                .map(dto -> new ArticleImages(dto.getImgSrc(), dto.getAltImg()))
+                .collect(Collectors.toList()));
+
         session.setAttribute("articleDto", articleDto);
 
         return "redirect:/article";

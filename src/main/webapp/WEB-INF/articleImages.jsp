@@ -12,20 +12,23 @@
 
 
 <h3>Dodaj zdjęcia do artykułu</h3>
-<form:form action="/add/articleImages" method="post" class="image-form">
-    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-    <c:if test="${not empty errorImage}">
-        <div class="error-message error-image">
-                ${errorImage}
+<form:form action="/add/articleImages" method="post" modelAttribute="form">
+    <form:errors path="images" cssClass="error-message"/>
+
+    <c:forEach items="${form.images}" varStatus="status">
+        <div class="image-group">
+            <form:label path="images[${status.index}].imgSrc">
+                Ścieżka do zdjęcia ${status.index + 1}
+            </form:label>
+            <form:input path="images[${status.index}].imgSrc"/>
+            <form:errors path="images[${status.index}].imgSrc" cssClass="field-error"/>
+
+            <form:label path="images[${status.index}].altImg">
+                Opis zdjęcia ${status.index + 1}
+            </form:label>
+            <form:input path="images[${status.index}].altImg"/>
+            <form:errors path="images[${status.index}].altImg" cssClass="field-error"/>
         </div>
-    </c:if>
-    <c:forEach var="i" begin="1" end="10">
-        <label>
-            Podaj ścieżkę do zdjęcia ${i}
-            <input type="text" name="imgSrc${i}"/>
-            Podaj opis zdjęcia ${i}
-            <input type="text" name="altImg${i}"/>
-        </label>
     </c:forEach>
 
     <label>
