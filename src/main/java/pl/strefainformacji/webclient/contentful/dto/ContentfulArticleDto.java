@@ -3,31 +3,26 @@ package pl.strefainformacji.webclient.contentful.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContentfulArticleDto {
     private Fields fields;
     private Sys sys;
 
-    @Getter
-    @Setter
-    @ToString
+    @Data
+    @Accessors(chain = true)
     public static class Sys {
         @JsonProperty("id")
         private String id;
     }
 
-    @Getter
-    @Setter
-    @ToString
+    @Data
+    @Accessors(chain = true)
     public static class Fields {
         @JsonProperty("headTitle")
         private String headTitle;
@@ -50,9 +45,8 @@ public class ContentfulArticleDto {
         @JsonProperty("employeeId")
         private Integer employeeId;
 
-        @Getter
-        @Setter
-        @ToString
+        @Data
+        @Accessors(chain = true)
         public static class Sys {
             @JsonProperty("id")
             private String id;
