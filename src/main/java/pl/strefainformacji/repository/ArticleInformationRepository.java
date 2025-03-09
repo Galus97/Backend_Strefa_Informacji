@@ -10,9 +10,6 @@ import pl.strefainformacji.entity.Employee;
 import java.util.List;
 
 public interface ArticleInformationRepository extends JpaRepository<ArticleInformation, Long> {
-
-    ArticleInformation findArticleInformationByArticleId(Long articleId);
-
     List<ArticleInformation> findAllByEmployee(Employee employee);
 
     @Query("SELECT ai.contentfulId FROM ArticleInformation ai")

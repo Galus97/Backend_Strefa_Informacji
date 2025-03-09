@@ -4,52 +4,67 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collections;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SpecificArticleTest {
+class SpecificArticleTest {
 
-    private Validator validator;
-    private Article specificArticle;
+    private static Validator validator;
 
-    @BeforeEach
-    public void setUp() {
+    @BeforeAll
+    static void setUpValidator() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        specificArticle = new Article();
-        specificArticle.setDescription("Valid description with more than 30 characters");
-        specificArticle.setTitle("Title with more then 3 characters");
     }
 
     @Test
-    public void testValidSpecificArticle() {
+    void testValidSpecificArticle() {
+        ArticleInformation articleInformation = ArticleInformation.builder()
+                .contentfulId("12345")
+                .title("Valid Title")
+                .shortDescription("This is a valid short description")
+                .importance(5)
+                .imgSrc("image.jpg")
+                .altImg("Alternative image")
+                .localDateTime(java.time.LocalDateTime.now())
+                .build();
 
-        Set<ConstraintViolation<Article>> violations = validator.validate(specificArticle);
+        SpecificArticle specificArticle = SpecificArticle.builder()
+                .title("Specific Title")
+                .description("This is a valid description that has more than thirty characters.")
+                .articleInformation(articleInformation)
+                .articleImages(Collections.emptyList())
+                .build();
 
-        assertEquals(0, violations.size());
+        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+        assertTrue(violations.isEmpty(), "SpecificArticle object should be valid");
     }
 
     @Test
-    public void testInvalidDescriptionSize() {
+    void testInvalidSpecificArticle_shortTitle() {
+        SpecificArticle specificArticle = SpecificArticle.builder()
+                .title("No") // too short, min. 3 characters
+                .description("This is a valid description that has more than thirty characters.")
+                .build();
 
-        specificArticle.setDescription("Short");
-
-        Set<ConstraintViolation<Article>> violations = validator.validate(specificArticle);
-
-        assertEquals(1, violations.size());
+        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+        assertFalse(violations.isEmpty(), "Title shorter than 3 characters should trigger a validation error");
     }
 
     @Test
-    public void testInvalidTitleSize() {
+    void testInvalidSpecificArticle_shortDescription() {
+        SpecificArticle specificArticle = SpecificArticle.builder()
+                .title("Specific Title")
+                .description("Too short") // less than 30 characters
+                .build();
 
-        specificArticle.setTitle("A");
-
-        Set<ConstraintViolation<Article>> violations = validator.validate(specificArticle);
-
-        assertEquals(1, violations.size());
+        Set<ConstraintViolation<SpecificArticle>> violations = validator.validate(specificArticle);
+        assertFalse(violations.isEmpty(), "Description shorter than 30 characters should trigger a validation error");
     }
 }
