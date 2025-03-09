@@ -50,8 +50,8 @@ public class ContentfulCreateArticleService {
         List<String> listOfArticlesIdToAdd = articleToAddToDatabase();
 
         for (String entry : listOfArticlesIdToAdd) {
-            if (contentfulService.getArticleById(entry) != null) {
-                ContentfulArticleDto contentfulArticleDto = contentfulService.getArticleById(entry);
+            ContentfulArticleDto contentfulArticleDto = contentfulService.getArticleById(entry);
+            if (contentfulArticleDto != null) {
                 listOfContentfulArticleDto.add(contentfulArticleDto);
             }
         }
@@ -67,11 +67,11 @@ public class ContentfulCreateArticleService {
 
             Employee employee = employeeService.getEmployee((long) element.getFields().getEmployeeId());
             Employee generalEmployee = employeeService.getEmployee(1L);
-//            if (employeeService.validateEmployeeExists(employee.getEmployeeId())) {
-//                articleInformation.setEmployee(employee);
-//            } else {
-//                articleInformation.setEmployee(generalEmployee);
-//            }
+            if (employee != null) {
+                articleInformation.setEmployee(employee);
+            } else {
+                articleInformation.setEmployee(generalEmployee);
+            }
 
             articleInformation.setContentfulId(element.getSys().getId());
             articleInformation.setImportance(element.getFields().getImportance());

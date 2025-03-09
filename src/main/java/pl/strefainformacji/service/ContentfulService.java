@@ -18,8 +18,6 @@ import java.util.stream.Collectors;
 @Service
 public class ContentfulService {
     private final CDAClient client;
-    private static final String CONTENT_TYPE = "content_type";
-    private static final String ORDER_PARAM = "order";
     private static final String ARTICLE_TYPE = "article";
     private static final String CREATED_AT_DESC = "-sys.createdAt";
     private static final int DEFAULT_LIMIT = 10;
@@ -52,56 +50,28 @@ public class ContentfulService {
         }
     }
 
-
     private ContentfulArticleDto mapToContentfulArticleDto(CDAEntry entry) {
         ContentfulArticleDto.Fields fields = new ContentfulArticleDto.Fields();
-
-        fields.setHeadTitle(getStringField(entry, "headTitle"));
-        fields.setShortDescription(getStringField(entry, "shortDescription"));
-        fields.setImportance(getIntField(entry, "importance"));
+        fields.setHeadTitle(entry.getField("headTitle"));
+        fields.setShortDescription(entry.getField("shortDescription"));
+        fields.setImportance(((Double) entry.getField("importance")).intValue());
+        fields.setEmployeeId(getIntField(entry, "employeeId"));
         fields.setHeadAltImg(getStringField(entry, "headAltImg"));
         fields.setSpecificTitle(getStringField(entry, "specificTitle"));
         fields.setDescription(getStringField(entry, "description"));
-        fields.setEmployeeId(getIntField(entry, "employeeId"));
-
 
         CDAAsset headImgSrcAsset = entry.getField("headImgSrc");
-        if (headImgSrcAsset != null) {
-            ContentfulArticleDto.Fields.Sys headImgSrc = new ContentfulArticleDto.Fields.Sys();
-            headImgSrc.setId(headImgSrcAsset.id());
-            fields.setHeadImgSrc(headImgSrc);
-        }
+        fields.setHeadImgSrc(createImageSys(headImgSrcAsset));
 
-        List<CDAAsset> imgSrcList = entry.getField("imgSrc");
-        if (imgSrcList != null) {
-            List<ContentfulArticleDto.Fields.Sys> imgSrcDtos = new ArrayList<>();
-            List<String> altImgList = new ArrayList<>();
-            for (CDAAsset imgEntry : imgSrcList) {
-                ContentfulArticleDto.Fields.Sys imgSrc = new ContentfulArticleDto.Fields.Sys();
-                String assetId = imgEntry.id();
-                imgSrc.setId(assetId);
-                imgSrcDtos.add(imgSrc);
+        handleAssets(entry, fields);
 
-                CDAAsset asset = client.fetch(CDAAsset.class).one(assetId);
-                String altImg = asset.getField("description").toString();
-                if (altImg != null) {
-                    altImgList.add(altImg);
-                } else {
-                    altImgList.add("");
-                }
-            }
-            fields.setImgSrcList(imgSrcDtos);
-            fields.setAltImgList(altImgList);
-        }
+        return new ContentfulArticleDto()
+                .setSys(new ContentfulArticleDto.Sys().setId(entry.id()))
+                .setFields(fields);
+    }
 
-        ContentfulArticleDto article = new ContentfulArticleDto();
-        article.setFields(fields);
-
-        ContentfulArticleDto.Sys sys = new ContentfulArticleDto.Sys();
-        sys.setId(entry.id());
-        article.setSys(sys);
-
-        return article;
+    private ContentfulArticleDto.Fields.Sys createImageSys(CDAAsset asset) {
+        return new ContentfulArticleDto.Fields.Sys().setId(asset != null ? asset.id() : null);
     }
 
     private void handleAssets(CDAEntry entry, ContentfulArticleDto.Fields fields) {
@@ -117,7 +87,8 @@ public class ContentfulService {
                         .orElse(""));
             });
 
-            fields.setImgSrcList(imgSrcDtos).setAltImgList(altImgList);
+            fields.setImgSrcList(imgSrcDtos);
+            fields.setAltImgList(altImgList);
         }
     }
 

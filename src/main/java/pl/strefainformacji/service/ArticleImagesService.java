@@ -14,30 +14,35 @@ import java.util.Objects;
 @Service
 @AllArgsConstructor
 public class ArticleImagesService {
+    public static final String ARTICLE_IMAGES_IS_NULL = "error.articleImagesIsNull";
+    public static final String SPECIFIC_ARTICLE_IS_NULL = "error.specificArticleIsNull";
+    public static final String ARTICLE_IMAGES_NOT_FOUND = "error.articleImagesNotFound";
 
     private final ArticleImagesRepository articleImagesRepository;
     private final MessageService messageService;
 
     public void saveArticleImages(ArticleImages articleImages) {
-        if (Objects.isNull(articleImages)) {
-            throw new IllegalArgumentException(messageService.getMessage("error.articleImagesIsNull"));
-        }
+        throwIfObjectIsNull(articleImages, ARTICLE_IMAGES_IS_NULL);
         articleImagesRepository.save(articleImages);
     }
 
     public List<ArticleImages> getAllArticleImagesBySpecificArticle(SpecificArticle specificArticle) {
-        if (Objects.isNull(specificArticle)) {
-            throw new IllegalArgumentException(messageService.getMessage("error.specificArticleIsNull"));
-        }
+        throwIfObjectIsNull(specificArticle, SPECIFIC_ARTICLE_IS_NULL);
 
-        isArticleImagesExistOrTrow(specificArticle.getSpecificArticleId());
+        throwIfImagesNotFound(specificArticle.getSpecificArticleId());
 
         return articleImagesRepository.findAllBySpecificArticle(specificArticle);
     }
 
-    public void isArticleImagesExistOrTrow(Long id) {
+    public void throwIfImagesNotFound(Long id) {
         if (!articleImagesRepository.existsBySpecificArticle_SpecificArticleId(id)) {
-            throw new ArticleImagesNotFoundException(messageService.getMessage("error.articleImagesNotFound", id));
+            throw new ArticleImagesNotFoundException(messageService.getMessage(ARTICLE_IMAGES_NOT_FOUND, id));
+        }
+    }
+
+    public void throwIfObjectIsNull(Object object, String message) {
+        if (Objects.isNull(object)) {
+            throw new IllegalArgumentException(messageService.getMessage(message));
         }
     }
 }
