@@ -4,50 +4,62 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ArticleImagesTest {
 
-    private Validator validator;
-    private ArticleImages articleImages;
+    private static Validator validator;
 
-    @BeforeEach
-    public void setUp(){
-        ValidatorFactory factory= Validation.buildDefaultValidatorFactory();
+    @BeforeAll
+    static void setUpValidator() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        articleImages = new ArticleImages();
-        articleImages.setImgSrc("valid-img-src");
-        articleImages.setAltImg("valid-alt-img");
     }
 
     @Test
-    public void testValidArticleImages(){
-        Set<ConstraintViolation<ArticleImages>> violations = validator.validate(articleImages);
+    void testValidArticleImages() {
+        ArticleImages articleImages = ArticleImages.builder()
+                .imgSrc("image.jpg")
+                .altImg("Alternative image")
+                .build();
 
-        assertEquals(0, violations.size());
+        Set<ConstraintViolation<ArticleImages>> violations = validator.validate(articleImages);
+        assertTrue(violations.isEmpty(), "Obiekt ArticleImages powinien być poprawny");
     }
 
     @Test
-    public void testInvalidImgSrc(){
-        articleImages.setImgSrc("");
+    void testInvalidArticleImages_emptyImgSrc() {
+        ArticleImages articleImages = ArticleImages.builder()
+                .imgSrc("")
+                .altImg("Alternative image")
+                .build();
 
         Set<ConstraintViolation<ArticleImages>> violations = validator.validate(articleImages);
-
-        assertEquals(1, violations.size());
+        assertFalse(violations.isEmpty(), "Brak wartości w imgSrc powinien wywołać błąd walidacji");
     }
 
     @Test
-    public void testInvalidAltImg(){
-        articleImages.setAltImg("");
+    void testInvalidArticleImages_emptyAltImg() {
+        ArticleImages articleImages = ArticleImages.builder()
+                .imgSrc("image.jpg")
+                .altImg("")
+                .build();
 
         Set<ConstraintViolation<ArticleImages>> violations = validator.validate(articleImages);
-
-        assertEquals(1, violations.size());
+        assertFalse(violations.isEmpty(), "Brak wartości w altImg powinien wywołać błąd walidacji");
     }
 
+    @Test
+    void testConstructorWithImgSrcAndAltImg() {
+        ArticleImages articleImages = new ArticleImages("image.jpg", "Alternative image");
+        assertEquals("image.jpg", articleImages.getImgSrc());
+        assertEquals("Alternative image", articleImages.getAltImg());
+    }
 }
