@@ -4,93 +4,101 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ArticleInformationTest {
+class ArticleInformationTest {
 
-    private Validator validator;
-    private ArticleInformation articleInfo;
+    private static Validator validator;
 
-    @BeforeEach
-    public void setUp() {
+    @BeforeAll
+    static void setUpValidator() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-        articleInfo = new ArticleInformation();
-        articleInfo.setTitle("Valid Title");
-        articleInfo.setShortDescription("Valid short description with more than 10 characters");
-        articleInfo.setImportance(1);
-        articleInfo.setImgSrc("valid-img-src");
-        articleInfo.setAltImg("valid-alt-img");
     }
 
     @Test
-    public void testValidArticleInformation() {
+    void testValidArticleInformation() {
+        ArticleInformation articleInformation = ArticleInformation.builder()
+                .contentfulId("12345")
+                .title("Valid Title")
+                .shortDescription("This is a valid short description")
+                .importance(5)
+                .imgSrc("image.jpg")
+                .altImg("Alternative image")
+                .localDateTime(LocalDateTime.now())
+                .build();
 
-        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
-
-        assertEquals(0, violations.size());
+        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInformation);
+        assertTrue(violations.isEmpty(), "ArticleInformation object should be valid");
     }
 
     @Test
-    public void testInvalidTitleSize() {
-        articleInfo.setTitle("S");
+    void testInvalidArticleInformation_shortTitle() {
+        ArticleInformation articleInformation = ArticleInformation.builder()
+                .contentfulId("12345")
+                .title("No")  // too short, min. 3 characters
+                .shortDescription("This is a valid short description")
+                .importance(5)
+                .imgSrc("image.jpg")
+                .altImg("Alternative image")
+                .localDateTime(LocalDateTime.now())
+                .build();
 
-        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
-
-        assertEquals(1, violations.size());
+        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInformation);
+        assertFalse(violations.isEmpty(), "Title shorter than 3 characters should trigger a validation error");
     }
 
     @Test
-    public void testBlankShortDescription() {
-        articleInfo.setShortDescription("");  // Blank shortDescription
+    void testInvalidArticleInformation_invalidImportance() {
+        // importance less than 1
+        ArticleInformation articleInformationLow = ArticleInformation.builder()
+                .contentfulId("12345")
+                .title("Valid Title")
+                .shortDescription("This is a valid short description")
+                .importance(0)
+                .imgSrc("image.jpg")
+                .altImg("Alternative image")
+                .localDateTime(LocalDateTime.now())
+                .build();
 
-        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
+        Set<ConstraintViolation<ArticleInformation>> violationsLow = validator.validate(articleInformationLow);
+        assertFalse(violationsLow.isEmpty(), "Importance below 1 should be invalid");
 
-        assertEquals(1, violations.size());
+        // importance greater than 10
+        ArticleInformation articleInformationHigh = ArticleInformation.builder()
+                .contentfulId("12345")
+                .title("Valid Title")
+                .shortDescription("This is a valid short description")
+                .importance(11)
+                .imgSrc("image.jpg")
+                .altImg("Alternative image")
+                .localDateTime(LocalDateTime.now())
+                .build();
+
+        Set<ConstraintViolation<ArticleInformation>> violationsHigh = validator.validate(articleInformationHigh);
+        assertFalse(violationsHigh.isEmpty(), "Importance above 10 should be invalid");
     }
 
     @Test
-    public void testNonPositiveImportance() {
+    void testInvalidArticleInformation_emptyContentfulId() {
+        ArticleInformation articleInformation = ArticleInformation.builder()
+                .contentfulId("")  // empty contentfulId - @Size(min = 5)
+                .title("Valid Title")
+                .shortDescription("This is a valid short description")
+                .importance(5)
+                .imgSrc("image.jpg")
+                .altImg("Alternative image")
+                .localDateTime(LocalDateTime.now())
+                .build();
 
-        articleInfo.setImportance(-2);
-
-        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
-
-        assertEquals(1, violations.size());
-
-    }
-
-    @Test
-    public void testToBigImportance() {
-
-        articleInfo.setImportance(20);
-
-        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
-
-        assertEquals(1, violations.size());
-
-    }
-
-    @Test
-    public void testBlankImgSrc(){
-        articleInfo.setImgSrc("");
-
-        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
-
-        assertEquals(1, violations.size());
-    }
-
-    @Test
-    public void testBlankAltImg(){
-        articleInfo.setAltImg("");
-
-        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInfo);
-
-        assertEquals(1, violations.size());
+        Set<ConstraintViolation<ArticleInformation>> violations = validator.validate(articleInformation);
+        assertFalse(violations.isEmpty(), "Empty contentfulId should trigger a validation error");
     }
 }

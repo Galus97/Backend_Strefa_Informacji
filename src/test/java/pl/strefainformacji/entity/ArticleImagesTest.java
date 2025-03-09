@@ -31,7 +31,7 @@ class ArticleImagesTest {
                 .build();
 
         Set<ConstraintViolation<ArticleImages>> violations = validator.validate(articleImages);
-        assertTrue(violations.isEmpty(), "Obiekt ArticleImages powinien być poprawny");
+        assertTrue(violations.isEmpty(), "ArticleImages object should be valid");
     }
 
     @Test
@@ -42,7 +42,7 @@ class ArticleImagesTest {
                 .build();
 
         Set<ConstraintViolation<ArticleImages>> violations = validator.validate(articleImages);
-        assertFalse(violations.isEmpty(), "Brak wartości w imgSrc powinien wywołać błąd walidacji");
+        assertFalse(violations.isEmpty(), "Empty imgSrc should trigger a validation error");
     }
 
     @Test
@@ -53,7 +53,7 @@ class ArticleImagesTest {
                 .build();
 
         Set<ConstraintViolation<ArticleImages>> violations = validator.validate(articleImages);
-        assertFalse(violations.isEmpty(), "Brak wartości w altImg powinien wywołać błąd walidacji");
+        assertFalse(violations.isEmpty(), "Empty altImg should trigger a validation error");
     }
 
     @Test
