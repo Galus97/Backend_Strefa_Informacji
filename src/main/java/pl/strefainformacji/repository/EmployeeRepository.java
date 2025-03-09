@@ -14,8 +14,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     Optional<Employee> findByEmail(String email);
 
-    Optional<Employee> findByEmployeeId(Long id);
-
     @Transactional
     @Modifying
     @Query("UPDATE Employee e SET e.enabled = :enabled WHERE e.employeeId = :employeeId")
