@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
+import pl.strefainformacji.exception.ArticleInformationNotFoundException;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 
 import java.time.LocalDateTime;
@@ -29,7 +30,8 @@ public class ArticleInformationService {
         if (articleId == null || articleId <= 0) {
             throw new IllegalArgumentException(messageService.getMessage("error.invalidArticleId", articleId));
         }
-        return articleInformationRepository.findArticleInformationByArticleId(articleId);
+        return articleInformationRepository.findById(articleId)
+                .orElseThrow(() -> new ArticleInformationNotFoundException(messageService.getMessage("error.articleInformationNotFound", articleId)));
     }
 
     public void saveArticleInformation(ArticleInformation articleInformation) {
