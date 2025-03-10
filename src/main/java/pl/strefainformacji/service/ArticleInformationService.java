@@ -3,6 +3,7 @@ package pl.strefainformacji.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import pl.strefainformacji.component.ErrorMessages;
 import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
@@ -17,7 +18,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ArticleInformationService {
-
     private final ArticleInformationRepository articleInformationRepository;
     private final EmployeeService employeeService;
     private final MessageService messageService;
@@ -27,20 +27,20 @@ public class ArticleInformationService {
     }
 
     public ArticleInformation getArticle(Long articleId) {
-        throwIfIdIsInvalid(articleId, "error.invalidArticleId");
+        throwIfIdIsInvalid(articleId, ErrorMessages.INVALID_ARTICLE_ID);
         return articleInformationRepository.findById(articleId)
-                .orElseThrow(() -> new ArticleInformationNotFoundException(messageService.getMessage("error.articleInformationNotFound", articleId)));
+                .orElseThrow(() -> new ArticleInformationNotFoundException(messageService.getMessage(ErrorMessages.ARTICLE_NOT_FOUND, articleId)));
     }
 
     public void saveArticleInformation(ArticleInformation articleInformation) {
         if (articleInformation == null) {
-            throw new IllegalArgumentException(messageService.getMessage("error.articleIsNull"));
+            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ARTICLE_IS_NULL));
         }
         articleInformationRepository.save(articleInformation);
     }
 
     public List<ArticleInformation> findAllArticlesByEmployeeId(Long employeeId) {
-        throwIfIdIsInvalid(employeeId, "error.invalidEmployeeId");
+        throwIfIdIsInvalid(employeeId, ErrorMessages.INVALID_EMPLOYEE_ID);
         Employee employee = employeeService.getEmployee(employeeId);
 
         return articleInformationRepository.findAllByEmployee(employee);
