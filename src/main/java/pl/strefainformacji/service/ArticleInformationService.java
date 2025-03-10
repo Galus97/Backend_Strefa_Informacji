@@ -27,9 +27,7 @@ public class ArticleInformationService {
     }
 
     public ArticleInformation getArticle(Long articleId) {
-        if (articleId == null || articleId <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidArticleId", articleId));
-        }
+        throwIfIdIsInvalid(articleId, "error.invalidArticleId");
         return articleInformationRepository.findById(articleId)
                 .orElseThrow(() -> new ArticleInformationNotFoundException(messageService.getMessage("error.articleInformationNotFound", articleId)));
     }
@@ -42,9 +40,7 @@ public class ArticleInformationService {
     }
 
     public List<ArticleInformation> findAllArticlesByEmployeeId(Long employeeId) {
-        if (employeeId == null || employeeId <= 0) {
-            throw new IllegalArgumentException(messageService.getMessage("error.invalidEmployeeId", employeeId));
-        }
+        throwIfIdIsInvalid(employeeId, "error.invalidEmployeeId");
         Employee employee = employeeService.getEmployee(employeeId);
 
         return articleInformationRepository.findAllByEmployee(employee);
@@ -77,5 +73,11 @@ public class ArticleInformationService {
             }
         }
         return articlesInGivenWeek;
+    }
+
+    private void throwIfIdIsInvalid(Long id, String message) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException(messageService.getMessage(message, id));
+        }
     }
 }
