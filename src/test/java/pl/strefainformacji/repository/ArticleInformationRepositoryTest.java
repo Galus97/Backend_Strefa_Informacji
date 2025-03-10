@@ -21,7 +21,7 @@ public class ArticleInformationRepositoryTest {
     @Autowired
     private EmployeeRepository employeeRepository;
 
-    //    @Test
+    @Test
     public void testFindAllByEmployee() {
         // given: create an employee and some articles
         Employee employee = Employee.builder()
@@ -36,7 +36,7 @@ public class ArticleInformationRepositoryTest {
         employee = employeeRepository.save(employee);
 
         ArticleInformation article1 = ArticleInformation.builder()
-                .contentfulId("cid1")
+                .contentfulId("cid01")
                 .title("Title 1")
                 .shortDescription("Short description 1")
                 .importance(5)
@@ -46,7 +46,7 @@ public class ArticleInformationRepositoryTest {
                 .localDateTime(LocalDateTime.now())
                 .build();
         ArticleInformation article2 = ArticleInformation.builder()
-                .contentfulId("cid2")
+                .contentfulId("cid02")
                 .title("Title 2")
                 .shortDescription("Short description 2")
                 .importance(6)
@@ -80,7 +80,7 @@ public class ArticleInformationRepositoryTest {
         employee = employeeRepository.save(employee);
 
         ArticleInformation article1 = ArticleInformation.builder()
-                .contentfulId("cid1")
+                .contentfulId("cid01")
                 .title("Title 1")
                 .shortDescription("Short description 1")
                 .importance(5)
@@ -90,7 +90,7 @@ public class ArticleInformationRepositoryTest {
                 .localDateTime(LocalDateTime.now())
                 .build();
         ArticleInformation article2 = ArticleInformation.builder()
-                .contentfulId("cid2")
+                .contentfulId("cid02")
                 .title("Title 2")
                 .shortDescription("Short description 2")
                 .importance(6)
@@ -106,7 +106,7 @@ public class ArticleInformationRepositoryTest {
         List<String> contentfulIds = articleInformationRepository.findAllContentfulIds();
 
         // then
-        assertThat(contentfulIds).containsExactlyInAnyOrder("cid1", "cid2");
+        assertThat(contentfulIds).containsExactlyInAnyOrder("cid01", "cid02");
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ArticleInformationRepositoryTest {
 
         for (int i = 1; i <= 10; i++) {
             ArticleInformation article = ArticleInformation.builder()
-                    .contentfulId("cid" + i)
+                    .contentfulId("cid" + String.format("%02d", i)) // e.g. "cid01", "cid02", ...
                     .title("Title " + i)
                     .shortDescription("Short description " + i)
                     .importance(5)

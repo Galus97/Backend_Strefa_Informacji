@@ -3,6 +3,7 @@ package pl.strefainformacji.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import pl.strefainformacji.entity.Employee;
 
 import java.util.Optional;
@@ -14,6 +15,9 @@ public class EmployeeRepositoryTest {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private TestEntityManager testEntityManager;
 
     @Test
     public void testFindByUsername() {
@@ -75,6 +79,8 @@ public class EmployeeRepositoryTest {
 
         // when
         employeeRepository.updateEnabledByEmployeeId(employee.getEmployeeId(), true);
+        employeeRepository.flush();
+        testEntityManager.clear();
         employee = employeeRepository.findById(employee.getEmployeeId()).get();
 
         // then
@@ -97,6 +103,8 @@ public class EmployeeRepositoryTest {
 
         // when
         employeeRepository.updateEmailCodeByEmployeeId(employee.getEmployeeId(), "newCode");
+        employeeRepository.flush();
+        testEntityManager.clear();
         employee = employeeRepository.findById(employee.getEmployeeId()).get();
 
         // then
@@ -119,6 +127,8 @@ public class EmployeeRepositoryTest {
 
         // when
         employeeRepository.changePasswordByEmployeeId(employee.getEmployeeId(), "newPassword");
+        employeeRepository.flush();
+        testEntityManager.clear();
         employee = employeeRepository.findById(employee.getEmployeeId()).get();
 
         // then
@@ -141,6 +151,8 @@ public class EmployeeRepositoryTest {
 
         // when
         employeeRepository.changeEmailByEmployeeId(employee.getEmployeeId(), "new.email@example.com");
+        employeeRepository.flush();
+        testEntityManager.clear();
         employee = employeeRepository.findById(employee.getEmployeeId()).get();
 
         // then
