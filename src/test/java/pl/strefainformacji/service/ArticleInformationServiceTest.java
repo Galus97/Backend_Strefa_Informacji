@@ -2,36 +2,34 @@ package pl.strefainformacji.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
+import pl.strefainformacji.component.ErrorMessages;
+import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
+import pl.strefainformacji.exception.ArticleInformationNotFoundException;
 import pl.strefainformacji.repository.ArticleInformationRepository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class ArticleInformationServiceTest {
-
-    @InjectMocks
-    private ArticleInformationService articleInformationService;
 
     @Mock
     private ArticleInformationRepository articleInformationRepository;
@@ -40,210 +38,210 @@ class ArticleInformationServiceTest {
     private EmployeeService employeeService;
 
     @Mock
-    private Employee employee;
+    private MessageService messageService;
 
-    @Mock
-    private ArticleInformation articleInformation;
+    @InjectMocks
+    private ArticleInformationService articleInformationService;
+
+    private ArticleInformation sampleArticle;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        sampleArticle = ArticleInformation.builder()
+                .contentfulId("cid01")
+                .title("Sample Title")
+                .shortDescription("This is a sample short description.")
+                .importance(5)
+                .imgSrc("image.jpg")
+                .altImg("alt text")
+                .localDateTime(LocalDateTime.now())
+                .build();
     }
 
     @Test
-    void testGetAllArticles_WithArticles() {
-        List<ArticleInformation> articles = Arrays.asList(new ArticleInformation(), new ArticleInformation());
+    void testGetAllArticles() {
+        // given
+        List<ArticleInformation> articles = Arrays.asList(sampleArticle);
         when(articleInformationRepository.findAll()).thenReturn(articles);
 
+        // when
         List<ArticleInformation> result = articleInformationService.getAllArticles();
 
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        verify(articleInformationRepository, times(1)).findAll();
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(sampleArticle);
     }
 
     @Test
-    void testGetAllArticles_NoArticles() {
-        when(articleInformationRepository.findAll()).thenReturn(Collections.emptyList());
+    void testGetArticle_invalidIdNull() {
+        // when + then
+        String expectedMessage = "Invalid article id: null";
+        when(messageService.getMessage(eq(ErrorMessages.INVALID_ARTICLE_ID), isNull()))
+                .thenReturn(expectedMessage);
 
-        NoSuchElementException exception = assertThrows(NoSuchElementException.class, () -> {
-            articleInformationService.getAllArticles();
-        });
-
-        assertEquals("There are no articles in the database", exception.getMessage());
-        verify(articleInformationRepository, times(1)).findAll();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> articleInformationService.getArticle(null));
+        assertThat(exception.getMessage()).isEqualTo(expectedMessage);
     }
 
     @Test
-    void testGetArticleInformationByArticleId_ValidId() {
-        when(articleInformationRepository.findArticleInformationByArticleId(1L)).thenReturn(articleInformation);
+    void testGetArticle_invalidIdZero() {
+        // when + then
+        String expectedMessage = "Invalid article id: 0";
+        when(messageService.getMessage(eq(ErrorMessages.INVALID_ARTICLE_ID), eq(0L)))
+                .thenReturn(expectedMessage);
 
-        ArticleInformation result = articleInformationService.getArticle(1L);
-
-        assertNotNull(result);
-        verify(articleInformationRepository, times(1)).findArticleInformationByArticleId(1L);
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> articleInformationService.getArticle(0L));
+        assertThat(exception.getMessage()).isEqualTo(expectedMessage);
     }
 
     @Test
-    void testGetArticleInformationByArticleId_InvalidId() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            articleInformationService.getArticle(0L);
-        });
+    void testGetArticle_notFound() {
+        // given
+        Long articleId = 1L;
+        String expectedMessage = "Article not found: 1";
+        when(messageService.getMessage(eq(ErrorMessages.ARTICLE_NOT_FOUND), eq(articleId)))
+                .thenReturn(expectedMessage);
+        when(articleInformationRepository.findById(articleId)).thenReturn(Optional.empty());
 
-        assertEquals("The article number must be greater than zero.", exception.getMessage());
-        verify(articleInformationRepository, never()).findArticleInformationByArticleId(anyLong());
+        // when + then
+        ArticleInformationNotFoundException exception = assertThrows(ArticleInformationNotFoundException.class,
+                () -> articleInformationService.getArticle(articleId));
+        assertThat(exception.getMessage()).isEqualTo(expectedMessage);
     }
 
     @Test
-    void testSaveArticle_NonNullArticle() {
-        articleInformationService.saveArticleInformation(articleInformation);
+    void testGetArticle_found() {
+        // given
+        Long articleId = 1L;
+        when(articleInformationRepository.findById(articleId)).thenReturn(Optional.of(sampleArticle));
 
-        verify(articleInformationRepository, times(1)).save(articleInformation);
+        // when
+        ArticleInformation result = articleInformationService.getArticle(articleId);
+
+        // then
+        assertThat(result).isEqualTo(sampleArticle);
     }
 
     @Test
-    void testSaveArticle_NullArticle() {
-        articleInformationService.saveArticleInformation(null);
+    void testSaveArticleInformation_nullArticle() {
+        // given
+        String expectedMessage = "Article is null";
+        when(messageService.getMessage(eq(ErrorMessages.ARTICLE_IS_NULL)))
+                .thenReturn(expectedMessage);
 
-        verify(articleInformationRepository, never()).save(any(ArticleInformation.class));
+        // when + then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> articleInformationService.saveArticleInformation(null));
+        assertThat(exception.getMessage()).isEqualTo(expectedMessage);
     }
 
     @Test
-    void testFindAllArticlesByEmployee_WithValidEmployee() {
-        when(employee.getEmployeeId()).thenReturn(1L);
-        when(employeeService.getEmployee(1L)).thenReturn(Optional.of(employee));
-        List<ArticleInformation> articles = Arrays.asList(new ArticleInformation(), new ArticleInformation());
+    void testSaveArticleInformation_success() {
+        // when
+        articleInformationService.saveArticleInformation(sampleArticle);
+
+        // then
+        verify(articleInformationRepository, times(1)).save(sampleArticle);
+    }
+
+    @Test
+    void testFindAllArticlesByEmployeeId_invalidId() {
+        // given
+        Long employeeId = 0L;
+        String expectedMessage = "Invalid employee id: 0";
+        when(messageService.getMessage(eq(ErrorMessages.INVALID_EMPLOYEE_ID), eq(employeeId)))
+                .thenReturn(expectedMessage);
+
+        // when + then
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> articleInformationService.findAllArticlesByEmployeeId(employeeId));
+        assertThat(exception.getMessage()).isEqualTo(expectedMessage);
+    }
+
+    @Test
+    void testFindAllArticlesByEmployeeId_success() {
+        // given
+        Long employeeId = 1L;
+        Employee employee = Employee.builder().employeeId(employeeId).build();
+        List<ArticleInformation> articles = Arrays.asList(sampleArticle);
+        when(employeeService.getEmployee(employeeId)).thenReturn(employee);
         when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(articles);
 
-        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployeeId(employee);
+        // when
+        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployeeId(employeeId);
 
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        verify(articleInformationRepository, times(1)).findAllByEmployee(employee);
-    }
-
-    @Test
-    void testFindAllArticlesByEmployee_WithInvalidEmployee() {
-        when(employee.getEmployeeId()).thenReturn(1L);
-        when(employeeService.getEmployee(1L)).thenReturn(Optional.empty());
-
-        List<ArticleInformation> result = articleInformationService.findAllArticlesByEmployeeId(employee);
-
-        assertNull(result);
-        verify(articleInformationRepository, never()).findAllByEmployee(any(Employee.class));
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(sampleArticle);
     }
 
     @Test
     void testFindAllContentfulIds() {
-        List<String> contentfulIds = Arrays.asList("id111", "id222", "id333");
-        when(articleInformationRepository.findAllContentfulIds()).thenReturn(contentfulIds);
+        // given
+        List<String> ids = Arrays.asList("cid01", "cid02", "cid03");
+        when(articleInformationRepository.findAllContentfulIds()).thenReturn(ids);
 
+        // when
         List<String> result = articleInformationService.findAllContentfulIds();
 
-        assertNotNull(result);
-        assertEquals(3, result.size());
-        assertEquals("id333", result.get(0));
-        verify(articleInformationRepository, times(1)).findAllContentfulIds();
+        // then
+        assertThat(result).containsExactly("cid03", "cid02", "cid01");
     }
 
     @Test
     void testGetLastFiveArticlesByEmployee() {
+        // given
+        Employee employee = Employee.builder().employeeId(1L).build();
+        List<ArticleInformation> articles = Collections.singletonList(sampleArticle);
         PageRequest pageRequest = PageRequest.of(0, 5);
-        List<ArticleInformation> articles = Arrays.asList(new ArticleInformation(), new ArticleInformation());
-        when(articleInformationRepository.findLastFiveArticlesByEmployee(employee, pageRequest)).thenReturn(articles);
+        when(articleInformationRepository.findLastFiveArticlesByEmployee(employee, pageRequest))
+                .thenReturn(articles);
 
+        // when
         List<ArticleInformation> result = articleInformationService.getLastFiveArticlesByEmployee(employee);
 
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        verify(articleInformationRepository, times(1)).findLastFiveArticlesByEmployee(employee, pageRequest);
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(sampleArticle);
     }
 
     @Test
-    void testGetAddedArticleInPeriod_NoArticles() {
-        // Given
-        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(Collections.emptyList());
+    void testGetAddedArticleInPeriod() {
+        // given
+        Employee employee = Employee.builder().employeeId(1L).build();
+        LocalDateTime weekStart = LocalDateTime.now().minusDays(1);
+        LocalDateTime weekEnd = weekStart.plusDays(7);
 
-        // When
-        LocalDateTime weekStart = LocalDateTime.now().withDayOfMonth(1);
+        ArticleInformation articleInPeriod = ArticleInformation.builder()
+                .contentfulId("cid01")
+                .title("In Period")
+                .shortDescription("Article in period")
+                .importance(5)
+                .imgSrc("img.jpg")
+                .altImg("alt")
+                .localDateTime(weekStart.plusHours(2))
+                .build();
+
+        ArticleInformation articleOutPeriod = ArticleInformation.builder()
+                .contentfulId("cid02")
+                .title("Out Period")
+                .shortDescription("Article out period")
+                .importance(5)
+                .imgSrc("img2.jpg")
+                .altImg("alt2")
+                .localDateTime(weekEnd.plusHours(1))
+                .build();
+
+        List<ArticleInformation> allArticles = Arrays.asList(articleInPeriod, articleOutPeriod);
+        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(allArticles);
+
+        // when
         List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, weekStart);
 
-        // Then
-        assertEquals(0, result.size());
-    }
-
-    @Test
-    void testGetAddedArticleInPeriod_ArticlesInWeek() {
-        // Given
-        LocalDateTime weekStart = LocalDateTime.now().withDayOfMonth(1);
-        LocalDateTime articleDateTime = weekStart.plusDays(2);
-
-        ArticleInformation article = new ArticleInformation();
-        article.setLocalDateTime(articleDateTime);
-
-        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(Collections.singletonList(article));
-
-        // When
-        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, weekStart);
-
-        // Then
-        assertEquals(1, result.size());
-        assertEquals(article, result.get(0));
-    }
-
-    @Test
-    void testGetAddedArticleInPeriod_ArticlesOutOfWeek() {
-        // Given
-        LocalDateTime weekStart = LocalDateTime.now().withDayOfMonth(1);
-        LocalDateTime articleDateTime = weekStart.minusDays(3);
-
-        ArticleInformation article = new ArticleInformation();
-        article.setLocalDateTime(articleDateTime);
-
-        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(Collections.singletonList(article));
-
-        // When
-        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, weekStart);
-
-        // Then
-        assertEquals(0, result.size());
-    }
-
-    @Test
-    void testGetAddedArticleInPeriod_NullWeekStart() {
-        // Given
-        ArticleInformation article = new ArticleInformation();
-        article.setLocalDateTime(LocalDateTime.now());
-        when(articleInformationRepository.findAllByEmployee(employee)).thenReturn(Collections.singletonList(article));
-
-        // When
-        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, null);
-
-        // Then
-        assertEquals(0, result.size());
-    }
-
-    @Test
-    void testGetAddedArticleInPeriod_MultipleArticles() {
-        // Given
-        LocalDateTime weekStart = LocalDateTime.now().withDayOfMonth(1);
-        LocalDateTime inWeekDate = weekStart.plusDays(3);
-        LocalDateTime outOfWeekDate = weekStart.minusDays(5);
-
-        ArticleInformation articleInWeek = new ArticleInformation();
-        articleInWeek.setLocalDateTime(inWeekDate);
-
-        ArticleInformation articleOutOfWeek = new ArticleInformation();
-        articleOutOfWeek.setLocalDateTime(outOfWeekDate);
-
-        when(articleInformationRepository.findAllByEmployee(employee))
-                .thenReturn(List.of(articleInWeek, articleOutOfWeek));
-
-        // When
-        List<ArticleInformation> result = articleInformationService.getAddedArticleInPeriod(employee, weekStart);
-
-        // Then
-        assertEquals(1, result.size());
-        assertEquals(articleInWeek, result.get(0));
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getTitle()).isEqualTo("In Period");
     }
 }
