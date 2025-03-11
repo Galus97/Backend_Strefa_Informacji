@@ -8,6 +8,10 @@ import java.util.Map;
 @AllArgsConstructor
 @Getter
 public class ValidationException extends Exception {
-
     private final Map<String, String> validationErrors;
+
+    @Override
+    public String getMessage() {
+        return "Validation failed: " + validationErrors.toString();
+    }
 }
