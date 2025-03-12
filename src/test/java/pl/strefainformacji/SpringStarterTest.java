@@ -15,15 +15,12 @@ class SpringStarterTest {
 
     @Test
     void contextLoads() {
-        // Test sprawdza, czy kontekst aplikacji ładuje się poprawnie
         assertNotNull(applicationContext, "Application context should not be null");
     }
 
     @Test
     void mainMethodTest() {
-        // Test sprawdza, czy metoda main uruchamia aplikację bez błędów
         SpringStarter.main(new String[]{});
-        // Można tutaj dodać dodatkowe sprawdzenia, jeśli są potrzebne
     }
 
 }
