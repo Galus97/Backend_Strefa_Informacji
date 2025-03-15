@@ -1,6 +1,6 @@
 package pl.strefainformacji.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ContentfulCreateArticleService {
 
     private final ArticleInformationService articleInformationService;
@@ -97,5 +97,21 @@ public class ContentfulCreateArticleService {
                 articleImagesService.saveArticleImages(articleImages);
             }
         }
+    }
+
+    private List<ArticleImages> mapToArticleImages(ContentfulArticleDto dto, SpecificArticle specificArticle) {
+        List<ArticleImages> images = new ArrayList<>();
+        List<ContentfulArticleDto.Fields.Sys> imgSrcList = dto.getFields().getImgSrcList();
+        List<String> altImgList = dto.getFields().getAltImgList();
+        if (imgSrcList != null && altImgList != null && imgSrcList.size() == altImgList.size()) {
+            for (int i = 0; i < imgSrcList.size(); i++) {
+                ArticleImages articleImages = new ArticleImages();
+                articleImages.setSpecificArticle(specificArticle);
+                articleImages.setImgSrc(imgSrcList.get(i).getId());
+                articleImages.setAltImg(altImgList.get(i));
+                images.add(articleImages);
+            }
+        }
+        return images;
     }
 }
