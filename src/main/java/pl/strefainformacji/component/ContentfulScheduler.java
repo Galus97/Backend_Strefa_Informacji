@@ -18,6 +18,6 @@ public class ContentfulScheduler {
      */
     @Scheduled(fixedRate = 180000)
     public void fetchArticlesPeriodically() {
-        contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
+        contentfulCreateArticleService.importNewArticles();
     }
 }
