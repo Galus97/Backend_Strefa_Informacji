@@ -99,6 +99,14 @@ public class ContentfulCreateArticleService {
         }
     }
 
+    private SpecificArticle mapToSpecificArticle(ContentfulArticleDto dto, ArticleInformation articleInformation) {
+        SpecificArticle specificArticle = new SpecificArticle();
+        specificArticle.setTitle(dto.getFields().getSpecificTitle());
+        specificArticle.setDescription(dto.getFields().getDescription());
+        specificArticle.setArticleInformation(articleInformation);
+        return specificArticle;
+    }
+
     private List<ArticleImages> mapToArticleImages(ContentfulArticleDto dto, SpecificArticle specificArticle) {
         List<ArticleImages> images = new ArrayList<>();
         List<ContentfulArticleDto.Fields.Sys> imgSrcList = dto.getFields().getImgSrcList();
