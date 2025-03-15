@@ -99,6 +99,17 @@ public class ContentfulCreateArticleService {
         }
     }
 
+    private void importArticle(ContentfulArticleDto dto) {
+        ArticleInformation articleInformation = mapToArticleInformation(dto);
+        articleInformationService.saveArticleInformation(articleInformation);
+
+        SpecificArticle specificArticle = mapToSpecificArticle(dto, articleInformation);
+        specificArticleService.saveSpecificArticle(specificArticle);
+
+        mapToArticleImages(dto, specificArticle)
+                .forEach(articleImagesService::saveArticleImages);
+    }
+
     private ArticleInformation mapToArticleInformation(ContentfulArticleDto dto) {
         ArticleInformation info = new ArticleInformation();
         info.setContentfulId(dto.getSys().getId());
