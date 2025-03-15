@@ -5,8 +5,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.scheduling.annotation.Scheduled;
 import pl.strefainformacji.service.ContentfulCreateArticleService;
 
-import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class ContentfulSchedulerTest {
 
@@ -23,7 +26,7 @@ public class ContentfulSchedulerTest {
     void testFetchArticlesPeriodically() {
         contentfulScheduler.fetchArticlesPeriodically();
 
-        verify(contentfulCreateArticleService, times(1)).createArticlesFromContentfulArticleDto();
+        verify(contentfulCreateArticleService, times(1)).importNewArticles();
     }
 
     @Test
