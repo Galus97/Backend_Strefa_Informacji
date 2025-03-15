@@ -99,6 +99,29 @@ public class ContentfulCreateArticleService {
         }
     }
 
+    private ArticleInformation mapToArticleInformation(ContentfulArticleDto dto) {
+        ArticleInformation info = new ArticleInformation();
+        info.setContentfulId(dto.getSys().getId());
+        info.setImportance(dto.getFields().getImportance());
+        info.setTitle(dto.getFields().getHeadTitle());
+        info.setShortDescription(dto.getFields().getShortDescription());
+        if (dto.getFields().getHeadImgSrc() != null) {
+            info.setImgSrc(dto.getFields().getHeadImgSrc().getId());
+        }
+        info.setAltImg(dto.getFields().getHeadAltImg());
+        info.setLocalDateTime(LocalDateTime.now());
+
+        Long employeeId = dto.getFields().getEmployeeId() != null
+                ? dto.getFields().getEmployeeId().longValue()
+                : null;
+        Employee employee = employeeService.getEmployee(employeeId);
+        if (employee == null) {
+            employee = employeeService.getEmployee(1L);
+        }
+        info.setEmployee(employee);
+        return info;
+    }
+
     private SpecificArticle mapToSpecificArticle(ContentfulArticleDto dto, ArticleInformation articleInformation) {
         SpecificArticle specificArticle = new SpecificArticle();
         specificArticle.setTitle(dto.getFields().getSpecificTitle());
