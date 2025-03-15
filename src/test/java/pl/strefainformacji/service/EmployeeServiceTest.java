@@ -2,147 +2,145 @@ package pl.strefainformacji.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import pl.strefainformacji.component.ErrorMessages;
+import pl.strefainformacji.component.MessageService;
 import pl.strefainformacji.entity.Employee;
+import pl.strefainformacji.exception.EmployeeNotFoundException;
 import pl.strefainformacji.repository.EmployeeRepository;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class EmployeeServiceTest {
-
-    @InjectMocks
-    private EmployeeService employeeService;
 
     @Mock
     private EmployeeRepository employeeRepository;
 
     @Mock
+    private MessageService messageService;
+
+    @InjectMocks
+    private EmployeeService employeeService;
+
     private Employee employee;
+    private final Long employeeId = 1L;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        employee = new Employee();
     }
 
     @Test
-    void testUpdateEnable_EmployeeExists() {
-        Long employeeId = 1L;
-        boolean enabled = true;
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.of(employee));
+    void givenExistingEmployee_whenGetEmployee_thenReturnEmployee() {
+        // Arrange
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
 
-        employeeService.updateEnable(employeeId, enabled);
+        // Act
+        Employee foundEmployee = employeeService.getEmployee(employeeId);
 
-        verify(employeeRepository, times(1)).updateEnabledByEmployeeId(employeeId, enabled);
+        // Assert
+        assertThat(foundEmployee).isEqualTo(employee);
+        verify(employeeRepository, times(1)).findById(employeeId);
     }
 
     @Test
-    void testUpdateEnable_EmployeeDoesNotExist() {
-        Long employeeId = 1L;
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.empty());
+    void givenNonExistingEmployee_whenGetEmployee_thenThrowException() {
+        // Arrange
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
+        when(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeId)).thenReturn("Employee not found");
 
+        // Act & Assert
+        assertThatThrownBy(() -> employeeService.getEmployee(employeeId))
+                .isInstanceOf(EmployeeNotFoundException.class)
+                .hasMessage("Employee not found");
+    }
+
+    @Test
+    void givenExistingEmployee_whenDeleteEmployee_thenDeleteSuccessfully() {
+        // Arrange
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+
+        // Act
+        employeeService.deleteEmployee(employeeId);
+
+        // Assert
+        verify(employeeRepository, times(1)).delete(employee);
+    }
+
+    @Test
+    void givenNonExistingEmployee_whenDeleteEmployee_thenThrowException() {
+        // Arrange
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
+        when(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeId)).thenReturn("Employee not found");
+
+        // Act & Assert
+        assertThatThrownBy(() -> employeeService.deleteEmployee(employeeId))
+                .isInstanceOf(EmployeeNotFoundException.class)
+                .hasMessage("Employee not found");
+    }
+
+    @Test
+    void givenExistingEmployee_whenUpdateEnable_thenUpdateSuccessfully() {
+        // Arrange
+        when(employeeRepository.existsById(employeeId)).thenReturn(true);
+
+        // Act
         employeeService.updateEnable(employeeId, true);
 
-        verify(employeeRepository, never()).updateEnabledByEmployeeId(anyLong(), anyBoolean());
+        // Assert
+        verify(employeeRepository, times(1)).updateEnabledByEmployeeId(employeeId, true);
     }
 
     @Test
-    void testIsEnabledById_EmployeeExists() {
-        Long employeeId = 1L;
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.of(employee));
-        when(employeeRepository.isEnabledById(employeeId)).thenReturn(true);
+    void givenNonExistingEmployee_whenUpdateEnable_thenThrowException() {
+        // Arrange
+        when(employeeRepository.existsById(employeeId)).thenReturn(false);
+        when(messageService.getMessage(ErrorMessages.EMPLOYEE_NOT_FOUND, employeeId)).thenReturn("Employee not found");
 
-        boolean isEnabled = employeeService.isEnabledById(employeeId);
-
-        assertTrue(isEnabled);
-        verify(employeeRepository, times(1)).isEnabledById(employeeId);
+        // Act & Assert
+        assertThatThrownBy(() -> employeeService.updateEnable(employeeId, true))
+                .isInstanceOf(EmployeeNotFoundException.class)
+                .hasMessage("Employee not found");
     }
 
     @Test
-    void testIsEnabledById_EmployeeDoesNotExist() {
-        Long employeeId = 1L;
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.empty());
+    void givenExistingEmployee_whenChangePassword_thenUpdatePassword() {
+        // Arrange
+        String newPassword = "newSecurePassword";
+        when(employeeRepository.existsById(employeeId)).thenReturn(true);
 
-        assertThrows(NullPointerException.class, () -> employeeService.isEnabledById(employeeId));
-        verify(employeeRepository, never()).isEnabledById(anyLong());
-    }
-
-    @Test
-    void testFindByEmployeeId_EmployeeExists() {
-        Long employeeId = 1L;
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.of(employee));
-
-        Optional<Employee> result = employeeService.getEmployee(employeeId);
-
-        assertTrue(result.isPresent());
-        assertEquals(employee, result.get());
-        verify(employeeRepository, times(2)).findByEmployeeId(employeeId);
-    }
-
-    @Test
-    void testFindByEmployeeId_EmployeeDoesNotExist() {
-        Long employeeId = 1L;
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.empty());
-
-
-        assertThrows(NullPointerException.class, () -> employeeService.getEmployee(employeeId));
-
-        verify(employeeRepository, times(1)).findByEmployeeId(employeeId);
-    }
-
-    @Test
-    void testUpdateEmailCode_Success() {
-        Long employeeId = 1L;
-        String emailCode = "newCode";
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.of(employee));
-
-        employeeService.updateEmailCode(employeeId, emailCode);
-
-        verify(employeeRepository, times(1)).updateEmailCodeByEmployeeId(employeeId, emailCode);
-    }
-
-    @Test
-    void testUpdateEmailCode_InvalidEmailCode() {
-        Long employeeId = 1L;
-        String invalidEmailCode = "  ";
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.of(employee));
-
-        employeeService.updateEmailCode(employeeId, invalidEmailCode);
-
-        verify(employeeRepository, never()).updateEmailCodeByEmployeeId(anyLong(), anyString());
-    }
-
-    @Test
-    void testChangePassword_Success() {
-        Long employeeId = 1L;
-        String newPassword = "newPassword";
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.of(employee));
-
+        // Act
         employeeService.changePassword(employeeId, newPassword);
 
+        // Assert
         verify(employeeRepository, times(1)).changePasswordByEmployeeId(employeeId, newPassword);
     }
 
     @Test
-    void testChangePassword_InvalidPassword() {
+    void givenInvalidPassword_whenChangePassword_thenDoNothing() {
+        // Given
         Long employeeId = 1L;
-        String invalidPassword = "";
-        when(employeeRepository.findByEmployeeId(employeeId)).thenReturn(Optional.of(employee));
+        String invalidPassword = "  ";
+        when(employeeRepository.existsById(employeeId)).thenReturn(true);
 
+        // When
         employeeService.changePassword(employeeId, invalidPassword);
 
+        // Then
         verify(employeeRepository, never()).changePasswordByEmployeeId(anyLong(), anyString());
     }
+
 }

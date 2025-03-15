@@ -1,34 +1,28 @@
 package pl.strefainformacji.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import pl.strefainformacji.entity.Article;
+import org.mockito.junit.jupiter.MockitoExtension;
 import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
+import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class ContentfulCreateArticleServiceTest {
-
-    @InjectMocks
-    private ContentfulCreateArticleService contentfulCreateArticleService;
 
     @Mock
     private ArticleInformationService articleInformationService;
@@ -45,134 +39,90 @@ class ContentfulCreateArticleServiceTest {
     @Mock
     private ContentfulService contentfulService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    @InjectMocks
+    private ContentfulCreateArticleService contentfulCreateArticleService;
 
     @Test
-    void testArticleToAddToDatabase_WhenNoArticlesInDatabase() {
-        // Mockowanie pustej bazy danych
-        when(articleInformationService.findAllContentfulIds()).thenReturn(new ArrayList<>());
-        List<String> contentfulIds = List.of("article1", "article2");
-        when(contentfulService.getAllArticlesIds()).thenReturn(contentfulIds);
+    void importNewArticles_NoExistingArticles_ShouldImportAll() {
+        // Arrange
+        when(articleInformationService.findAllContentfulIds()).thenReturn(Collections.emptyList());
+        List<String> allContentfulIds = Arrays.asList("id1");
+        when(contentfulService.getAllArticlesIds()).thenReturn(allContentfulIds);
 
-        // Testowanie
-        List<String> result = contentfulCreateArticleService.articleToAddToDatabase();
+        ContentfulArticleDto dto = createDummyDto("id1");
+        when(contentfulService.getArticleById("id1")).thenReturn(dto);
 
-        // Weryfikacja
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertTrue(result.contains("article1"));
-        assertTrue(result.contains("article2"));
-    }
+        Employee employee = new Employee();
+        employee.setEmployeeId(10L);
+        when(employeeService.getEmployee(dto.getFields().getEmployeeId().longValue())).thenReturn(employee);
 
-    @Test
-    void testArticleToAddToDatabase_WhenArticlesExistInDatabase() {
-        // Mockowanie artykułów w bazie danych
-        List<String> databaseIds = List.of("article1");
-        when(articleInformationService.findAllContentfulIds()).thenReturn(databaseIds);
-        List<String> contentfulIds = List.of("article1", "article2");
-        when(contentfulService.getAllArticlesIds()).thenReturn(contentfulIds);
+        // Act
+        contentfulCreateArticleService.importNewArticles();
 
-        // Testowanie
-        List<String> result = contentfulCreateArticleService.articleToAddToDatabase();
-
-        // Weryfikacja
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertTrue(result.contains("article2"));
-    }
-
-    @Test
-    void testContentfulArticleDtoList() {
-        // Mockowanie artykułów do dodania
-        List<String> articleIdsToAdd = List.of("article1", "article2");
-        when(contentfulCreateArticleService.articleToAddToDatabase()).thenReturn(articleIdsToAdd);
-
-        // Mockowanie zwracanych artykułów z Contentful
-        ContentfulArticleDto articleDto1 = mock(ContentfulArticleDto.class);
-        ContentfulArticleDto articleDto2 = mock(ContentfulArticleDto.class);
-        when(contentfulService.getArticleById("article1")).thenReturn(articleDto1);
-        when(contentfulService.getArticleById("article2")).thenReturn(articleDto2);
-
-        // Testowanie
-        List<ContentfulArticleDto> result = contentfulCreateArticleService.contentfulArticleDtoList();
-
-        // Weryfikacja
-        assertNotNull(result);
-        assertEquals(2, result.size());
-        assertEquals(articleDto1, result.get(0));
-        assertEquals(articleDto2, result.get(1));
-    }
-
-    @Test
-    void testCreateArticlesFromContentfulArticleDto() {
-        // Mockowanie artykułów
-        ContentfulArticleDto.Fields fields = mock(ContentfulArticleDto.Fields.class);
-        when(fields.getEmployeeId()).thenReturn(1);
-        when(fields.getHeadTitle()).thenReturn("Sample Title");
-        when(fields.getShortDescription()).thenReturn("Sample Description in ArticleInformation");
-        when(fields.getImportance()).thenReturn(5);
-        when(fields.getHeadImgSrc()).thenReturn(new ContentfulArticleDto.Fields.Sys());
-        when(fields.getSpecificTitle()).thenReturn("Specific Title");
-        when(fields.getDescription()).thenReturn("Long sample description in SpecificArticle");
-        when(fields.getImgSrcList()).thenReturn(new ArrayList<>());
-        when(fields.getAltImgList()).thenReturn(new ArrayList<>());
-
-        ContentfulArticleDto articleDto = new ContentfulArticleDto();
-        articleDto.setFields(fields);
-
-        List<ContentfulArticleDto> articleDtoList = List.of(articleDto);
-        when(contentfulCreateArticleService.contentfulArticleDtoList()).thenReturn(articleDtoList);
-
-        // Mockowanie pracownika
-        Employee employee = mock(Employee.class);
-        when(employeeService.getEmployee(1L)).thenReturn(Optional.of(employee));
-
-        // Testowanie
-        contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
-
-        // Weryfikacja
+        // Assert
         verify(articleInformationService, times(1)).saveArticleInformation(any(ArticleInformation.class));
-        verify(specificArticleService, times(1)).saveSpecificArticle(any(Article.class));
-        verify(articleImagesService, never()).saveArticleImages(any(ArticleImages.class));
+        verify(specificArticleService, times(1)).saveSpecificArticle(any(SpecificArticle.class));
+        verify(articleImagesService, times(dto.getFields().getImgSrcList().size())).saveArticleImages(any(ArticleImages.class));
     }
 
     @Test
-    void testCreateArticlesFromContentfulArticleDto_WithImages() {
-        // Mockowanie artykułów z obrazkami
-        ContentfulArticleDto.Fields fields = mock(ContentfulArticleDto.Fields.class);
-        when(fields.getEmployeeId()).thenReturn(1);
-        when(fields.getHeadTitle()).thenReturn("Sample Title");
-        when(fields.getShortDescription()).thenReturn("Sample Description");
-        when(fields.getImportance()).thenReturn(5);
-        when(fields.getHeadImgSrc()).thenReturn(new ContentfulArticleDto.Fields.Sys());
-        when(fields.getSpecificTitle()).thenReturn("Specific Title");
-        when(fields.getDescription()).thenReturn("Description");
+    void importNewArticles_ExistingArticles_ShouldImportOnlyNew() {
+        // Arrange
+        when(articleInformationService.findAllContentfulIds()).thenReturn(Arrays.asList("id1"));
 
-        ContentfulArticleDto.Fields.Sys imgSys = new ContentfulArticleDto.Fields.Sys();
-        imgSys.setId("img1");
-        List<ContentfulArticleDto.Fields.Sys> imgSrcList = List.of(imgSys);
-        when(fields.getImgSrcList()).thenReturn(imgSrcList);
-        when(fields.getAltImgList()).thenReturn(List.of("Alt Image"));
+        List<String> allContentfulIds = Arrays.asList("id1", "id2");
+        when(contentfulService.getAllArticlesIds()).thenReturn(allContentfulIds);
 
-        ContentfulArticleDto articleDto = new ContentfulArticleDto();
-        articleDto.setFields(fields);
+        ContentfulArticleDto dto = createDummyDto("id2");
+        when(contentfulService.getArticleById("id2")).thenReturn(dto);
 
-        List<ContentfulArticleDto> articleDtoList = List.of(articleDto);
-        when(contentfulCreateArticleService.contentfulArticleDtoList()).thenReturn(articleDtoList);
+        Employee employee = new Employee();
+        employee.setEmployeeId(20L);
+        when(employeeService.getEmployee(dto.getFields().getEmployeeId().longValue())).thenReturn(employee);
 
-        // Mockowanie pracownika
-        Employee employee = mock(Employee.class);
-        when(employeeService.getEmployee(1L)).thenReturn(Optional.of(employee));
+        // Act
+        contentfulCreateArticleService.importNewArticles();
 
-        // Testowanie
-        contentfulCreateArticleService.createArticlesFromContentfulArticleDto();
-
-        // Weryfikacja
+        // Assert
         verify(articleInformationService, times(1)).saveArticleInformation(any(ArticleInformation.class));
-        verify(specificArticleService, times(1)).saveSpecificArticle(any(Article.class));
-        verify(articleImagesService, times(1)).saveArticleImages(any(ArticleImages.class));
+        verify(specificArticleService, times(1)).saveSpecificArticle(any(SpecificArticle.class));
+        verify(articleImagesService, times(dto.getFields().getImgSrcList().size())).saveArticleImages(any(ArticleImages.class));
+    }
+
+    private ContentfulArticleDto createDummyDto(String id) {
+        ContentfulArticleDto dto = new ContentfulArticleDto();
+
+
+        ContentfulArticleDto.Sys sys = new ContentfulArticleDto.Sys();
+        sys.setId(id);
+        dto.setSys(sys);
+
+
+        ContentfulArticleDto.Fields fields = new ContentfulArticleDto.Fields();
+        fields.setHeadTitle("Test Title");
+        fields.setShortDescription("Test Short Description");
+        fields.setImportance(1);
+
+        ContentfulArticleDto.Fields.Sys headImgSrc = new ContentfulArticleDto.Fields.Sys();
+        headImgSrc.setId("headImg1");
+        fields.setHeadImgSrc(headImgSrc);
+
+        List<ContentfulArticleDto.Fields.Sys> imgSrcList = new ArrayList<>();
+        ContentfulArticleDto.Fields.Sys imgSys1 = new ContentfulArticleDto.Fields.Sys();
+        imgSys1.setId("img1");
+        imgSrcList.add(imgSys1);
+        fields.setImgSrcList(imgSrcList);
+
+        List<String> altImgList = new ArrayList<>();
+        altImgList.add("alt1");
+        fields.setAltImgList(altImgList);
+
+        fields.setEmployeeId(5);
+        fields.setHeadAltImg("Test Head Alt Img");
+        fields.setSpecificTitle("Specific Title");
+        fields.setDescription("Detailed Description");
+
+        dto.setFields(fields);
+        return dto;
     }
 }

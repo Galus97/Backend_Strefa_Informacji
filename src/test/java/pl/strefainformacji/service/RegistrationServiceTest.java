@@ -2,25 +2,29 @@ package pl.strefainformacji.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import pl.strefainformacji.component.EmployeeValidator;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.exception.ValidationException;
 import pl.strefainformacji.repository.EmployeeRepository;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class RegistrationServiceTest {
-
-    @InjectMocks
-    private RegistrationService registrationService;
 
     @Mock
     private EmployeeRepository employeeRepository;
@@ -29,83 +33,57 @@ class RegistrationServiceTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
+    private EmployeeValidator employeeValidator;
+
+    @InjectMocks
+    private RegistrationService registrationService;
+
     private Employee employee;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        employee = Employee.builder()
+                .employeeId(1L)
+                .email("test@example.com")
+                .password("password123")
+                .build();
     }
 
     @Test
-    void testNewEmployeeRegistration_Success() throws ValidationException {
-        String rawPassword = "password";
-        String encodedPassword = "encodedPassword";
-        when(employee.getUsername()).thenReturn("username");
-        when(employee.getEmail()).thenReturn("email@example.com");
-        when(employeeRepository.findByUsername(anyString())).thenReturn(Optional.empty());
-        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
-        when(passwordEncoder.encode(rawPassword)).thenReturn(encodedPassword);
-        when(employee.getPassword()).thenReturn(rawPassword);
-        when(employeeRepository.save(any(Employee.class))).thenReturn(employee);
+    void givenValidEmployee_whenNewEmployeeRegistration_thenReturnSavedEmployee() throws ValidationException {
+        // Arrange
+        when(employeeValidator.validate(employee)).thenReturn(Collections.emptyMap());
+        when(passwordEncoder.encode(employee.getPassword())).thenReturn("encodedPassword");
+        when(employeeRepository.save(any(Employee.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Employee result = registrationService.newEmployeeRegistration(employee);
+        // Act
+        Employee registeredEmployee = registrationService.newEmployeeRegistration(employee);
 
-        assertNotNull(result);
-        verify(employee, times(1)).setPassword(encodedPassword);
-        verify(employeeRepository, times(1)).save(employee);
+        // Assert
+        assertThat(registeredEmployee).isNotNull();
+        assertThat(registeredEmployee.getEmployeeId()).isNull(); // Powinno być nadpisane na null
+        assertThat(registeredEmployee.getPassword()).isEqualTo("encodedPassword");
+
+        verify(employeeValidator, times(1)).validate(employee);
+        verify(passwordEncoder, times(1)).encode("password123");
+        verify(employeeRepository, times(1)).save(any(Employee.class));
     }
 
     @Test
-    void testNewEmployeeRegistration_UsernameAlreadyExists() {
-        when(employee.getUsername()).thenReturn("username");
-        when(employeeRepository.findByUsername(anyString())).thenReturn(Optional.of(employee));
-        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+    void givenInvalidEmployee_whenNewEmployeeRegistration_thenThrowValidationException() {
+        // Arrange
+        Map<String, String> validationErrors = Map.of("email", "Invalid email format");
+        when(employeeValidator.validate(employee)).thenReturn(validationErrors);
 
-        ValidationException exception = assertThrows(ValidationException.class, () -> {
-            registrationService.newEmployeeRegistration(employee);
-        });
+        // Act & Assert
+        assertThatThrownBy(() -> registrationService.newEmployeeRegistration(employee))
+                .isInstanceOf(ValidationException.class)
+                .extracting(e -> ((ValidationException) e).getValidationErrors())
+                .isEqualTo(validationErrors);
 
-        Map<String, String> expectedErrors = new HashMap<>();
-        expectedErrors.put("existUsername", "Użytkownik z taką nazwą już istnieje. Wpisz inną nazwę użytkownika");
-
-        assertEquals(expectedErrors, exception.getValidationErrors());
-        verify(employeeRepository, never()).save(any(Employee.class));
+        verify(employeeValidator, times(1)).validate(employee);
+        verifyNoInteractions(passwordEncoder);
+        verifyNoInteractions(employeeRepository);
     }
 
-    @Test
-    void testNewEmployeeRegistration_EmailAlreadyExists() {
-        when(employee.getUsername()).thenReturn("username");
-        when(employee.getEmail()).thenReturn("email@example.com");
-        when(employeeRepository.findByUsername(anyString())).thenReturn(Optional.empty());
-        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.of(employee));
-
-        ValidationException exception = assertThrows(ValidationException.class, () -> {
-            registrationService.newEmployeeRegistration(employee);
-        });
-
-        Map<String, String> expectedErrors = new HashMap<>();
-        expectedErrors.put("existEmail", "Ten adres email jest już używany. Wpisz inny adres email");
-
-        assertEquals(expectedErrors, exception.getValidationErrors());
-        verify(employeeRepository, never()).save(any(Employee.class));
-    }
-
-    @Test
-    void testNewEmployeeRegistration_UsernameAndEmailAlreadyExist() {
-        when(employee.getUsername()).thenReturn("username");
-        when(employee.getEmail()).thenReturn("email@example.com");
-        when(employeeRepository.findByUsername(anyString())).thenReturn(Optional.of(employee));
-        when(employeeRepository.findByEmail(anyString())).thenReturn(Optional.of(employee));
-
-        ValidationException exception = assertThrows(ValidationException.class, () -> {
-            registrationService.newEmployeeRegistration(employee);
-        });
-
-        Map<String, String> expectedErrors = new HashMap<>();
-        expectedErrors.put("existUsername", "Użytkownik z taką nazwą już istnieje. Wpisz inną nazwę użytkownika");
-        expectedErrors.put("existEmail", "Ten adres email jest już używany. Wpisz inny adres email");
-
-        assertEquals(expectedErrors, exception.getValidationErrors());
-        verify(employeeRepository, never()).save(any(Employee.class));
-    }
 }

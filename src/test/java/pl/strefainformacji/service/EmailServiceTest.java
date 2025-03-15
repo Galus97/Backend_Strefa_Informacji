@@ -1,75 +1,95 @@
 package pl.strefainformacji.service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import pl.strefainformacji.component.MessageService;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
-
+    @Mock
+    JavaMailSender javaMailSender;
+    @Mock
+    MessageService messageService;
+    @Mock
+    CacheManager cacheManager;
+    @Mock
+    Cache cache;
     @InjectMocks
-    private EmailService emailService;
+    EmailService emailService;
 
-    @Mock
-    private JavaMailSender javaMailSender;
-
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpSession session;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-        when(request.getSession()).thenReturn(session);
-    }
 
     @Test
-    void testSendEmail_Success() {
-        when(session.getAttribute("registerEmail")).thenReturn("test@example.com");
-
-        emailService.emailActiveCode = "1234";
-        emailService.sendEmail();
-
+    void givenValidEmail_whenSendEmail_thenSendMessageAndCacheCode() {
+        //Arrange
+        when(cacheManager.getCache("verificationCodes")).thenReturn(cache);
+        //Act
+        emailService.sendEmail("valid@gmail.com");
+        //Assert
         verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
-
-        verify(session, times(1)).removeAttribute("registerEmail");
+        verify(cache, times(1)).put(eq("valid@gmail.com"), anyString());
     }
 
     @Test
-    void testSendEmail_NoEmailInSession() {
-        when(session.getAttribute("registerEmail")).thenReturn(null);
-
-        emailService.sendEmail();
-
-        verify(javaMailSender, never()).send(any(SimpleMailMessage.class));
-
-        verify(session, never()).removeAttribute("registerEmail");
+    void givenInvalidEmail_whenSendEmail_thenThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            emailService.sendEmail("");
+        });
+        verifyNoInteractions(javaMailSender);
+        verifyNoInteractions(cache);
     }
 
     @Test
-    void testValueOfEmailActiveCode() {
-        String generatedCode = emailService.valueOfEmailActiveCode();
-
-        assertNotNull(generatedCode);
-        assertTrue(generatedCode.matches("\\d{4}"));
+    void givenNullEmail_whenSendEmail_thenThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            emailService.sendEmail(null);
+        });
+        verifyNoInteractions(javaMailSender);
+        verifyNoInteractions(cache);
     }
 
     @Test
-    void testGenerateActiveCode() {
-        String generatedCode = emailService.valueOfEmailActiveCode();
+    void givenValidEmail_whenGetVerificationCode_thenReturnCode() {
+        //Arrange
+        when(cacheManager.getCache("verificationCodes")).thenReturn(cache);
+        when(cache.get("valid@gmail.com", String.class)).thenReturn("1234");
+        //Act
+        String verificationCode = emailService.getVerificationCode("valid@gmail.com");
+        //Assert
+        assertEquals("1234", verificationCode);
+    }
 
-        assertNotNull(generatedCode);
-        int codeAsInt = Integer.parseInt(generatedCode);
-        assertTrue(codeAsInt >= 1000 && codeAsInt <= 9999);
+    @Test
+    void givenInvalidEmail_whenGetVerificationCode_thenThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            emailService.getVerificationCode("");
+        });
+        verifyNoInteractions(javaMailSender);
+        verifyNoInteractions(cache);
+    }
+
+    @Test
+    void givenNullEmail_whenGetVerificationCode_thenThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            emailService.getVerificationCode(null);
+        });
+        verifyNoInteractions(javaMailSender);
+        verifyNoInteractions(cache);
     }
 }
