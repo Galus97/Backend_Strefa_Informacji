@@ -11,6 +11,8 @@ import pl.strefainformacji.webclient.contentful.dto.ContentfulArticleDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,81 +24,20 @@ public class ContentfulCreateArticleService {
     private final EmployeeService employeeService;
     private final ContentfulService contentfulService;
 
-    public List<String> articleToAddToDatabase() {
-        List<String> notAddedArticle = new ArrayList<>();
-        if (articleInformationService.findAllContentfulIds().isEmpty()) {
-            notAddedArticle = contentfulService.getAllArticlesIds();
-        } else {
-            for (String contentfulArticleId : contentfulService.getAllArticlesIds()) {
-                if (isArticleExistInDatabase(contentfulArticleId, articleInformationService.findAllContentfulIds())) {
-                    notAddedArticle.add(contentfulArticleId);
-                }
-            }
-        }
-        return notAddedArticle;
-    }
+    public void importNewArticles() {
+        List<String> existingContentfulIds = articleInformationService.findAllContentfulIds();
+        List<String> allContentfulIds = contentfulService.getAllArticlesIds();
 
-    private boolean isArticleExistInDatabase(String contentfulArticleId, List<String> database) {
-        for (String databaseElement : database) {
-            if (contentfulArticleId.equals(databaseElement)) {
-                return false;
-            }
-        }
-        return true;
-    }
+        List<String> newArticleIds = allContentfulIds.stream()
+                .filter(id -> !existingContentfulIds.contains(id))
+                .collect(Collectors.toList());
 
-    public List<ContentfulArticleDto> contentfulArticleDtoList() {
-        List<ContentfulArticleDto> listOfContentfulArticleDto = new ArrayList<>();
-        List<String> listOfArticlesIdToAdd = articleToAddToDatabase();
+        List<ContentfulArticleDto> newArticles = newArticleIds.stream()
+                .map(contentfulService::getArticleById)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
 
-        for (String entry : listOfArticlesIdToAdd) {
-            ContentfulArticleDto contentfulArticleDto = contentfulService.getArticleById(entry);
-            if (contentfulArticleDto != null) {
-                listOfContentfulArticleDto.add(contentfulArticleDto);
-            }
-        }
-        return listOfContentfulArticleDto;
-    }
-
-    public void createArticlesFromContentfulArticleDto() {
-        List<ContentfulArticleDto> contentfulArticleDtos = contentfulArticleDtoList();
-
-        for (ContentfulArticleDto element : contentfulArticleDtos) {
-            ArticleInformation articleInformation = new ArticleInformation();
-            SpecificArticle specificArticle = new SpecificArticle();
-
-            Employee employee = employeeService.getEmployee((long) element.getFields().getEmployeeId());
-            Employee generalEmployee = employeeService.getEmployee(1L);
-            if (employee != null) {
-                articleInformation.setEmployee(employee);
-            } else {
-                articleInformation.setEmployee(generalEmployee);
-            }
-
-            articleInformation.setContentfulId(element.getSys().getId());
-            articleInformation.setImportance(element.getFields().getImportance());
-            articleInformation.setTitle(element.getFields().getHeadTitle());
-            articleInformation.setShortDescription(element.getFields().getShortDescription());
-            articleInformation.setImgSrc(element.getFields().getHeadImgSrc().getId());
-            articleInformation.setAltImg(element.getFields().getHeadAltImg());
-            articleInformation.setLocalDateTime(LocalDateTime.now());
-
-            articleInformationService.saveArticleInformation(articleInformation);
-
-            specificArticle.setTitle(element.getFields().getSpecificTitle());
-            specificArticle.setDescription(element.getFields().getDescription());
-            specificArticle.setArticleInformation(articleInformation);
-
-            specificArticleService.saveSpecificArticle(specificArticle);
-
-            for (int i = 0; i < element.getFields().getImgSrcList().size(); i++) {
-                ArticleImages articleImages = new ArticleImages();
-                articleImages.setSpecificArticle(specificArticle);
-                articleImages.setImgSrc(element.getFields().getImgSrcList().get(i).getId());
-                articleImages.setAltImg(element.getFields().getAltImgList().get(i));
-                articleImagesService.saveArticleImages(articleImages);
-            }
-        }
+        newArticles.forEach(this::importArticle);
     }
 
     private void importArticle(ContentfulArticleDto dto) {
