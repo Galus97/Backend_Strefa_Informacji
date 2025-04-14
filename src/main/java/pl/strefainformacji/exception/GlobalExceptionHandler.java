@@ -21,6 +21,11 @@ public class GlobalExceptionHandler {
         return getMapResponseEntity(e);
     }
 
+    @ExceptionHandler(ArticleNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleArticleNotFoundException(ArticleNotFoundException e) {
+        return getMapResponseEntity(e);
+    }
+
     private static ResponseEntity<Map<String, String>> getMapResponseEntity(RuntimeException e) {
         Map<String, String> response = new HashMap<>();
         response.put(ErrorMessages.ERROR, e.getMessage());
