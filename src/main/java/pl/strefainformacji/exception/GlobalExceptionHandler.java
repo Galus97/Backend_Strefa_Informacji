@@ -3,6 +3,7 @@ package pl.strefainformacji.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import pl.strefainformacji.component.ErrorMessages;
 
 import java.util.HashMap;
@@ -10,6 +11,10 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+    @ExceptionHandler(ArticleImagesNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleArticleImagesNotFoundException(ArticleImagesNotFoundException e) {
+        return getMapResponseEntity(e);
+    }
 
     private static ResponseEntity<Map<String, String>> getMapResponseEntity(RuntimeException e) {
         Map<String, String> response = new HashMap<>();
