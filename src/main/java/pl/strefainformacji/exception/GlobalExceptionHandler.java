@@ -31,6 +31,11 @@ public class GlobalExceptionHandler {
         return getMapResponseEntity(e);
     }
 
+    @ExceptionHandler(EmployeeNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleEmployeeNotFoundException(EmployeeNotFoundException e) {
+        return getMapResponseEntity(e);
+    }
+
     private static ResponseEntity<Map<String, String>> getMapResponseEntity(RuntimeException e) {
         Map<String, String> response = new HashMap<>();
         response.put(ErrorMessages.ERROR, e.getMessage());
