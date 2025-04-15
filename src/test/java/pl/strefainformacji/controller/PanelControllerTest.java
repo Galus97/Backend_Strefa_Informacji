@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -88,5 +89,19 @@ class PanelControllerTest {
                 .andExpect(model().attribute("lastArticles", dummyArticles));
     }
 
-    
+    @Test
+    @WithMockUser
+    void shouldRedirectToVerifyEmailWhenEmployeeNotEnabled() throws Exception {
+        //given
+        when(employeeService.isEnabledById(mockEmployee.getEmployeeId())).thenReturn(false);
+
+        TestingAuthenticationToken authToken =
+                new TestingAuthenticationToken(currentEmployee, null, "ROLE_USER");
+
+        //then
+        mockMvc.perform(get("/panel")
+                        .with(authentication(authToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("verifyEmail"));
+    }
 }
