@@ -1,14 +1,13 @@
 package pl.strefainformacji.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.exception.ValidationException;
 import pl.strefainformacji.service.EmailService;
@@ -17,105 +16,99 @@ import pl.strefainformacji.service.RegistrationService;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+@WebMvcTest(RegistrationEmployeeController.class)
 class RegistrationEmployeeControllerTest {
 
-    @InjectMocks
-    private RegistrationEmployeeController registrationEmployeeController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private RegistrationService registrationService;
 
-    @Mock
+    @MockBean
     private EmailService emailService;
 
-    @Mock
-    private HttpServletRequest request;
-
-    @Mock
-    private HttpSession session;
-
-    @Mock
-    private Model model;
-
-    @Mock
-    private BindingResult bindingResult;
-
-    @Mock
     private Employee employee;
 
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
+    void setup() {
+        employee = new Employee();
+        employee.setUsername("testuser");
+        employee.setEmail("test@example.com");
     }
 
     @Test
-    void testRegisterGet() {
-        String result = registrationEmployeeController.showRegisterForm(model);
-
-        verify(model).addAttribute(eq("employee"), any(Employee.class));
-
-        assertEquals("register", result);
+    @WithMockUser
+    void shouldShowRegisterForm() throws Exception {
+        //then
+        mockMvc.perform(get("/register"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("register"))
+                .andExpect(model().attributeExists("employee"));
     }
 
     @Test
-    void testRegisterPost_Valid() throws ValidationException {
-        when(bindingResult.hasErrors()).thenReturn(false);
+    @WithMockUser
+    void shouldRegisterNewEmployeeSuccessfully() throws Exception {
+        //given
+        String verificationCode = "abc123";
 
-        when(emailService.valueOfEmailActiveCode()).thenReturn("123456");
+        when(emailService.getVerificationCode("test@example.com")).thenReturn(verificationCode);
 
-        when(request.getSession()).thenReturn(session);
+        MockHttpServletRequestBuilder request = post("/register")
+                .param("username", "testuser")
+                .param("email", "test@example.com")
+                .with(csrf());
 
-        String result = registrationEmployeeController.saveNewEmployee(employee, bindingResult, request);
+        //then
+        mockMvc.perform(request)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("login"))
+                .andExpect(request().sessionAttribute("registerEmail", "test@example.com"));
 
-        verify(employee).setEmailCode("123456");
-
-        verify(registrationService).newEmployeeRegistration(employee);
-
-        verify(session).setAttribute("registerEmail", employee.getEmail());
-        verify(emailService).sendEmail();
-
-        assertEquals("redirect:login", result);
+        verify(emailService).getVerificationCode("test@example.com");
+        verify(registrationService).newEmployeeRegistration(any(Employee.class));
+        verify(emailService).sendEmail("test@example.com");
     }
 
     @Test
-    void testRegisterPost_BindingErrors() throws ValidationException {
-        when(bindingResult.hasErrors()).thenReturn(true);
+    @WithMockUser
+    void shouldReturnRegisterViewWhenValidationExceptionOccurs() throws Exception {
+        //given
+        Map<String, String> errorMap = new HashMap<>();
+        errorMap.put("existEmail", "Email already exists");
+        ValidationException validationException = new ValidationException(errorMap);
 
-        String result = registrationEmployeeController.saveNewEmployee(employee, bindingResult, request);
-
-        assertEquals("register", result);
-
-        verify(registrationService, never()).newEmployeeRegistration(any());
-        verify(emailService, never()).sendEmail();
-    }
-
-    @Test
-    void testRegisterPost_ValidationException() throws ValidationException {
-        when(bindingResult.hasErrors()).thenReturn(false);
-
-        ValidationException validationException = new ValidationException(getSampleErrors());
         doThrow(validationException).when(registrationService).newEmployeeRegistration(any(Employee.class));
+        String verificationCode = "abc123";
+        when(emailService.getVerificationCode("test@example.com")).thenReturn(verificationCode);
 
-        String result = registrationEmployeeController.saveNewEmployee(employee, bindingResult, request);
+        //then
+        MockHttpServletRequestBuilder request = post("/register")
+                .param("username", "testuser")
+                .param("email", "test@example.com")
+                .with(csrf());
 
-        verify(bindingResult).rejectValue("username", "", "Username already exists");
-        verify(bindingResult).rejectValue("email", "", "Email already exists");
-
-        assertEquals("register", result);
-    }
-
-    private Map<String, String> getSampleErrors() {
-        Map<String, String> errors = new HashMap<>();
-        errors.put("existUsername", "Username already exists");
-        errors.put("existEmail", "Email already exists");
-        return errors;
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(view().name("register"))
+                .andExpect(model().attributeHasFieldErrors("employee", "email"));
+        
+        verify(emailService).getVerificationCode("test@example.com");
+        verify(registrationService).newEmployeeRegistration(any(Employee.class));
+        verify(emailService, org.mockito.Mockito.never()).sendEmail("test@example.com");
     }
 }
