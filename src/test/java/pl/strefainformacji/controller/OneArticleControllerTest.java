@@ -1,68 +1,68 @@
 package pl.strefainformacji.controller;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import pl.strefainformacji.entity.Article;
+import pl.strefainformacji.entity.ArticleImages;
 import pl.strefainformacji.entity.ArticleInformation;
+import pl.strefainformacji.entity.SpecificArticle;
+import pl.strefainformacji.service.ArticleImagesService;
+import pl.strefainformacji.service.ArticleInformationService;
 import pl.strefainformacji.service.SpecificArticleService;
 
-import java.util.NoSuchElementException;
+import java.util.Collections;
+import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-public class OneArticleControllerTest {
+@WebMvcTest(OneArticleController.class)
+class OneArticleControllerTest {
 
-    @InjectMocks
-    private OneArticleController controller;
-
-    @Mock
-    private SpecificArticleService specificArticleService;
-
+    @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-    }
+    @MockBean
+    private SpecificArticleService specificArticleService;
+
+    @MockBean
+    private ArticleInformationService articleInformationService;
+
+    @MockBean
+    private ArticleImagesService articleImagesService;
 
     @Test
-    public void whenValidArticle_thenStatus200() throws Exception {
-        Article expectedArticle = new Article();
-        expectedArticle.setArticleInformation(new ArticleInformation());
-        expectedArticle.setSpecificArticleId(1L);
-        expectedArticle.setTitle("Title");
-        expectedArticle.setDescription("Description");
-        when(specificArticleService.getSpecificArticleByArticleInformationId(anyLong())).thenReturn(expectedArticle);
+    @WithMockUser
+    void shouldReturnOneArticleViewWithModelAttributes() throws Exception {
+        // given
+        Long articleId = 1L;
 
-        mockMvc.perform(get("/article/1")
-                        .contentType(MediaType.APPLICATION_JSON))
+        SpecificArticle mockSpecificArticle = new SpecificArticle();
+        mockSpecificArticle.setSpecificArticleId(100L);
+
+        ArticleInformation mockArticleInformation = new ArticleInformation();
+        mockArticleInformation.setArticleId(articleId);
+
+        ArticleImages mockImage = new ArticleImages();
+        mockImage.setArticleImagesId(999L);
+        List<ArticleImages> mockImages = Collections.singletonList(mockImage);
+
+        when(specificArticleService.getSpecificArticleByArticleInformationId(articleId)).thenReturn(mockSpecificArticle);
+        when(articleInformationService.getArticle(articleId)).thenReturn(mockArticleInformation);
+        when(articleImagesService.getAllArticleImagesBySpecificArticle(mockSpecificArticle)).thenReturn(mockImages);
+
+        //then
+        mockMvc.perform(get("/article/{articleId}", articleId))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.specificArticleId").value(expectedArticle.getSpecificArticleId()))
-                .andExpect(jsonPath("$.title").value(expectedArticle.getTitle()))
-                .andExpect(jsonPath("$.description").value(expectedArticle.getDescription()));
-    }
-
-    @Test
-    public void whenInvalidArticle_thenStatus404() throws Exception {
-        when(specificArticleService.getSpecificArticleByArticleInformationId(anyLong())).thenThrow(new NoSuchElementException());
-
-        mockMvc.perform(get("/article/9999")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
+                .andExpect(view().name("oneArticle"))
+                .andExpect(model().attribute("specificArticle", mockSpecificArticle))
+                .andExpect(model().attribute("articleInformation", mockArticleInformation))
+                .andExpect(model().attribute("articleImages", mockImages));
     }
 }
