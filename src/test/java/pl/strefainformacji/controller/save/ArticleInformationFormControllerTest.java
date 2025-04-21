@@ -16,7 +16,9 @@ import java.util.Collections;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,6 +72,21 @@ class ArticleInformationFormControllerTest {
                         .with(authentication(authToken)))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/verifyEmail"));
+    }
+
+    @Test
+    void shouldReturnForm_whenValidationErrorsPresent() throws Exception {
+        //given
+        when(employeeService.isEnabledById(100L)).thenReturn(true);
+        //then
+        mockMvc.perform(post("/add/articleInformation")
+                        .with(authentication(authToken))
+                        .with(csrf())
+                        // simulate empty title and content to trigger @NotBlank
+                        .param("title", ""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("articleInformation"))
+                .andExpect(model().attributeHasFieldErrors("articleInformation", "title"));
     }
 
 
