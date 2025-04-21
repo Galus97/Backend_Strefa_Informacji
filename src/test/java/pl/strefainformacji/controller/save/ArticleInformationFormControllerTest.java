@@ -1,19 +1,28 @@
 package pl.strefainformacji.controller.save;
 
+import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import pl.strefainformacji.component.CurrentEmployee;
+import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.entity.Employee;
+import pl.strefainformacji.model.ArticleDto;
 import pl.strefainformacji.service.EmployeeService;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -82,12 +91,35 @@ class ArticleInformationFormControllerTest {
         mockMvc.perform(post("/add/articleInformation")
                         .with(authentication(authToken))
                         .with(csrf())
-                        // simulate empty title and content to trigger @NotBlank
+
                         .param("title", ""))
                 .andExpect(status().isOk())
                 .andExpect(view().name("articleInformation"))
                 .andExpect(model().attributeHasFieldErrors("articleInformation", "title"));
     }
 
+    @Test
+    void shouldSaveArticleInformationAndRedirect_whenInputValid() throws Exception {
+        //given
+        when(employeeService.isEnabledById(100L)).thenReturn(true);
+        //then
+        MockHttpSession session = new MockHttpSession();
+        MvcResult result = mockMvc.perform(post("/add/articleInformation")
+                        .with(authentication(authToken))
+                        .with(csrf())
+                        .session(session)
+                        .param("title", "Test Title"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("specificArticle"))
+                .andReturn();
 
+        HttpSession resultSession = result.getRequest().getSession(false);
+        ArticleDto dto = (ArticleDto) resultSession.getAttribute("articleDto");
+        assertNotNull(dto);
+        ArticleInformation saved = dto.getArticleInformation();
+        assertNotNull(saved);
+        assertEquals("Test Title", saved.getTitle());
+        assertNotNull(saved.getLocalDateTime());
+        assertTrue(saved.getLocalDateTime().isBefore(LocalDateTime.now().plusSeconds(1)));
+    }
 }
