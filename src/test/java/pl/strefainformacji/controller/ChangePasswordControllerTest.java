@@ -6,16 +6,20 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.ui.Model;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.Employee;
 import pl.strefainformacji.service.EmployeeService;
 
+import java.util.Locale;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -28,6 +32,9 @@ class ChangePasswordControllerTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private MessageSource messageSource;
 
     @Mock
     private HttpServletRequest request;
@@ -48,77 +55,74 @@ class ChangePasswordControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         when(currentEmployee.getEmployee()).thenReturn(employee);
+
+        when(messageSource.getMessage(eq("error.wrongPassword"), any(), any(Locale.class)))
+                .thenReturn("wrongPasswordMsg");
+        when(messageSource.getMessage(eq("error.passwordsDoNotMatch"), any(), any(Locale.class)))
+                .thenReturn("passwordsDoNotMatchMsg");
     }
 
     @Test
     void testChangePasswordGet_EmailVerified() {
-        // Given
+        //given
         when(employee.getEmployeeId()).thenReturn(1L);
         when(employeeService.isEnabledById(1L)).thenReturn(true);
-
-        // When
+        //when
         String viewName = changePasswordController.showChangePasswordForm(currentEmployee);
-
-        // Then
+        //then
         assertEquals("changePassword", viewName);
         verify(employeeService, times(1)).isEnabledById(1L);
     }
 
     @Test
     void testChangePasswordGet_EmailNotVerified() {
-        // Given
+        //given
         when(employee.getEmployeeId()).thenReturn(1L);
         when(employeeService.isEnabledById(1L)).thenReturn(false);
-
-        // When
+        //when
         String viewName = changePasswordController.showChangePasswordForm(currentEmployee);
-
-        // Then
+        //then
         assertEquals("redirect:verifyEmail", viewName);
         verify(employeeService, times(1)).isEnabledById(1L);
     }
 
     @Test
     void testChangePasswordPost_WrongOldPassword() {
-        // Given
+        //given
         when(request.getParameter("lastPassword")).thenReturn("wrongPassword");
         when(request.getParameter("newPassword")).thenReturn("newPassword123");
         when(request.getParameter("newPasswordAgain")).thenReturn("newPassword123");
 
         when(employee.getPassword()).thenReturn("encodedPassword");
         when(passwordEncoder.matches("wrongPassword", "encodedPassword")).thenReturn(false);
-
-        // When
+        //when
         String viewName = changePasswordController.saveChangedPassword(currentEmployee, request, model);
-
-        // Then
+        //then
         assertEquals("changePassword", viewName);
-        verify(model, times(1)).addAttribute(eq("wrongPassword"), anyString());
+        verify(model, times(1)).addAttribute(eq("wrongPassword"), eq("wrongPasswordMsg"));
         verify(employeeService, never()).changePassword(anyLong(), anyString());
     }
 
     @Test
     void testChangePasswordPost_PasswordsDoNotMatch() {
-        // Given
+        //given
         when(request.getParameter("lastPassword")).thenReturn("correctPassword");
         when(request.getParameter("newPassword")).thenReturn("newPassword123");
         when(request.getParameter("newPasswordAgain")).thenReturn("differentPassword123");
 
         when(employee.getPassword()).thenReturn("encodedPassword");
         when(passwordEncoder.matches("correctPassword", "encodedPassword")).thenReturn(true);
-
-        // When
+        //when
         String viewName = changePasswordController.saveChangedPassword(currentEmployee, request, model);
-
-        // Then
+        //then
         assertEquals("changePassword", viewName);
-        verify(model, times(1)).addAttribute(eq("passwordsDoNotMatch"), anyString());
+        verify(model, times(1)).addAttribute(eq("passwordsDoNotMatch"), eq("passwordsDoNotMatchMsg"));
         verify(employeeService, never()).changePassword(anyLong(), anyString());
     }
 
     @Test
     void testChangePasswordPost_SuccessfulPasswordChange() {
-        // Given
+        //given
         when(request.getParameter("lastPassword")).thenReturn("correctPassword");
         when(request.getParameter("newPassword")).thenReturn("newPassword123");
         when(request.getParameter("newPasswordAgain")).thenReturn("newPassword123");
@@ -126,11 +130,9 @@ class ChangePasswordControllerTest {
         when(employee.getPassword()).thenReturn("encodedPassword");
         when(passwordEncoder.matches("correctPassword", "encodedPassword")).thenReturn(true);
         when(passwordEncoder.encode("newPassword123")).thenReturn("encodedNewPassword");
-
-        // When
+        //when
         String viewName = changePasswordController.saveChangedPassword(currentEmployee, request, model);
-
-        // Then
+        //then
         assertEquals("redirect:panel", viewName);
         verify(employeeService, times(1)).changePassword(employee.getEmployeeId(), "encodedNewPassword");
         verify(employee, times(1)).setPassword("encodedNewPassword");
