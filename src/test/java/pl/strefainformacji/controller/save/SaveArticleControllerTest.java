@@ -17,6 +17,7 @@ import pl.strefainformacji.service.ArticleService;
 
 import java.util.Collections;
 
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
@@ -67,5 +68,24 @@ class SaveArticleControllerTest {
         assert resultSession.getAttribute("articleDto") == null;
     }
 
+    @Test
+    @WithMockUser
+    void shouldRedirectToError_whenDtoIsInvalid() throws Exception {
+        //given
+        when(mockArticleDto.isValid()).thenReturn(false);
+        //then
+        MvcResult result = mockMvc.perform(post("/save")
+                        .with(authentication(authToken))
+                        .with(csrf())
+                        .session(session))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/error"))
+                .andReturn();
 
+
+        verify(articleService, never()).saveFullArticle(mockArticleDto);
+
+        HttpSession resultSession = result.getRequest().getSession(false);
+        assert resultSession.getAttribute("articleDto") == mockArticleDto;
+    }
 }
