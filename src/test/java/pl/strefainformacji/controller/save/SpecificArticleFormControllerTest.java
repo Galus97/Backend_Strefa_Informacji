@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -60,6 +61,16 @@ class SpecificArticleFormControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("specificArticle"))
                 .andExpect(model().attributeExists("specificArticle"));
+    }
+
+    @Test
+    void shouldRedirectToVerifyEmail_whenEmployeeNotEnabled() throws Exception {
+        //given
+        when(employeeService.isEnabledById(100L)).thenReturn(false);
+        //then
+        mockMvc.perform(get("/add/specificArticle").with(authentication(authToken)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/verifyEmail"));
     }
 
 
