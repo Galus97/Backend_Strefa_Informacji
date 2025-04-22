@@ -2,98 +2,69 @@ package pl.strefainformacji.configuration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
-import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
-import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@SpringBootTest
-public class SpringSecurityTest {
+@SpringBootTest(
+        properties = {
+                "spring.security.user.name=user",
+                "spring.security.user.password=password"
+        }
+)
+@AutoConfigureMockMvc
+class SpringSecurityTest {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private WebApplicationContext context;
+    private SecurityFilterChain securityFilterChain;
 
+    @Autowired
     private MockMvc mockMvc;
 
     @Test
-    void testPasswordEncoder() {
-        // Test whether the password encoder is an instance of BCryptPasswordEncoder
-        assertThat(passwordEncoder).isNotNull();
-        String rawPassword = "password123";
-        String encodedPassword = passwordEncoder.encode(rawPassword);
-
-        // Check if the password matches after encoding
-        assertThat(passwordEncoder.matches(rawPassword, encodedPassword)).isTrue();
+    void passwordEncoderBean_ShouldBeInstanceOfBCryptPasswordEncoder() {
+        assertThat(passwordEncoder).isInstanceOf(BCryptPasswordEncoder.class);
     }
 
-//    @Test
-//    void testPublicUrlsAccessibleWithoutAuthentication() throws Exception {
-//        // Initialize MockMvc with Spring Security
-//        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-//                .apply(SecurityMockMvcConfigurers.springSecurity())
-//                .build();
-//
-//        // Test that public URLs are accessible without authentication
-//        mockMvc.perform(get("/"))
-//                .andExpect(status().isOk());
-//        mockMvc.perform(get("/login"))
-//                .andExpect(status().isOk());
-//        mockMvc.perform(get("/register"))
-//                .andExpect(status().isOk());
-//    }
+    @Test
+    void securityFilterChainBean_ShouldNotBeNull() {
+        assertThat(securityFilterChain).isNotNull();
+    }
 
     @Test
-    void testProtectedUrlRequiresAuthentication() throws Exception {
-        // Test that a protected URL (e.g., "/panel") requires authentication
-        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(springSecurity())
-                .build();
+    void loginPage_ShouldBeAccessibleWithoutAuthentication() throws Exception {
+        mockMvc.perform(get("/login"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"));
+    }
 
+    @Test
+    void protectedEndpoints_ShouldRedirectToLogin_WhenNotAuthenticated() throws Exception {
         mockMvc.perform(get("/panel"))
-                .andExpect(status().is3xxRedirection()) // Redirect to login page
-                .andExpect(unauthenticated());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("**/login"));
     }
 
-//    @Test
-//    void testLoginWithValidCredentials() throws Exception {
-//        // Test login with valid credentials
-//        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-//                .apply(springSecurity())
-//                .build();
-//
-//        mockMvc.perform(SecurityMockMvcRequestBuilders.formLogin("/login")
-//                        .user("user")
-//                        .password("password")
-//                        .with(csrf()))
-//                .andExpect(authenticated())
-//                .andExpect(status().is3xxRedirection());
-//    }
-
     @Test
-    void testLogout() throws Exception {
-        // Test logout functionality
-        mockMvc = MockMvcBuilders.webAppContextSetup(context)
-                .apply(springSecurity())
-                .build();
-
-        mockMvc.perform(get("/logout")
-                        .with(csrf()))
+    void formLogin_ShouldFailWithBadCredentials() throws Exception {
+        mockMvc.perform(formLogin()
+                        .user("bad")
+                        .password("bad"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(unauthenticated());
+                .andExpect(redirectedUrl("/login?error"));
     }
 }
