@@ -18,7 +18,6 @@ public class SpecificArticleService {
 
     public SpecificArticle getSpecificArticleByArticleInformationId(Long articleId) {
         throwIfIdIsInvalid(articleId, ErrorMessages.ARTICLE_ID_IS_INVALID);
-
         isSpecificArticleExistOrThrow(articleId, ErrorMessages.SPECIFIC_ARTICLE_NOT_FOUND);
 
         return specificArticleRepository.findByArticleInformation_ArticleId(articleId);

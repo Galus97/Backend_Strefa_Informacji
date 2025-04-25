@@ -15,6 +15,7 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class EmailService {
+    private static final String VERIFICATION_CODE = "verificationCodes";
     private final JavaMailSender javaMailSender;
     private final MessageService messageService;
     private final CacheManager cacheManager;
@@ -30,7 +31,7 @@ public class EmailService {
     public void sendEmail(String email) {
         throwIfEmailIsInvalid(email);
         String emailActiveCode = generateActiveCode();
-        cacheManager.getCache("verificationCodes").put(email, emailActiveCode);
+        cacheManager.getCache(VERIFICATION_CODE).put(email, emailActiveCode);
 
         SimpleMailMessage message = new SimpleMailMessage();
         String text = messageService.getMessage("email.text", emailActiveCode);
@@ -54,7 +55,7 @@ public class EmailService {
     @Cacheable(value = "verificationCodes", key = "#email")
     public String getVerificationCode(String email) {
         throwIfEmailIsInvalid(email);
-        return cacheManager.getCache("verificationCodes").get(email, String.class);
+        return cacheManager.getCache(VERIFICATION_CODE).get(email, String.class);
     }
 
     /**

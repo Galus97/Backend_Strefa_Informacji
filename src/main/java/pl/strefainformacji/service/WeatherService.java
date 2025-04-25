@@ -11,9 +11,12 @@ import pl.strefainformacji.webclient.weather.WeatherClient;
 @RequiredArgsConstructor
 public class WeatherService {
 
+    private static final double LAT = 52.23;
+    private static final double LON = 21.01;
+
     private final WeatherClient weatherClient;
 
     public WeatherDto getWeather() {
-        return weatherClient.getWeatherForCity(52.23, 21.01);
+        return weatherClient.getWeatherForCity(LAT, LON);
     }
 }

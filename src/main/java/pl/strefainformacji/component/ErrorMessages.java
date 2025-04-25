@@ -13,4 +13,6 @@ public final class ErrorMessages {
     public static final String INVALID_EMAIL = "error.invalidEmailAddress";
     public static final String ARTICLE_IMAGES_IS_NULL = "error.articleImagesIsNull";
     public static final String ARTICLE_IMAGES_NOT_FOUND = "error.articleImagesNotFound";
+    public static final String EMPLOYEE_NOT_FOUND_BY_USERNAME = "error.employeeNotFoundByUsername";
+
 }
