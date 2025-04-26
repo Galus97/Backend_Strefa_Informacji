@@ -33,7 +33,7 @@ public class ArticleInformationService {
     }
 
     public void saveArticleInformation(ArticleInformation articleInformation) {
-        throwIfObjectIsNull(articleInformation, messageService.getMessage(ErrorMessages.ARTICLE_IS_NULL));
+        throwIfObjectIsNull(articleInformation, ErrorMessages.ARTICLE_IS_NULL);
         articleInformationRepository.save(articleInformation);
     }
 
@@ -51,13 +51,13 @@ public class ArticleInformationService {
     }
 
     public List<ArticleInformation> getLastFiveArticlesByEmployee(Employee employee) {
-        throwIfObjectIsNull(employee, messageService.getMessage(ErrorMessages.EMPLOYEE_IS_NULL));
+        throwIfObjectIsNull(employee, ErrorMessages.EMPLOYEE_IS_NULL);
         PageRequest pageRequest = PageRequest.of(0, 5);
         return articleInformationRepository.findLastFiveArticlesByEmployee(employee, pageRequest);
     }
 
     public List<ArticleInformation> getAddedArticleInPeriod(Employee employee, LocalDateTime weekStart) {
-        throwIfObjectIsNull(employee, messageService.getMessage(ErrorMessages.EMPLOYEE_IS_NULL));
+        throwIfObjectIsNull(employee, ErrorMessages.EMPLOYEE_IS_NULL);
         List<ArticleInformation> allArticlesByEmployee = articleInformationRepository.findAllByEmployee(employee);
         List<ArticleInformation> articlesInGivenWeek = new ArrayList<>();
 
@@ -83,7 +83,7 @@ public class ArticleInformationService {
 
     private void throwIfObjectIsNull(Object object, String message) {
         if (object == null) {
-            throw new IllegalArgumentException(message);
+            throw new IllegalArgumentException(messageService.getMessage(message));
         }
     }
 }

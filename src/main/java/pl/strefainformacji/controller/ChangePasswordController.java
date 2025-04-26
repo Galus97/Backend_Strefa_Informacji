@@ -17,7 +17,7 @@ import java.util.Locale;
 @Controller
 @RequiredArgsConstructor
 public class ChangePasswordController {
-
+    private static final String CHANGE_PASSWORD_PAGE = "changePassword";
     private final EmployeeService employeeService;
     private final PasswordEncoder passwordEncoder;
     private final MessageSource messageSource;
@@ -25,7 +25,7 @@ public class ChangePasswordController {
     @GetMapping("/changePassword")
     public String showChangePasswordForm(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
-            return "changePassword";
+            return CHANGE_PASSWORD_PAGE;
         } else {
             return "redirect:verifyEmail";
         }
@@ -44,13 +44,13 @@ public class ChangePasswordController {
         if (!passwordEncoder.matches(lastPassword, encodedPassword)) {
             errorMessage = messageSource.getMessage("error.wrongPassword", null, Locale.getDefault());
             model.addAttribute("wrongPassword", errorMessage);
-            return "changePassword";
+            return CHANGE_PASSWORD_PAGE;
         }
 
         if (!newPassword.equals(newPasswordAgain)) {
             errorMessage = messageSource.getMessage("error.passwordsDoNotMatch", null, Locale.getDefault());
             model.addAttribute("passwordsDoNotMatch", errorMessage);
-            return "changePassword";
+            return CHANGE_PASSWORD_PAGE;
         }
 
         String encodedNewPassword = passwordEncoder.encode(newPassword);

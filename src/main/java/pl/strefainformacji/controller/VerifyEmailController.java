@@ -15,26 +15,27 @@ import pl.strefainformacji.service.EmployeeService;
 @Controller
 @AllArgsConstructor
 public class VerifyEmailController {
-
+    private static final String EMAIL_PAGE = "verifyEmail";
+    private static final String SEND = "Wyślij";
     private final EmployeeService employeeService;
     private final EmailService emailService;
 
     @GetMapping("/verifyEmail")
     public String verifyEmail() {
-        return "verifyEmail";
+        return EMAIL_PAGE;
     }
 
     @PostMapping("/verifyEmail")
     public String verifyEmailPost(HttpServletRequest request, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
         Employee employee = currentEmployee.getEmployee();
         String action = request.getParameter("action");
-        if ("Wyślij".equals(action)) {
+        if (SEND.equals(action)) {
             String verifyEmailCode = request.getParameter("verifyEmailCode");
             if (verifyEmailCode.equals(currentEmployee.getEmployee().getEmailCode())) {
                 employeeService.updateEnable(currentEmployee.getEmployee().getEmployeeId(), true);
                 return "redirect:panel";
             } else {
-                return "verifyEmail";
+                return EMAIL_PAGE;
             }
         } else if ("ResendCode".equals(action)) {
             String emailCode = emailService.getVerificationCode(employee.getEmail());
@@ -42,7 +43,7 @@ public class VerifyEmailController {
             sendActivationEmail(request, currentEmployee.getEmployee().getEmail());
             employeeService.updateEmailCode(currentEmployee.getEmployee().getEmployeeId(), emailCode);
         }
-        return "verifyEmail";
+        return EMAIL_PAGE;
     }
 
     private void sendActivationEmail(HttpServletRequest request, String email) {
