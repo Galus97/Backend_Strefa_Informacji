@@ -51,6 +51,7 @@ public class ArticleInformationService {
     }
 
     public List<ArticleInformation> getLastFiveArticlesByEmployee(Employee employee) {
+        throwIfObjectIsNull(employee, messageService.getMessage(ErrorMessages.EMPLOYEE_IS_NULL));
         PageRequest pageRequest = PageRequest.of(0, 5);
         return articleInformationRepository.findLastFiveArticlesByEmployee(employee, pageRequest);
     }
