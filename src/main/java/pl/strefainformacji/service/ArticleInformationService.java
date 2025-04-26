@@ -57,6 +57,7 @@ public class ArticleInformationService {
     }
 
     public List<ArticleInformation> getAddedArticleInPeriod(Employee employee, LocalDateTime weekStart) {
+        throwIfObjectIsNull(employee, messageService.getMessage(ErrorMessages.EMPLOYEE_IS_NULL));
         List<ArticleInformation> allArticlesByEmployee = articleInformationRepository.findAllByEmployee(employee);
         List<ArticleInformation> articlesInGivenWeek = new ArrayList<>();
 
