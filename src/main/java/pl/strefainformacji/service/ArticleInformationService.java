@@ -33,9 +33,7 @@ public class ArticleInformationService {
     }
 
     public void saveArticleInformation(ArticleInformation articleInformation) {
-        if (articleInformation == null) {
-            throw new IllegalArgumentException(messageService.getMessage(ErrorMessages.ARTICLE_IS_NULL));
-        }
+        throwIfObjectIsNull(articleInformation, messageService.getMessage(ErrorMessages.ARTICLE_IS_NULL));
         articleInformationRepository.save(articleInformation);
     }
 
@@ -78,6 +76,12 @@ public class ArticleInformationService {
     private void throwIfIdIsInvalid(Long id, String message) {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException(messageService.getMessage(message, id));
+        }
+    }
+
+    private void throwIfObjectIsNull(Object object, String message) {
+        if (object == null) {
+            throw new IllegalArgumentException(message);
         }
     }
 }
