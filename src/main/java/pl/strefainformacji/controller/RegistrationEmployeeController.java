@@ -15,27 +15,25 @@ import pl.strefainformacji.service.EmailService;
 import pl.strefainformacji.service.RegistrationService;
 
 import java.util.Map;
-import java.util.logging.Logger;
 
 @Controller
 @RequiredArgsConstructor
 public class RegistrationEmployeeController {
+    private static final String REGISTER_PAGE = "register";
 
     private final RegistrationService registrationService;
     private final EmailService emailService;
 
-    private static final Logger LOGGER = Logger.getLogger(RegistrationEmployeeController.class.getName());
-
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("employee", new Employee());
-        return "register";
+        return REGISTER_PAGE;
     }
 
     @PostMapping("/register")
     public String saveNewEmployee(@Valid Employee employee, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
-            return "register";
+            return REGISTER_PAGE;
         }
         try {
             employee.setEmailCode(emailService.getVerificationCode(employee.getEmail()));
@@ -44,7 +42,6 @@ public class RegistrationEmployeeController {
             return "redirect:login";
         } catch (ValidationException exception) {
             Map<String, String> errors = exception.getValidationErrors();
-            LOGGER.info("errors registerPost" + errors.isEmpty());
             if (errors.containsKey("existUsername")) {
                 bindingResult.rejectValue("username", "", errors.get("existUsername"));
             }
@@ -52,7 +49,7 @@ public class RegistrationEmployeeController {
                 bindingResult.rejectValue("email", "", errors.get("existEmail"));
             }
 
-            return "register";
+            return REGISTER_PAGE;
         }
     }
 
