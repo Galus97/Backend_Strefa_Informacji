@@ -46,7 +46,7 @@ public class ContentfulService {
             CDAEntry entry = client.fetch(CDAEntry.class).one(id);
             return entry != null ? mapToContentfulArticleDto(entry) : null;
         } catch (Exception e) {
-            throw new ContentfulIntegrationException(messageService.getMessage("error.contentfull", id), e);
+            throw new ContentfulIntegrationException(messageService.getMessage("error.contentful", id), e);
         }
     }
 
