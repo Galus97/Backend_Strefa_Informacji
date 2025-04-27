@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequiredArgsConstructor
 public class ArticleImagesFormController {
+    private static final String ARTICLE_IMAGES_PAGE = "articleImages";
     private final EmployeeService employeeService;
     private final MessageService messageService;
 
@@ -38,7 +39,7 @@ public class ArticleImagesFormController {
                 form.setImages(Collections.nCopies(10, new ImageDto()));
             }
             model.addAttribute("form", form);
-            return "articleImages";
+            return ARTICLE_IMAGES_PAGE;
         } else {
             return "redirect:/verifyEmail";
         }
@@ -49,7 +50,7 @@ public class ArticleImagesFormController {
                                     HttpSession session, Locale locale) {
 
         if (bindingResult.hasErrors()) {
-            return "articleImages";
+            return ARTICLE_IMAGES_PAGE;
         }
 
         List<ImageDto> validImages = form.getImages().stream()
@@ -59,7 +60,7 @@ public class ArticleImagesFormController {
         if (validImages.size() < 1) {
             bindingResult.rejectValue("images", "error.images",
                     messageService.getMessage("error.images.min", null, locale));
-            return "articleImages";
+            return ARTICLE_IMAGES_PAGE;
         }
         ArticleDto articleDto = (ArticleDto) session.getAttribute("articleDto");
         if (articleDto == null) {
