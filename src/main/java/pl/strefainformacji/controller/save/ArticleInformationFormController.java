@@ -19,13 +19,14 @@ import java.time.LocalDateTime;
 @Controller
 @RequiredArgsConstructor
 public class ArticleInformationFormController {
+    private static final String ARTICLE_PAGE = "articleInformation";
     private final EmployeeService employeeService;
 
     @GetMapping("/add/articleInformation")
     public String showArticleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             model.addAttribute("articleInformation", new ArticleInformation());
-            return "articleInformation";
+            return ARTICLE_PAGE;
         } else {
             return "redirect:/verifyEmail";
         }
@@ -34,7 +35,7 @@ public class ArticleInformationFormController {
     @PostMapping("/add/articleInformation")
     public String saveArticleInformation(@Valid ArticleInformation articleInformation, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
-            return "articleInformation";
+            return ARTICLE_PAGE;
         }
         articleInformation.setLocalDateTime(LocalDateTime.now());
 
