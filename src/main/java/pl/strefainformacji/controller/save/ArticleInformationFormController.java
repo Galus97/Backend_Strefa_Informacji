@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.ArticleInformation;
 import pl.strefainformacji.model.ArticleDto;
@@ -18,11 +19,12 @@ import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/add")
 public class ArticleInformationFormController {
     private static final String ARTICLE_PAGE = "articleInformation";
     private final EmployeeService employeeService;
 
-    @GetMapping("/add/articleInformation")
+    @GetMapping("/articleInformation")
     public String showArticleInformationForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             model.addAttribute("articleInformation", new ArticleInformation());
@@ -32,7 +34,7 @@ public class ArticleInformationFormController {
         }
     }
 
-    @PostMapping("/add/articleInformation")
+    @PostMapping("/articleInformation")
     public String saveArticleInformation(@Valid ArticleInformation articleInformation, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return ARTICLE_PAGE;
