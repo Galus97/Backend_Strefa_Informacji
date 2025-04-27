@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.strefainformacji.component.CurrentEmployee;
 import pl.strefainformacji.entity.SpecificArticle;
 import pl.strefainformacji.model.ArticleDto;
@@ -16,11 +17,12 @@ import pl.strefainformacji.service.EmployeeService;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/add")
 public class SpecificArticleFormController {
     private static final String SPECIFIC_ARTICLE_PAGE = "specificArticle";
     private final EmployeeService employeeService;
 
-    @GetMapping("/add/specificArticle")
+    @GetMapping("/specificArticle")
     public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             model.addAttribute("specificArticle", new SpecificArticle());
@@ -30,7 +32,7 @@ public class SpecificArticleFormController {
         }
     }
 
-    @PostMapping("/add/specificArticle")
+    @PostMapping("/specificArticle")
     public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
             return SPECIFIC_ARTICLE_PAGE;
