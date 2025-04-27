@@ -12,12 +12,13 @@ import pl.strefainformacji.service.EmployeeService;
 @Controller
 @RequiredArgsConstructor
 public class ChangeEmailController {
+    private static final String CHANGE_EMAIL_PAGE = "changeEmail";
     private final EmployeeService employeeService;
 
     @GetMapping("/changeEmail")
     public String showChangeEmailForm(@AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
-            return "changeEmail";
+            return CHANGE_EMAIL_PAGE;
         } else {
             return "redirect:verifyEmail";
         }
@@ -29,11 +30,11 @@ public class ChangeEmailController {
         String newEmailAgain = request.getParameter("newEmailAgain");
 
         if (!newEmail.equals(newEmailAgain)) {
-            return "changeEmail";
+            return CHANGE_EMAIL_PAGE;
         }
 
         if (newEmail.equals(currentEmployee.getEmployee().getEmail())) {
-            return "changeEmail";
+            return CHANGE_EMAIL_PAGE;
         }
 
         employeeService.changeEmail(currentEmployee.getEmployee().getEmployeeId(), newEmail);
