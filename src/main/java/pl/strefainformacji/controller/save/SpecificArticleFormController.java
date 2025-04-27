@@ -17,14 +17,14 @@ import pl.strefainformacji.service.EmployeeService;
 @Controller
 @RequiredArgsConstructor
 public class SpecificArticleFormController {
-
+    private static final String SPECIFIC_ARTICLE_PAGE = "specificArticle";
     private final EmployeeService employeeService;
 
     @GetMapping("/add/specificArticle")
     public String specificArticleForm(Model model, @AuthenticationPrincipal CurrentEmployee currentEmployee) {
         if (employeeService.isEnabledById(currentEmployee.getEmployee().getEmployeeId())) {
             model.addAttribute("specificArticle", new SpecificArticle());
-            return "specificArticle";
+            return SPECIFIC_ARTICLE_PAGE;
         } else {
             return "redirect:/verifyEmail";
         }
@@ -33,7 +33,7 @@ public class SpecificArticleFormController {
     @PostMapping("/add/specificArticle")
     public String saveSpecificArticleFromForm(@Valid SpecificArticle specificArticle, BindingResult bindingResult, HttpSession session) {
         if (bindingResult.hasErrors()) {
-            return "specificArticle";
+            return SPECIFIC_ARTICLE_PAGE;
         }
         ArticleDto articleDto = (ArticleDto) session.getAttribute("articleDto");
         if (articleDto == null) {
